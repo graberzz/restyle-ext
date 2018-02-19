@@ -1,6 +1,9 @@
 # DEPLOM ( it ploneta )
 
-DESC
+## GOALS
+1. Pridumat' goals
+2. Napesat' plugin
+3. ~~Pokushat'~~
 
 ## HOW TO USE
 1. DOWNLOAD NODEJS LATEST VERSION
