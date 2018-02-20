@@ -1,6 +1,9 @@
+import init from './core/init';
+import '../css/content.css';
+
 let editModeActive = false;
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-	editModeActive = !editModeActive;
+//	editModeActive = !editModeActive;
 
-    document.body.style.backgroundColor = editModeActive ? 'red' : 'green';
+    init();
 });
