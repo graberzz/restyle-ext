@@ -24,6 +24,9 @@ const editMenu = {
     document.body.appendChild(this.elem);
     */
   },
+  deinit: function() {
+      document.body.removeChild(this.elem);
+  }
 };
 
 export default editMenu;
