@@ -1,6 +1,5 @@
 import MenuItem from "./menuItem";
 import icon from '../../img/icon-34.png';
-alert(icon);
 
 const editMenu = {
   menuItems: [
@@ -13,12 +12,17 @@ const editMenu = {
   ],
   
   init: function() {
+    document.body.addEventListener("click", function (e) {
+        alert(e.target.id)
+    })
+    /*
     this.elem = document.createElement('div');
     this.elem.classList.add('edit-menu');
     for (let menuItem of this.menuItems) {
      this.elem.appendChild(menuItem.elem);   
     }
     document.body.appendChild(this.elem);
+    */
   },
 };
 
