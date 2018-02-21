@@ -3,8 +3,7 @@ import block from './blockInit';
 
 export default function init() {
     block.highlight();
-    editMenu.init(block);
-    console.log(block.currentBlock);
+    editMenu.init(block.currentBlock);
     document.body.setAttribute("contenteditable", true);
 }
 

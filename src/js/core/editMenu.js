@@ -3,14 +3,16 @@ import icon from '../../img/icon-34.png';
 
 const editMenu = {
 
-    init: function(block) {
+    init: function(currentBlock) {
+        this.currentBlock = currentBlock;
         this.menuItems = [
-          new MenuItem({
-              icon: icon,
-              action: function() {
-                  console.log(block.currentBlock);
-              },
-          })
+            new MenuItem({
+                menu: this, 
+                icon: icon,
+                action: function() {
+                    console.log(this.currentBlock);
+                },
+            })
         ];
 
         this.elem = document.createElement('div');

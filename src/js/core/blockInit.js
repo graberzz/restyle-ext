@@ -1,9 +1,11 @@
 const block = {
 
+    currentBlock: null,
+
     highlight: function() {
         document.body.addEventListener("mouseover", this.onMouseOver);
         document.body.addEventListener("mouseout", this.onMouseOut);
-        document.body.addEventListener("click", this.onMouseClick);
+        document.body.addEventListener("click", this.onMouseClick.bind(this));
     },
 
     dehighlight: function() {
@@ -17,7 +19,7 @@ const block = {
             return;
         }
         this.currentBlock = e.target;
-        console.log(this.currentBlock)
+        console.log(this)
     },
 
     onMouseOver: function(e) {
