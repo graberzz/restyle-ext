@@ -2,4 +2,8 @@ import editMenu from './editMenu';
 
 export default function init() {
     editMenu.init();
-}1
+}
+
+export function deinit() {
+    editMenu.deinit();
+}

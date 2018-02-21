@@ -1,6 +1,5 @@
 import MenuItem from "./menuItem";
 import icon from '../../img/icon-34.png';
-alert(icon);
 
 const editMenu = {
   menuItems: [
@@ -20,6 +19,9 @@ const editMenu = {
     }
     document.body.appendChild(this.elem);
   },
+  deinit: function() {
+      document.body.removeChild(this.elem);
+  }
 };
 
 export default editMenu;
