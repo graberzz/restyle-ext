@@ -2,7 +2,7 @@ import MenuItem from "./menuItem";
 import icon from '../../img/icon-34.png';
 
 export default const editMenu = {
-
+    
     init: function(currentBlock) {
         this.menuItems = [
           new MenuItem({
@@ -23,5 +23,4 @@ export default const editMenu = {
     deinit: function() {
         document.body.removeChild(this.elem);
     }
-
 };
