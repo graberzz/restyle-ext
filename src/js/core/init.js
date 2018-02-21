@@ -2,10 +2,9 @@ import editMenu from './editMenu';
 import block from './blockInit';
 
 export default function init() {
-    alert(undefined);
-    alert("mocha");
     block.highlight();
-    editMenu.init(block.currentBlock);
+    editMenu.init(block);
+    console.log(block.currentBlock);
     document.body.setAttribute("contenteditable", true);
 }
 
