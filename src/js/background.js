@@ -1,6 +1,6 @@
 let editModeActive = false;
 
-chrome.browserAction.onClicked.addListener(function (tab) {
+function switchMode(tab) {
     editModeActive = !editModeActive;
 
     if (editModeActive) {
@@ -9,5 +9,15 @@ chrome.browserAction.onClicked.addListener(function (tab) {
     } else {
         chrome.tabs.sendMessage(tab.id, {text: 'deactivate'});
         chrome.browserAction.setIcon({path: 'icon-34.png'});
-    }    
+    } 
+}
+
+chrome.browserAction.onClicked.addListener(function (tab) {   
+    switchMode(tab);
+});
+
+chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) { 
+    if (req.mes === 'keyboard') {
+        switchMode(sender.tab);
+    }
 });

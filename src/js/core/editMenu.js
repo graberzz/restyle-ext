@@ -13,17 +13,19 @@ const editMenu = {
                 },
             })
         ];
-
-        this.elem = document.createElement('div');
-        this.elem.classList.add('edit-menu');
-        for (let menuItem of this.menuItems) {
-            this.elem.appendChild(menuItem.elem);   
+        if (!this.elem) {
+            this.elem = document.createElement('div');
+            this.elem.classList.add('edit-menu');
+            for (let menuItem of this.menuItems) {
+                this.elem.appendChild(menuItem.elem);   
+            }
         }
         document.body.appendChild(this.elem);
         this.setPos(pos);
     },
 
     deinit() {
+        if (!this.elem) return;
         document.body.removeChild(this.elem);
     },
 
