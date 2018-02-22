@@ -2,9 +2,8 @@ import MenuItem from "./menuItem";
 import icon from '../../img/icon-34.png';
 
 const editMenu = {
-
-    init: function(currentBlock) {
-        this.currentBlock = currentBlock;
+    init(currentBlock, pos) {
+        this.currentBlock = currentBlock;        
         this.menuItems = [
             new MenuItem({
                 menu: this, 
@@ -21,11 +20,19 @@ const editMenu = {
             this.elem.appendChild(menuItem.elem);   
         }
         document.body.appendChild(this.elem);
+        this.setPos(pos);
     },
 
-    deinit: function() {
+    deinit() {
         document.body.removeChild(this.elem);
-    }
+    },
+
+    setPos(pos) {
+        console.log(pos);
+        this.elem.style.left = `${pos.x}px`;
+        this.elem.style.top = `${pos.y}px`;
+        this.pos = pos;
+    },
 
 };
 

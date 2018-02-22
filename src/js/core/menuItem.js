@@ -10,4 +10,3 @@ export default class MenuItem {
         this.elem.addEventListener('click', this.action);
     }    
 }
-//gfdgfdgdfgd

@@ -1,16 +1,16 @@
+import editMenu from './editMenu';
+
 const block = {
-
-    currentBlock: null,
-
     highlight: function() {
         document.body.addEventListener("mouseover", this.onMouseOver);
         document.body.addEventListener("mouseout", this.onMouseOut);
-        document.body.addEventListener("click", this.onMouseClick.bind(this));
+        document.body.addEventListener("click", this.onMouseClick);
     },
 
     dehighlight: function() {
         document.body.removeEventListener("mouseover", this.onMouseOver);
         document.body.removeEventListener("mouseout", this.onMouseOut);
+        document.body.removeEventListener("click", this.onMouseClick);
     },
 
     onMouseClick: function(e) {
@@ -19,7 +19,12 @@ const block = {
             return;
         }
         this.currentBlock = e.target;
-        console.log(this)
+        const elRect = e.target.getBoundingClientRect();
+        const pos = {
+            x: elRect.x + window.scrollX,
+            y: elRect.y + window.scrollY,
+        };
+        editMenu.init(this.currentBlock, pos);
     },
 
     onMouseOver: function(e) {
@@ -28,10 +33,9 @@ const block = {
         e.target.style.outlineWidth = "2px";
     },
 
-    onMouseOut: function(e){
+    onMouseOut: function(e) {
         e.target.style.outlineStyle = "none";
-        e.target.style.outlineWidth = "0";
-    }    
-}
+    },    
+};
 
 export default block;
