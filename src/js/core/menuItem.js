@@ -1,13 +1,11 @@
 export class MenuButton {
     constructor(props) {
         this.link = props.link;
-        this.icon = props.icon;
         this.id = props.id;
         this.elem = document.createElement('button');
         this.elem.classList.add('menu-button');
         this.elem.id = this.id;
         this.elem.innerHTML = props.text;
-        this.elem.style.backgroundImage = `url(${this.icon}`;
         this.click = props.click.bind(this.link);
         this.elem.addEventListener('click', this.click);
     }    

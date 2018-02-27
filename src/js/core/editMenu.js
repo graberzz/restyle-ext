@@ -8,7 +8,6 @@ const editMenu = {
             new MenuButton({
                 link: this,
                 id: 'delete',
-                icon: null,
                 text: 'Delete',
                 click: function () {
                     console.log(this.currentBlock);
@@ -33,7 +32,6 @@ const editMenu = {
             new MenuButton({
                 link: this,
                 id: 'bold',
-                icon: null,
                 text: '<b>B</b>',
                 click: function () {
                     this.currentBlock.style.fontWeight = this.currentBlock.style.fontWeight != "bold" ? "bold" : "normal";
@@ -42,7 +40,6 @@ const editMenu = {
             new MenuButton({
                 link: this,
                 id: 'italic',
-                icon: null,
                 text: '<i>I</i>',
                 click: function () {
                     this.currentBlock.style.fontStyle = this.currentBlock.style.fontStyle != "italic" ? "italic" : "normal";
