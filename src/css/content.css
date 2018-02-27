@@ -18,3 +18,26 @@
     vertical-align: top;
 }
 
+.menu-combobox {
+    height: 25px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: darkgray;
+    margin: 0;
+    padding: 0;
+}
+.menu-combobox:hover {
+    border-color: lightgray;
+}
+.menu-button {
+    text-align: center;
+    height: 25px;
+    padding: 0 5px;
+    font-size: 12px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: darkgray;
+}
+.menu-button:hover {
+    border-color: lightgray;
+}

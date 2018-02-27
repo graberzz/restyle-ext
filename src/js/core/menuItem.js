@@ -1,3 +1,4 @@
+/*
 export default class MenuItem {
     constructor(props) {
         this.menu = props.menu;
@@ -31,4 +32,37 @@ export default class MenuItem {
         this.action = props.action.bind(this);
         this.btn.addEventListener('click', this.action);
     }    
+}
+*/
+
+export class MenuButton {
+    constructor(props) {
+        this.link = props.link;
+        this.icon = props.icon;
+        this.elem = document.createElement('button');
+        this.elem.classList.add('menu-button');
+        this.elem.innerHTML = props.text;
+        this.elem.style.backgroundImage = `url(${this.icon}`;
+        this.click = props.click.bind(this.link);
+        this.elem.addEventListener('click', this.click);
+    }    
+}
+
+export class MenuComboBox {
+    constructor(props) {
+        this.link = props.link;
+        this.list = props.list;
+        this.elem = document.createElement("select");
+        this.elem.classList.add('menu-combobox');
+        for (let i = 0; i < this.list.length; i++) {
+            let o = document.createElement("option");
+            o.value = o.text = this.list[i];
+            this.elem.add(o);
+        }
+        // this.change = props.change.bind(this.link);
+        this.elem.addEventListener('change', (e) => {
+            this.selectedOption = e.target.dataset.id;
+            props.change.call(this.link, this.elem.options[this.elem.selectedIndex].value);
+        });
+    }
 }

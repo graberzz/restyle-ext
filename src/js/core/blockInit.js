@@ -46,7 +46,7 @@ const block = {
         const elRect = e.target.getBoundingClientRect();
         const pos = {
             x: elRect.x + window.scrollX,
-            y: elRect.y + window.scrollY,
+            y: elRect.y + window.scrollY - 25,
         };
         editMenu.init(e.target, pos);
     },
