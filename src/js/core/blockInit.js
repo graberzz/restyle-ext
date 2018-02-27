@@ -16,10 +16,8 @@ const block = {
         document.body.removeEventListener("mouseout", this.onMouseOut);
         document.body.removeEventListener("click", this.onMouseClick);
         document.body.removeEventListener("click", this.onLinkClick);  
-        if (this.mouseOverBlock) {
-            this.mouseOverBlock.style.outlineStyle = 'none';
-        }
-        this.currentBlock.outlineStyle = 'none';
+        if (this.mouseOverBlock) this.mouseOverBlock.style.outlineStyle = 'none';
+        if (this.currentBlock)   this.currentBlock.style.outlineStyle = 'none';
         editMenu.deinit();
     },
 

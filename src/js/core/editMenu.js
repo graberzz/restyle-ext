@@ -59,7 +59,8 @@ const editMenu = {
     },
 
     deinit() {
-        if (!this.elem) return;
+        if (!document.body.contains(this.elem)) return;
+
         document.body.removeChild(this.elem);
     },
 
