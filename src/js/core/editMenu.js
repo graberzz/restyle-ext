@@ -8,12 +8,24 @@ const editMenu = {
             new MenuItem({
                 menu: this, 
                 icon: icon,
+                text: 'Delete Block',
                 action: function() {
-                    console.log(this.currentBlock);
-                    this.currentBlock.outerHTML = "";
+                    this.menu.currentBlock.outerHTML = "";
                     document.body.removeChild(this.elem);
                 },
-            })
+            }),
+            new MenuItem({
+                menu: this,
+                text: 'Font Size',
+                icon,
+                action: function() {
+                    
+                },
+                options: [7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 24, 32, 36, 40, 56, 64],
+                onOptionChange(selectedValue) {
+                    this.menu.currentBlock.style.fontSize = selectedValue + 'px';
+                },
+            }),
         ];
         if (!this.elem) {
             this.elem = document.createElement('div');

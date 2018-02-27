@@ -32,7 +32,7 @@ const block = {
     },
 
     onMouseClick(e) {
-        if (e.target.classList.contains("menu-item")){
+        if (e.target.closest('.edit-menu')){
             e.stopPropagation();
             return;
         }
@@ -52,7 +52,7 @@ const block = {
     },
 
     onMouseOver(e) {
-        if (e.target.classList.contains('menu-item') ||
+        if (e.target.closest('.edit-menu') ||
             e.target === this.currentBlock) return;
 
         e.target.style.outlineStyle = "solid";
