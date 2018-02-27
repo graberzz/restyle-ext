@@ -10,6 +10,8 @@ const editMenu = {
                 icon: icon,
                 action: function() {
                     console.log(this.currentBlock);
+                    this.currentBlock.outerHTML = "";
+                    document.body.removeChild(this.elem);
                 },
             })
         ];

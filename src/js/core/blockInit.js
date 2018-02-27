@@ -15,7 +15,7 @@ const block = {
         document.body.removeEventListener("mouseover", this.onMouseOver);
         document.body.removeEventListener("mouseout", this.onMouseOut);
         document.body.removeEventListener("click", this.onMouseClick);
-        document.body.removeEventListener("click", this.onLinkClick);        
+        document.body.removeEventListener("click", this.onLinkClick);  
         if (this.mouseOverBlock) {
             this.mouseOverBlock.style.outlineStyle = 'none';
         }
@@ -24,11 +24,11 @@ const block = {
     },
 
     onLinkClick(e) {
-        if (e.target.tagName == "A")
-        {
+        // if (e.target.tagName == "A")
+        // {
             e.preventDefault();
             e.stopPropagation();
-        }
+        // }
     },
 
     onMouseClick(e) {
@@ -58,12 +58,14 @@ const block = {
         e.target.style.outlineStyle = "solid";
         e.target.style.outlineColor = "red";
         e.target.style.outlineWidth = "2px";
+
         this.mouseOverBlock = e.target;
     },
 
     onMouseOut(e) {
         if (e.target === this.currentBlock) return;
         e.target.style.outlineStyle = "none";
+
         this.mouseOverBlock = null;
     },    
 };
