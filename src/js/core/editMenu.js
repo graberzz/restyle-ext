@@ -6,7 +6,8 @@ const editMenu = {
         this.currentBlock = currentBlock;        
         this.menuItems = [
             new MenuButton({
-                link: this, 
+                link: this,
+                id: 'delete',
                 icon: null,
                 text: 'Delete',
                 click: function () {
@@ -30,7 +31,8 @@ const editMenu = {
                 }
             }),
             new MenuButton({
-                link: this, 
+                link: this,
+                id: 'bold',
                 icon: null,
                 text: '<b>B</b>',
                 click: function () {
@@ -38,7 +40,8 @@ const editMenu = {
                 },
             }),
             new MenuButton({
-                link: this, 
+                link: this,
+                id: 'italic',
                 icon: null,
                 text: '<i>I</i>',
                 click: function () {
@@ -65,8 +68,16 @@ const editMenu = {
 
     setPos(pos) {
         console.log(pos);
-        this.elem.style.left = `${pos.x}px`;
-        this.elem.style.top = `${pos.y}px`;
+        console.log(this.elem);
+        if (pos.x + this.elem.getBoundingClientRect().width > window.innerWidth){
+            this.elem.style.right = '0px';
+            this.elem.style.left = null;
+        }
+        else {
+            this.elem.style.left = `${pos.x}px`;
+            this.elem.style.right = null;
+        }
+        this.elem.style.top = pos.y < 0 ? 0 : `${pos.y}px`;
         this.pos = pos;
     },
 

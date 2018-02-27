@@ -41,3 +41,15 @@
 .menu-button:hover {
     border-color: lightgray;
 }
+
+#delete {
+    margin-right: 10px;
+}
+
+#bold {
+    width: 25px;
+}
+
+#italic {
+    width: 25px;
+}
