@@ -40,6 +40,12 @@ const block = {
         }
         e.target.style.outlineColor = 'orange';
         this.currentBlock = e.target;
+        // NEKITA SDELOI ETO OTDELNOI KNOPKOI V MENU PLZ)))
+        if (e.target.tagName === 'IMG') {
+            e.target.src = prompt('NEW IMG URL:', e.target.src) || e.target.src;
+            return;
+        }
+        // NEKITA SDELOI ETO OTDELNOI KNOPKOI V MENU PLZ)))
 
         const elRect = e.target.getBoundingClientRect();
         const pos = {
