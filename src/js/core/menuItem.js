@@ -8,7 +8,7 @@ export class MenuButton {
         this.elem.innerHTML = props.text;
         this.click = props.click.bind(this.link);
         this.elem.addEventListener('click', this.click);
-    }    
+    }
 }
 
 export class MenuComboBox {
@@ -22,10 +22,26 @@ export class MenuComboBox {
             o.value = o.text = this.list[i];
             this.elem.add(o);
         }
-        // this.change = props.change.bind(this.link);
         this.elem.addEventListener('change', (e) => {
-            this.selectedOption = e.target.dataset.id;
             props.change.call(this.link, this.elem.options[this.elem.selectedIndex].value);
         });
+    }
+}
+
+export class MenuInput {
+    constructor(props) {
+        this.link = props.link;
+        this.id = props.id;
+        this.elem = document.createElement('div');
+        this.elem.id = this.id;
+        this.elemInput = document.createElement('input');
+        this.elemInput.type = props.type;
+        this.elemInput.innerHTML = props.text;
+        this.elemInput.addEventListener('change', (e) => {
+            props.change.call(this.link, this.elemInput.value);
+        });
+        this.elem.appendChild(this.elemInput);
+        // this.click = props.click.bind(this.link);
+        // this.elem.addEventListener('click', this.click);
     }
 }

@@ -1,4 +1,4 @@
-import { MenuButton, MenuComboBox } from "./menuItem";
+import { MenuButton, MenuComboBox, MenuInput } from "./menuItem";
 import icon from '../../img/icons/cancel.png';
 
 const editMenu = {
@@ -44,6 +44,24 @@ const editMenu = {
                 click: function () {
                     this.currentBlock.style.fontStyle = this.currentBlock.style.fontStyle != "italic" ? "italic" : "normal";
                 },
+            }),
+            new MenuInput({
+                link: this,
+                id: 'color',
+                type: 'color',
+                text: '',
+                change: function (value) {
+                    this.currentBlock.style.color = value;
+                }
+            }),
+            new MenuInput({
+                link: this,
+                id: 'background',
+                type: 'color',
+                text: '',
+                change: function (value) {
+                    this.currentBlock.style.backgroundColor = value;
+                }
             }),
         ];
         if (!this.elem) {
