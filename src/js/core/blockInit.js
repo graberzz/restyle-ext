@@ -52,7 +52,7 @@ const block = {
             x: elRect.x + window.scrollX,
             y: elRect.y + window.scrollY - 25,
         };
-        editMenu.init(e.target, pos);
+        editMenu.init(e.target, pos, this);
     },
 
     onMouseOver(e) {

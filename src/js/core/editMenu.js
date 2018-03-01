@@ -2,8 +2,9 @@ import { MenuButton, MenuComboBox, MenuInput } from "./menuItem";
 import icon from '../../img/icons/cancel.png';
 
 const editMenu = {
-    init(currentBlock, pos) {
-        this.currentBlock = currentBlock;        
+    init(currentBlock, pos, blockInit) {
+        this.currentBlock = currentBlock;
+        this.blockInit = blockInit;        
         this.menuItems = [
             new MenuButton({
                 link: this,
@@ -62,6 +63,15 @@ const editMenu = {
                 change: function (value) {
                     this.currentBlock.style.backgroundColor = value;
                 }
+            }),
+            new MenuButton({
+                link: this,
+                id: 'save-btn',
+                text: 'Save as HTML',
+                click() {
+                    this.blockInit.dehighlight();
+                    chrome.runtime.sendMessage({mes: 'saveHTML_action' });
+                },
             }),
         ];
         if (!this.elem) {

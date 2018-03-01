@@ -22,8 +22,21 @@ chrome.tabs.query(
         });
 
         chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) { 
-            if (req.mes === 'keyboard') {
-                switchMode(sender.tab);
+            switch (req.mes) {
+                case 'keyboard':
+                    switchMode(sender.tab);
+                    break;
+                case 'saveHTML_action':
+                    chrome.pageCapture.saveAsMHTML({
+                        tabId: sender.tab.id
+                    }, function(blob) {
+                        var url = URL.createObjectURL(blob);
+                        chrome.downloads.download({
+                            url,
+                            filename: 'page.mhtml'
+                        });
+                    });
+                    break;
             }
         });
 
