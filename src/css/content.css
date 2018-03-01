@@ -100,3 +100,8 @@
     box-sizing: border-box;
     padding: 0;
 }
+#itcanvas {    
+    position: absolute;
+    z-index: 1336;
+    cursor: default;
+}

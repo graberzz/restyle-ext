@@ -2,6 +2,7 @@ import { MenuButton, MenuComboBox, MenuInput } from "./menuItem";
 import icon from '../../img/icons/cancel.png';
 import domtoimage from 'dom-to-image';
 import fileSaver from 'file-saver';
+import drawing from "./pageDrawing";
 
 const editMenu = {
     init(currentBlock, pos, blockInit) {
@@ -88,6 +89,33 @@ const editMenu = {
                         });
                 },
             }), 
+            new MenuButton({
+                link: this,
+                id: 'page-drawing',
+                text: 'Page Drawing',
+                click: function () {
+                    if (!drawing.isInit()){
+                        drawing.init(document.body, document.body.offsetWidth, document.body.offsetHeight);
+                        alert('Drawing on page is avalable. Press on button again for disabling');
+                        // Ayaz, pochemu ya ne mogu tut menyat peremennie menu itema?
+                        this.text = 'Stop Page Drawing';
+                        this.setPos({
+                            x: 0,
+                            y: 0,
+                        });
+                    }
+                    else
+                    {
+                        drawing.deinit();
+                        this.text = 'Start Page Drawing';
+                        // this.setPos(pos);
+                        // this.setPos({
+                        //     x: this.currentBlock.getBoundingClientRect().x + window.scrollX,
+                        //     y: this.currentBlock.getBoundingClientRect().y + window.scrollY - 25,
+                        // });
+                    }
+                },
+            }),
         ];
         if (!this.elem) {
             this.elem = document.createElement('div');
