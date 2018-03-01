@@ -1,5 +1,7 @@
 import { MenuButton, MenuComboBox, MenuInput } from "./menuItem";
 import icon from '../../img/icons/cancel.png';
+import domtoimage from 'dom-to-image';
+import fileSaver from 'file-saver';
 
 const editMenu = {
     init(currentBlock, pos, blockInit) {
@@ -73,6 +75,19 @@ const editMenu = {
                     chrome.runtime.sendMessage({mes: 'saveHTML_action' });
                 },
             }),
+            new MenuButton({
+                link: this,
+                id: 'save-screen',
+                text: 'Save as PNG',
+                click() {
+                    const block = this.currentBlock;
+                    this.blockInit.dehighlight();
+                    domtoimage.toBlob(block)
+                        .then(function (blob) {
+                            fileSaver.saveAs(blob, 'my-node.png');
+                        });
+                },
+            }), 
         ];
         if (!this.elem) {
             this.elem = document.createElement('div');
