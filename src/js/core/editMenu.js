@@ -93,9 +93,17 @@ const editMenu = {
                 link: this,
                 id: 'page-drawing',
                 text: 'Page Drawing',
-                click: function () {
+                click: function () {                    
+                    let body = document.body,
+                        html = document.documentElement;
+
+                    let height = Math.max( body.scrollHeight, body.offsetHeight, 
+                                           html.clientHeight, html.scrollHeight, html.offsetHeight );
+                    let width = Math.max( body.scrollWidth, body.offsetWidth, 
+                                           html.clientWidth, html.scrollWidth, html.offsetWidth );
+
                     if (!drawing.isInit()){
-                        drawing.init(document.body, document.body.offsetWidth, document.body.offsetHeight);
+                        drawing.init(document.body, width, height);
                         alert('Drawing on page is avalable. Press on button again for disabling');
                         // Ayaz, pochemu ya ne mogu tut menyat peremennie menu itema?
                         this.text = 'Stop Page Drawing';
