@@ -25,6 +25,10 @@ export class MenuComboBox {
         this.elem.addEventListener('change', (e) => {
             props.change.call(this.link, this.elem.options[this.elem.selectedIndex].value);
         });
+        if(props.setInitialValue) {
+            this.setInitialValue = props.setInitialValue.bind(this, this.link.currentBlock, this.elem);
+        }
+     
     }
 }
 
@@ -36,11 +40,15 @@ export class MenuInput {
         this.elem.id = this.id;
         this.elemInput = document.createElement('input');
         this.elemInput.type = props.type;
+        this.elemInput.id = 'keke';
         this.elemInput.innerHTML = props.text;
         this.elemInput.addEventListener('change', (e) => {
             props.change.call(this.link, this.elemInput.value);
         });
-        this.elem.appendChild(this.elemInput);
+        if(props.setInitialValue) {
+            this.setInitialValue = props.setInitialValue.bind(this, this.link.currentBlock, this.elemInput);
+        }
+            this.elem.appendChild(this.elemInput);
         // this.click = props.click.bind(this.link);
         // this.elem.addEventListener('click', this.click);
     }

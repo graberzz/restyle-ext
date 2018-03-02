@@ -3,6 +3,7 @@ import icon from '../../img/icons/cancel.png';
 import domtoimage from 'dom-to-image';
 import fileSaver from 'file-saver';
 import drawing from "./pageDrawing";
+import { colorToHex, styleInPage } from './utils';
 
 const editMenu = {
     init(currentBlock, pos, blockInit) {
@@ -14,24 +15,33 @@ const editMenu = {
                 id: 'delete',
                 text: 'Delete',
                 click: function () {
-                    console.log(this.currentBlock);
                     this.currentBlock.outerHTML = "";
                     document.body.removeChild(this.elem);
                 },
             }),
             new MenuComboBox({
                 link: this,
-                list: ["Arial", "Times New Roman", "Consolas", "Comic Sans MS"],
+                list: ["Arial", "Times New Roman", "Consolas", "Comic Sans MS", ...styleInPage('fontFamily').map(font => font.split(',')[0].replace(/"/g, ''))],
                 change: function (selectedValue) {
                     this.currentBlock.style.fontFamily = selectedValue;
-                }
+                },
+                setInitialValue(block, elem) {
+                    const initFont = getComputedStyle(block).getPropertyValue('font-family').split(',')[0].replace(/"/g, '');
+                    elem.options.selectedIndex = [...elem.options].map(opt => opt.text).indexOf(initFont);
+                },
             }),
-            new MenuComboBox({
+            new MenuInput({
                 link: this,
-                list: [8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 24, 26, 28, 36, 48, 72],
-                change: function (selectedValue) {
+                type: 'number',
+                change(selectedValue) {
+                    console.log(selectedValue);
                     this.currentBlock.style.fontSize = selectedValue + 'px';
-                }
+                },
+                setInitialValue(block, elem) {
+                    elem.min = 0;
+                    const initFontSize = getComputedStyle(block).getPropertyValue('font-size');
+                    elem.value = parseInt(initFontSize);
+                },
             }),
             new MenuButton({
                 link: this,
@@ -56,7 +66,11 @@ const editMenu = {
                 text: '',
                 change: function (value) {
                     this.currentBlock.style.color = value;
-                }
+                },
+                setInitialValue(block, elem) {
+                    const initColor = colorToHex(getComputedStyle(block).getPropertyValue('color'));
+                    elem.value = initColor;
+                },
             }),
             new MenuInput({
                 link: this,
@@ -65,7 +79,11 @@ const editMenu = {
                 text: '',
                 change: function (value) {
                     this.currentBlock.style.backgroundColor = value;
-                }
+                },
+                setInitialValue(block, elem) {
+                    const initColor = colorToHex(getComputedStyle(block).getPropertyValue('background-color'));
+                    elem.value = initColor;
+                },
             }),
             new MenuButton({
                 link: this,
@@ -125,13 +143,14 @@ const editMenu = {
                 },
             }),
         ];
-        if (!this.elem) {
-            this.elem = document.createElement('div');
-            this.elem.classList.add('edit-menu');
-            this.elem.setAttribute("contenteditable", false);
-            for (let menuItem of this.menuItems) {
-                this.elem.appendChild(menuItem.elem);   
+        this.elem = document.createElement('div');
+        this.elem.classList.add('edit-menu');
+        this.elem.setAttribute("contenteditable", false);
+        for (let menuItem of this.menuItems) {
+            if (menuItem.setInitialValue) {
+                menuItem.setInitialValue();
             }
+            this.elem.appendChild(menuItem.elem);   
         }
         document.body.appendChild(this.elem);
         this.setPos(pos);
@@ -141,11 +160,10 @@ const editMenu = {
         if (!document.body.contains(this.elem)) return;
 
         document.body.removeChild(this.elem);
+        this.elem = null;
     },
 
     setPos(pos) {
-        console.log(pos);
-        console.log(this.elem);
         if (pos.x + this.elem.getBoundingClientRect().width > window.innerWidth){
             this.elem.style.right = '0px';
             this.elem.style.left = null;

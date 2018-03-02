@@ -22,7 +22,7 @@ const block = {
     },
 
     onLinkClick(e) {
-        if (e.target.tagName == "A" || e.target.tagName == "BUTTON")
+        if (!e.target.closest('.edit-menu'))
         {
             e.preventDefault();
             e.stopPropagation();
@@ -52,6 +52,7 @@ const block = {
             x: elRect.x + window.scrollX,
             y: elRect.y + window.scrollY - 25,
         };
+        editMenu.deinit();
         editMenu.init(e.target, pos, this);
     },
 
