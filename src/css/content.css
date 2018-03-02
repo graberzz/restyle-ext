@@ -1,8 +1,9 @@
 .edit-menu {
     position: absolute;
     /*box-shadow: 0 0 10px rgba(0,0,0,.7);*/
-    z-index: 1337;
-    display: flex;
+    z-index: 10000;
+    /*display: flex;*/
+    display: inline-block;
 }
 
 .menu-item{
@@ -102,7 +103,10 @@
 }
 #itcanvas {    
     position: absolute;
-    z-index: 1336;
+    z-index: 9999;
     cursor: default;
     background: #fff0;
+}
+.item-group {
+    display: flex;
 }
