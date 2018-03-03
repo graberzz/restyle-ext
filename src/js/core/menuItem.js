@@ -40,8 +40,17 @@ export class MenuInput {
         this.elem.id = this.id;
         this.elemInput = document.createElement('input');
         this.elemInput.type = props.type;
-        this.elemInput.id = 'keke';
         this.elemInput.innerHTML = props.text;
+        this.list = props.list || null;
+        if (this.list) {
+            const dl = document.createElement('datalist');
+            dl.id = this.id + '_ds';
+            for(let i of this.list) {
+                dl.appendChild(new Option(i));
+            }
+            this.elemInput.setAttribute('list', dl.id);
+            this.elem.appendChild(dl);
+        }
         this.elemInput.addEventListener('change', (e) => {
             props.change.call(this.link, this.elemInput.value);
         });

@@ -20,7 +20,7 @@ const editMenu = {
             new MenuItemGroup(this.elem, [
                 new MenuComboBox({
                     link: this,
-                    list: ["Arial", "Times New Roman", "Consolas", "Comic Sans MS", ...styleInPage('fontFamily').map(font => font.split(',')[0].replace(/"/g, ''))],
+                    list: Array.from(new Set(["Arial", "Times New Roman", "Consolas", "Comic Sans MS", ...styleInPage('fontFamily').map(font => font.split(',')[0].replace(/"/g, ''))])),
                     change: function (selectedValue) {
                         this.currentBlock.style.fontFamily = selectedValue;
                     },
@@ -29,15 +29,29 @@ const editMenu = {
                         elem.options.selectedIndex = [...elem.options].map(opt => opt.text).indexOf(initFont);
                     },
                 }),
+                new MenuComboBox({
+                    link: this,
+                    list: ['center', 'justify', 'left', 'right'],
+                    change(selectedValue) {
+                        this.currentBlock.style.textAlign = selectedValue;
+                    },
+                    setInitialValue(block, elem) {
+                        const initAlign = getComputedStyle(block).getPropertyValue('text-align');
+                        elem.options.selectedIndex = [...elem.options].map(opt => opt.text).indexOf(initAlign);
+                    }
+                }),
                 new MenuInput({
                     link: this,
                     type: 'number',
+                    id: 'font-size',
+                    list: [4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 46, 58, 72],
                     change(selectedValue) {
                         console.log(selectedValue);
                         this.currentBlock.style.fontSize = selectedValue + 'px';
                     },
                     setInitialValue(block, elem) {
                         elem.min = 0;
+                        alert('1');
                         const initFontSize = getComputedStyle(block).getPropertyValue('font-size');
                         elem.value = parseInt(initFontSize);
                     },

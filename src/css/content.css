@@ -110,3 +110,7 @@
 .item-group {
     display: flex;
 }
+
+#font-size input {
+    width: 60px;
+}
