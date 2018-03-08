@@ -46,12 +46,10 @@ const editMenu = {
                     id: 'font-size',
                     list: [4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 46, 58, 72],
                     change(selectedValue) {
-                        console.log(selectedValue);
                         this.currentBlock.style.fontSize = selectedValue + 'px';
                     },
                     setInitialValue(block, elem) {
                         elem.min = 0;
-                        alert('1');
                         const initFontSize = getComputedStyle(block).getPropertyValue('font-size');
                         elem.value = parseInt(initFontSize);
                     },
@@ -200,10 +198,8 @@ const editMenu = {
             }),
 
         ];
+
         for (let menuItem of this.menuItems) {
-            if (menuItem.setInitialValue) {
-                menuItem.setInitialValue();
-            }
             this.elem.appendChild(menuItem.elem);   
         }
         document.body.appendChild(this.elem);

@@ -113,4 +113,8 @@
 
 #font-size input {
     width: 60px;
+    height: 25px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }

@@ -5,6 +5,9 @@ export default class MenuItemGroup {
         this.elem = document.createElement('div');
         this.elem.classList.add('item-group');
         for (let i = 0; i < list.length; i++) {
+            if (list[i].setInitialValue) {
+                list[i].setInitialValue();
+            }
             this.elem.appendChild(list[i].elem);
         }
     }
