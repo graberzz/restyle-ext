@@ -1,10 +1,12 @@
 {
   "presets": [
-    "react"
+    "react",
+    "env"
   ],
   "env": {
     "development": {
       "presets":["react-hmre"]
     }
-  }
+  },
+  "plugins": ["transform-class-properties"]
 }

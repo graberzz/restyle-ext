@@ -1,12 +1,9 @@
 import { setStyle } from './utils';
 
-const NodeSelector = (onSelect) => {
-
+const NodeSelector = (onSelect, except) => {
 	const nodeSelector = {
 		selectedNode: null,
-		
-		enabled: false,
-		
+				
 		hoverStyle: {
 			outlineStyle: 'solid',
 			outlineColor: 'red',
@@ -18,9 +15,7 @@ const NodeSelector = (onSelect) => {
 		},
 
 		enable() {
-			this.enabled = true;
 			this.selectedNode = null;
-			console.log('kek');
 	        document.body.addEventListener("mouseout", this._onMouseOut);
 			document.body.addEventListener("mouseover", this._onMouseOver);
 	        document.body.addEventListener("click", this._onMouseClick);
@@ -41,9 +36,14 @@ const NodeSelector = (onSelect) => {
 	        document.body.removeEventListener("click", this._onMouseClick);
 		},
 
+		_validNode(node) {
+			return node !== this.selectedNode       &&
+				   !node.classList.contains(except) &&
+				   !node.closest(`.${except}`);
+		},
+
 		_onMouseOut(e) {
-			if (!this.enabled ||
-				e.target === this.selectedNode) return;
+			if (!this._validNode(e.target)) return;
 
 			setStyle(e.target, {
 				outline: ''
@@ -51,14 +51,14 @@ const NodeSelector = (onSelect) => {
 		},
 
 		_onMouseOver(e) {
-			if (!this.enabled ||
-				e.target === this.selectedNode) return;
+			if (!this._validNode(e.target)) return;
 
 			setStyle(e.target, this.hoverStyle);
 		},
 
 		_onMouseClick(e) {
-			if (e.target === this.selectedNode) return;
+			if (!this._validNode(e.target)) return;
+
 			e.preventDefault();
 			if (this.selectedNode) {
 				setStyle(this.selectedNode, {

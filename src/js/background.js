@@ -31,7 +31,7 @@ const init = ([currentTab]) => {
 
     const onMessage = ({msg}, {tab}) => {
         switch (msg) {
-            case messages.KEYBOARD_TOGGLE:
+            case messages.EDIT_MODE_TOGGLE:
                 toggleEditMode(tab.id);
             break;
         }

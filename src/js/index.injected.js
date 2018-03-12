@@ -1,17 +1,19 @@
-import Mounter from './Menu';
+import { render } from 'react-dom';
 import React from 'react';
+import Mounter from './mounter';
 import NodeSelector from './nodeSelector';
+import Root from './components';
+import CSS from './cssParser';
 import { messages } from './utils';
 import '../css/injected.css';
 
 const SHORTCUT = 'KeyQ';
-;
 
 const onNodeSelect = node => {
-	Mounter.mount(node, <h1>Hello, WORLD!</h1>);
+	Mounter.mount(node, <Root node={node}/>);
 }
 
-const nodeSelector = NodeSelector(onNodeSelect);
+const nodeSelector = NodeSelector(onNodeSelect, 'editpage__menu');
 
 chrome.runtime.onMessage.addListener(({msg}) => {
     switch(msg) {

@@ -1,5 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500&subset=cyrillic');
+
 .editpage__wrap {
 	position: absolute;
 	top: 0;
 	left: 0;
+	max-width: 400px;
+	max-height: 50px;
 }
+
+.editpage__menuitem {
+	display: flex;
+	align-items: center;
+}
+
+.editpage__tabGroupIcon {
+	margin-right: 10px;
+}
+
