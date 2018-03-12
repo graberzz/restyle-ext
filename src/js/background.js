@@ -1,54 +1,57 @@
-chrome.tabs.query(
-    {currentWindow: true, active : true},
-    function(tabArray) {
-        let activeTab = tabArray[0].id;
-        console.log(activeTab);
+import { messages } from './utils';
 
-        let editModeActive = false;
-        function switchMode(tab) {
-            editModeActive = !editModeActive;
+const icons = {
+    default: 'img/icon-34.png',
+    active: 'img/icon-34-active.png'
+};
 
-            if (editModeActive) {
-                chrome.tabs.sendMessage(tab.id, {text: 'activate'});
-                chrome.browserAction.setIcon({path: 'icon-34-active.png'});
-            } else {
-                chrome.tabs.sendMessage(tab.id, {text: 'deactivate'});
-                chrome.browserAction.setIcon({path: 'icon-34.png'});
-            } 
-        }
+const setIcon = icon => chrome.browserAction.setIcon({path: icon});
+const sendMsg = (tabId, msg) => chrome.tabs.sendMessage(tabId, {msg});
 
-        chrome.browserAction.onClicked.addListener(function (tab) {   
-            switchMode(tab);
-        });
+const init = ([currentTab]) => {
+    let activeTabId = currentTab.id,
+        editMode = false;
 
-        chrome.runtime.onMessage.addListener(function(req, sender, sendResponse) { 
-            switch (req.mes) {
-                case 'keyboard':
-                    switchMode(sender.tab);
-                    break;
-                case 'saveHTML_action':
-                    chrome.pageCapture.saveAsMHTML({
-                        tabId: sender.tab.id
-                    }, function(blob) {
-                        var url = URL.createObjectURL(blob);
-                        chrome.downloads.download({
-                            url,
-                            filename: 'page.mhtml'
-                        });
-                    });
-                    break;
-            }
-        });
+    const toggleEditMode = tabId => {
+        editMode = !editMode;
+        
+        const icon = editMode ?
+                     icons.active :
+                     icons.default;
 
-        chrome.tabs.onActivated.addListener(function(newTab) {
-            console.log(`OLD TAB: ${activeTab}   ||| NEW TAB: ${newTab.tabId}`)
-            if (editModeActive) {
-                chrome.tabs.sendMessage(activeTab, {text: 'deactivate'});
-                chrome.browserAction.setIcon({path: 'icon-34.png'});
-                editModeActive = false;
-            }
+        const msg = editMode ?
+                    messages.EDIT_MODE_ON :
+                    messages.EDIT_MODE_OFF;
 
-            activeTab = newTab.tabId;
-        });
+        sendMsg(tabId, msg);
+        setIcon(icon);
     }
-  )
+
+    const onIconClick = ({id}) => toggleEditMode(id);
+
+    const onMessage = ({msg}, {tab}) => {
+        switch (msg) {
+            case messages.KEYBOARD_TOGGLE:
+                toggleEditMode(tab.id);
+            break;
+        }
+    }
+
+    const onTabSwitch = newTab => {
+        if (editMode) {
+            toggleEditMode(activeTabId);
+        }
+        activeTabId = newTab.id;
+    }
+
+    chrome.browserAction.onClicked.addListener(onIconClick);
+    chrome.runtime.onMessage.addListener(onMessage);
+    chrome.tabs.onActivated.addListener(onTabSwitch);
+}
+
+chrome.tabs.query(
+    {
+        currentWindow: true,
+        active : true
+    },
+    init);
