@@ -1,4 +1,4 @@
-import { setStyle } from './utils';
+import { setStyle, OUTLINE_WIDTH } from './utils';
 
 const NodeSelector = (onSelect, except) => {
 	const nodeSelector = {
@@ -7,7 +7,7 @@ const NodeSelector = (onSelect, except) => {
 		hoverStyle: {
 			outlineStyle: 'solid',
 			outlineColor: 'red',
-			outlineWidth: '2px',
+			outlineWidth: OUTLINE_WIDTH + 'px',
 		},
 		
 		selectedStyle: {

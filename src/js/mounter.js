@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { setStyle } from './utils';
+import { OUTLINE_WIDTH } from './utils';
 
 const Mounter = {
 	wrap: document.createElement('div'),
@@ -18,6 +19,16 @@ const Mounter = {
 
 		document.body.appendChild(this.wrap);
 		ReactDOM.render(component, this.wrap);
+
+        if (nodeRect.x + this.wrap.getBoundingClientRect().width > window.innerWidth){
+            this.wrap.style.right = '0px';
+            this.wrap.style.left = null;
+        }
+        else {
+            this.wrap.style.left = `${nodeRect.x}px`;
+            this.wrap.style.right = null;
+        }
+        this.wrap.style.top = nodeRect.y + nodeRect.height + OUTLINE_WIDTH + 'px';
 	},
 
 	unmount() {
