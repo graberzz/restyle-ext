@@ -1,7 +1,7 @@
 import React from 'react';
 import ToggleButton from '../BasicInputs/ToggleButton';
 import FormatBold from 'material-ui-icons/FormatBold';
-import { setStyle, getDefaultStyle } from '../../utils';
+import { setStyle, getDefaultStyle } from '../../helpers/utils';
 
 export default class BoldToggle extends React.Component {
     state = {

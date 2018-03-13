@@ -1,24 +1,29 @@
 import { setStyle, OUTLINE_WIDTH } from './utils';
 
-const NodeSelector = (onSelect, except) => {
+const defaultHoverStyle = {
+	outlineStyle: 'solid',
+	outlineColor: 'red',
+	outlineWidth: OUTLINE_WIDTH + 'px',
+};
+
+const defaultSelectedStyle = {
+	outlineColor: 'orange',
+};
+
+const NodeSelector = ({onSelect,
+					   except,
+					   root,
+					   hoverStyle = defaultHoverStyle,
+					   selectedStyle = defaultSelectedStyle}) => {
+
 	const nodeSelector = {
 		selectedNode: null,
 				
-		hoverStyle: {
-			outlineStyle: 'solid',
-			outlineColor: 'red',
-			outlineWidth: OUTLINE_WIDTH + 'px',
-		},
-		
-		selectedStyle: {
-			outlineColor: 'orange',
-		},
-
 		enable() {
 			this.selectedNode = null;
-	        document.body.addEventListener("mouseout", this._onMouseOut);
-			document.body.addEventListener("mouseover", this._onMouseOver);
-	        document.body.addEventListener("click", this._onMouseClick);
+	        root.addEventListener("mouseout", this._onMouseOut);
+			root.addEventListener("mouseover", this._onMouseOver);
+	        root.addEventListener("click", this._onMouseClick);
 		},
 
 		disable() {
@@ -31,15 +36,14 @@ const NodeSelector = (onSelect, except) => {
 			this.enabled = false;
 			this.selectedNode = null;
 
-	        document.body.removeEventListener("mouseout", this._onMouseOut);
-			document.body.removeEventListener("mouseover", this._onMouseOver);
-	        document.body.removeEventListener("click", this._onMouseClick);
+	        root.removeEventListener("mouseout", this._onMouseOut);
+			root.removeEventListener("mouseover", this._onMouseOver);
+	        root.removeEventListener("click", this._onMouseClick);
 		},
 
 		_validNode(node) {
-			return node !== this.selectedNode       &&
-				   !node.classList.contains(except) &&
-				   !node.closest(`.${except}`);
+			return node !== this.selectedNode &&
+				   !except(node);;
 		},
 
 		_onMouseOut(e) {
@@ -53,7 +57,7 @@ const NodeSelector = (onSelect, except) => {
 		_onMouseOver(e) {
 			if (!this._validNode(e.target)) return;
 
-			setStyle(e.target, this.hoverStyle);
+			setStyle(e.target, hoverStyle);
 		},
 
 		_onMouseClick(e) {
@@ -68,8 +72,8 @@ const NodeSelector = (onSelect, except) => {
 			this.selectedNode = e.target;
 
 			setStyle(this.selectedNode, Object.assign({},
-													  this.hoverStyle,
-													  this.selectedStyle));
+													  hoverStyle,
+													  selectedStyle));
 
 			onSelect(this.selectedNode);
 		},

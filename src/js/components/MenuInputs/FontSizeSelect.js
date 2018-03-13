@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from '../BasicInputs/Select';
-import { getDefaultStyle, setStyle } from '../../utils';
+import { getDefaultStyle, setStyle } from '../../helpers/utils';
 
 export default class FontSizeSelect extends React.Component {
   state = {

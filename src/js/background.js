@@ -1,4 +1,4 @@
-import { messages } from './utils';
+import { messages } from './helpers/utils';
 
 const icons = {
     default: 'img/icon-34.png',

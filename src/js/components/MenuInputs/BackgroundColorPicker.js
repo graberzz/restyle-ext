@@ -1,5 +1,5 @@
 import React from 'react';
-import { getDefaultStyle, setStyle } from '../../utils';
+import { getDefaultStyle, setStyle } from '../../helpers/utils';
 import { SketchPicker } from 'react-color';
 import ToggleButton from '../BasicInputs/ToggleButton';
 import FormatColorFill from 'material-ui-icons/FormatColorFill';

@@ -1,7 +1,7 @@
 import React from 'react';
 import ToggleButton from '../BasicInputs/ToggleButton';
 import FormatItalic from 'material-ui-icons/FormatItalic';
-import { setStyle, getDefaultStyle } from '../../utils';
+import { setStyle, getDefaultStyle } from '../../helpers/utils';
 
 export default class ItalicToggle extends React.Component {
     state = {

@@ -3,6 +3,21 @@ import ReactDOM from 'react-dom';
 import { setStyle } from './utils';
 import { OUTLINE_WIDTH } from './utils';
 
+const setPosition = (nodeToPos, relatedNode) => {
+	const relatedNodeRect = relatedNode.getBoundingClientRect();
+
+	if (relatedNodeRect.x + nodeToPos.getBoundingClientRect().width > window.innerWidth){
+		nodeToPos.style.right = '0px';
+		nodeToPos.style.left = null;
+	}
+	else {
+		nodeToPos.style.left = `${relatedNodeRect.x}px`;
+		nodeToPos.style.right = null;
+	}
+
+	nodeToPos.style.top = relatedNodeRect.y + relatedNodeRect.height + OUTLINE_WIDTH + 'px';
+}
+
 const Mounter = {
 	wrap: document.createElement('div'),
 	component: null,
@@ -10,25 +25,11 @@ const Mounter = {
 	mount(node, component) {
 		this.unmount();
 		this.wrap.className = 'editpage__wrap';
-		const nodeRect = node.getBoundingClientRect();
 		
-		setStyle(this.wrap, {
-			left: nodeRect.x + window.scrollX + 'px',
-			top: nodeRect.y + window.scrollY + 'px'
-		});
-
 		document.body.appendChild(this.wrap);
 		ReactDOM.render(component, this.wrap);
 
-        if (nodeRect.x + this.wrap.getBoundingClientRect().width > window.innerWidth){
-            this.wrap.style.right = '0px';
-            this.wrap.style.left = null;
-        }
-        else {
-            this.wrap.style.left = `${nodeRect.x}px`;
-            this.wrap.style.right = null;
-        }
-        this.wrap.style.top = nodeRect.y + nodeRect.height + OUTLINE_WIDTH + 'px';
+		setPosition(this.wrap, node);
 	},
 
 	unmount() {

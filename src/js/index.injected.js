@@ -1,10 +1,9 @@
 import { render } from 'react-dom';
 import React from 'react';
-import Mounter from './mounter';
-import NodeSelector from './nodeSelector';
+import Mounter from './helpers/mounter';
+import NodeSelector from './helpers/nodeSelector';
 import Root from './components';
-import CSS from './cssParser';
-import { messages } from './utils';
+import { messages } from './helpers/utils';
 import '../css/injected.css';
 
 const SHORTCUT = 'KeyQ';
@@ -13,7 +12,12 @@ const onNodeSelect = node => {
 	Mounter.mount(node, <Root node={node}/>);
 }
 
-const nodeSelector = NodeSelector(onNodeSelect, 'editpage__menu');
+const nodeSelector = NodeSelector({
+	onSelect: onNodeSelect, 
+	root: document.body, 
+	except: node => node.closest('.editpage__wrap') ||
+					node.classList.contains('editpage__wrap')
+});
 
 chrome.runtime.onMessage.addListener(({msg}) => {
     switch(msg) {
