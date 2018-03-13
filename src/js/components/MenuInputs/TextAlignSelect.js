@@ -28,6 +28,7 @@ export default class TextAlignSelect extends React.Component {
         options={options}
         value={value}
         onChange={this.onChange}
+        text="Align"
       />
     )
   }

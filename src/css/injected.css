@@ -17,3 +17,14 @@
 	margin-right: 10px;
 }
 
+.editpage__toggleBtn--off {
+	opacity: .6;
+}
+
+.editpage__inlineMenuItems {
+	display: flex;
+}
+
+.editpage__colorpicker {
+	position: absolute;
+}

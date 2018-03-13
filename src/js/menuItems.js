@@ -1,18 +1,28 @@
 import React from 'react';
 import TextAlignSelect from './components/MenuInputs/TextAlignSelect';
-import TextFormat from 'material-ui-icons/TextFormat';
+import TextFields from 'material-ui-icons/TextFields';
 import FormatAlignLeft from 'material-ui-icons/FormatAlignLeft';
+import BoldToggle from './components/MenuInputs/BoldToggle';
+import ItalicToggle from './components/MenuInputs/ItalicToggle';
+import TextColorPicker from './components/MenuInputs/TextColorPicker';
 
 const menuItems = (node) => ([
     {
-        icon: <TextFormat />,
+        icon: <TextFields />,
         text: 'text',
         components: [
             {
-                text: 'text Align',
-                icon: <FormatAlignLeft />,
-                component: <TextAlignSelect node={node}/>
-            }
+                component: <TextAlignSelect node={node} />
+            },
+            {
+                component: <BoldToggle node={node} />
+            },
+            {
+                component: <ItalicToggle node={node} />
+            },
+            {
+                component: <TextColorPicker node={node} />
+            },
         ]
     }
 ]);
