@@ -12,12 +12,12 @@ const onNodeSelect = node => {
 	Mounter.mount(node, <Root node={node}/>);
 }
 
-const nodeSelector = NodeSelector({
-	onSelect: onNodeSelect, 
-	root: document.body, 
-	except: node => node.closest('.editpage__wrap') ||
-					node.classList.contains('editpage__wrap')
-});
+
+const nodeSelector = NodeSelector(document.body,
+								  onNodeSelect,  
+								  node => node.closest('.editpage__wrap') ||
+									      node.classList.contains('editpage__wrap')
+);
 
 chrome.runtime.onMessage.addListener(({msg}) => {
     switch(msg) {

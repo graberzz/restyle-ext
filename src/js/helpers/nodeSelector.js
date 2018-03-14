@@ -10,11 +10,22 @@ const defaultSelectedStyle = {
 	outlineColor: 'orange',
 };
 
-const NodeSelector = ({onSelect,
-					   except,
-					   root,
-					   hoverStyle = defaultHoverStyle,
-					   selectedStyle = defaultSelectedStyle}) => {
+
+/**
+ * DOM nodes interactive selection.
+ * @param {DOMElement} root - DOM element that contains all the nodes to select.
+ * @param {function=} onSelect - Callback, fires with selectedNode argument when a node has been selected.
+ * @param {function=} except - Predicate, must return true if provided element is not selectable.
+ * @param {object=} hoverStyle - Style that applies to the hovered node.
+ * @param {object=} selectedStyle - Style that applies to the selected node.
+ * @return {object} NodeSelector
+ */
+
+const NodeSelector = (root,
+					  onSelect = _ => _,
+					  except = _ => false,
+					  hoverStyle = defaultHoverStyle,
+					  selectedStyle = defaultSelectedStyle) => {
 
 	const nodeSelector = {
 		selectedNode: null,
