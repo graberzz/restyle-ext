@@ -7,7 +7,8 @@ const setPosition = (nodeToPos, relatedNode) => {
 	const relatedNodeRect = relatedNode.getBoundingClientRect();
 	const nodeToPosRect = nodeToPos.getBoundingClientRect();
 
-	if (relatedNodeRect.x + nodeToPosRect.width > window.innerWidth){
+	if (relatedNodeRect.x + nodeToPosRect.width > window.innerWidth)
+	{
 		nodeToPos.style.right = '0px';
 		nodeToPos.style.left = null;
 	}
@@ -17,18 +18,21 @@ const setPosition = (nodeToPos, relatedNode) => {
 	}
 
 	const relatedNodeOffsetY = relatedNodeRect.top + window.scrollY
+	const relatedNodeOffsetYHeight = relatedNodeOffsetY + relatedNodeRect.height
 
 	const pageHeight = Math.max( document.body.scrollHeight, 
 								 document.body.offsetHeight, 
 						   		 document.documentElement.clientHeight, 
 						   		 document.documentElement.scrollHeight, 
 						   		 document.documentElement.offsetHeight );
-	
-	if (relatedNodeOffsetY + relatedNodeRect.height + nodeToPosRect.height > pageHeight) {
+
+	if (relatedNodeOffsetYHeight + nodeToPosRect.height > pageHeight || 
+		relatedNodeOffsetYHeight > window.innerHeight + window.scrollY) 
+	{
 		nodeToPos.style.top = relatedNodeOffsetY - nodeToPosRect.height - OUTLINE_WIDTH + 'px';
 	}
 	else {
-		nodeToPos.style.top = relatedNodeOffsetY + relatedNodeRect.height + OUTLINE_WIDTH + 'px';
+		nodeToPos.style.top = relatedNodeOffsetYHeight + OUTLINE_WIDTH + 'px';
 	}
 }
 
