@@ -29,6 +29,7 @@ const NodeSelector = (root,
 
 	const nodeSelector = {
 		selectedNode: null,
+		hoveredNode: null,
 				
 		enable() {
 			this.selectedNode = null;
@@ -43,7 +44,11 @@ const NodeSelector = (root,
 					outline: '',
 				});
 			}
-
+			if (this.hoveredNode) {
+				setStyle(this.hoveredNode, {
+					outline: '',
+				});
+			}
 			this.enabled = false;
 			this.selectedNode = null;
 
@@ -60,6 +65,7 @@ const NodeSelector = (root,
 		_onMouseOut(e) {
 			if (!this._validNode(e.target)) return;
 
+			this.hoveredNode = null;
 			setStyle(e.target, {
 				outline: ''
 			});			
@@ -67,7 +73,8 @@ const NodeSelector = (root,
 
 		_onMouseOver(e) {
 			if (!this._validNode(e.target)) return;
-
+			
+			this.hoveredNode = e.target;
 			setStyle(e.target, hoverStyle);
 		},
 
