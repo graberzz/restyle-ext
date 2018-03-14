@@ -11,6 +11,7 @@ const sendMsg = (tabId, msg) => chrome.tabs.sendMessage(tabId, {msg});
 const init = ([currentTab]) => {
     let activeTabId = currentTab.id,
         editMode = false;
+    console.log("ACTIVETAB:", activeTabId);
 
     const toggleEditMode = tabId => {
         editMode = !editMode;
@@ -37,11 +38,11 @@ const init = ([currentTab]) => {
         }
     }
 
-    const onTabSwitch = newTab => {
+    const onTabSwitch = ({tabId}) => {
         if (editMode) {
             toggleEditMode(activeTabId);
         }
-        activeTabId = newTab.id;
+        activeTabId = tabId;
     }
 
     chrome.browserAction.onClicked.addListener(onIconClick);
