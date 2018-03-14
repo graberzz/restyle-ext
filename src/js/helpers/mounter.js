@@ -5,8 +5,9 @@ import { OUTLINE_WIDTH } from './utils';
 
 const setPosition = (nodeToPos, relatedNode) => {
 	const relatedNodeRect = relatedNode.getBoundingClientRect();
+	const nodeToPosRect = nodeToPos.getBoundingClientRect();
 
-	if (relatedNodeRect.x + nodeToPos.getBoundingClientRect().width > window.innerWidth){
+	if (relatedNodeRect.x + nodeToPosRect.width > window.innerWidth){
 		nodeToPos.style.right = '0px';
 		nodeToPos.style.left = null;
 	}
@@ -15,7 +16,20 @@ const setPosition = (nodeToPos, relatedNode) => {
 		nodeToPos.style.right = null;
 	}
 
-	nodeToPos.style.top = relatedNodeRect.y + relatedNodeRect.height + OUTLINE_WIDTH + 'px';
+	const relatedNodeOffsetY = relatedNodeRect.top + window.scrollY
+
+	const pageHeight = Math.max( document.body.scrollHeight, 
+								 document.body.offsetHeight, 
+						   		 document.documentElement.clientHeight, 
+						   		 document.documentElement.scrollHeight, 
+						   		 document.documentElement.offsetHeight );
+	
+	if (relatedNodeOffsetY + relatedNodeRect.height + nodeToPosRect.height > pageHeight) {
+		nodeToPos.style.top = relatedNodeOffsetY - nodeToPosRect.height - OUTLINE_WIDTH + 'px';
+	}
+	else {
+		nodeToPos.style.top = relatedNodeOffsetY + relatedNodeRect.height + OUTLINE_WIDTH + 'px';
+	}
 }
 
 const Mounter = {
