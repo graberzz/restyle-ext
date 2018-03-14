@@ -1,5 +1,5 @@
 const storageManager = {
-    save({url, stylesheet, callback}) {
+    save(url, stylesheet, callback) {
         chrome.storage.get(['styles'], styles => {
             styles[url] = stylesheet;
             chrome.storage.set({styles}, callback);
