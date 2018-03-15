@@ -12,7 +12,6 @@ import FontFamilySelect from './components/MenuInputs/FontFamilySelect';
 const menuItems = (node) => ([
     {
         icon: <TextFields />,
-        text: 'text',
         components: [
             {
                 component: <FontFamilySelect node={node} />
