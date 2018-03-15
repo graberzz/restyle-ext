@@ -33,9 +33,9 @@ const NodeSelector = (root,
 				
 		enable() {
 			this.selectedNode = null;
-	        root.addEventListener("mouseout", this._onMouseOut);
-			root.addEventListener("mouseover", this._onMouseOver);
-	        root.addEventListener("click", this._onMouseClick);
+	        root.addEventListener("mouseout", this._onMouseOut, true);
+			root.addEventListener("mouseover", this._onMouseOver, true);
+	        root.addEventListener("click", this._onMouseClick, true);
 		},
 
 		disable() {
@@ -52,9 +52,9 @@ const NodeSelector = (root,
 			this.enabled = false;
 			this.selectedNode = null;
 
-	        root.removeEventListener("mouseout", this._onMouseOut);
-			root.removeEventListener("mouseover", this._onMouseOver);
-	        root.removeEventListener("click", this._onMouseClick);
+	        root.removeEventListener("mouseout", this._onMouseOut, true);
+			root.removeEventListener("mouseover", this._onMouseOver, true);
+	        root.removeEventListener("click", this._onMouseClick, true);
 		},
 
 		_validNode(node) {
@@ -82,6 +82,8 @@ const NodeSelector = (root,
 			if (!this._validNode(e.target)) return;
 
 			e.preventDefault();
+			e.stopImmediatePropagation();
+
 			if (this.selectedNode) {
 				setStyle(this.selectedNode, {
 					outline: ''
