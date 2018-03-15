@@ -1,7 +1,6 @@
 import React from 'react';
 import Tabs, { Tab } from 'material-ui/Tabs'
 import Paper from 'material-ui/Paper';
-import MenuTab from './MenuTab';
 import Select from 'material-ui/Select';
 import menuItems from '../menuItems';
 import MenuItem from './MenuItem';
