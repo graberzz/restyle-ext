@@ -4,14 +4,16 @@ import Mounter from './helpers/mounter';
 import NodeSelector from './helpers/nodeSelector';
 import Root from './components';
 import { messages } from './helpers/utils';
+import injectStyles from './helpers/stylesInjector';
 import '../css/injected.css';
 
 const SHORTCUT = 'KeyQ';
 
+injectStyles(location.origin);
+
 const onNodeSelect = node => {
 	Mounter.mount(node, <Root node={node}/>);
 }
-
 
 const nodeSelector = NodeSelector(document.body,
 								  onNodeSelect,  
@@ -29,12 +31,10 @@ chrome.runtime.onMessage.addListener(({msg}) => {
     		nodeSelector.disable();
     		Mounter.unmount();
     	break;
-
-    	case messages.EDIT_MODE_TOGGLE: 
-    	break;
     }
 });
 
+// keyboard activation
 document.addEventListener('keyup', function(e) {
     if (!e.ctrlKey || e.code !== SHORTCUT) return;
 

@@ -2,12 +2,14 @@ import React from 'react';
 import TextAlignSelect from './components/MenuInputs/TextAlignSelect';
 import TextFields from 'material-ui-icons/TextFields';
 import FormatAlignLeft from 'material-ui-icons/FormatAlignLeft';
+import Save from 'material-ui-icons/Save';
 import BoldToggle from './components/MenuInputs/BoldToggle';
 import ItalicToggle from './components/MenuInputs/ItalicToggle';
 import TextColorPicker from './components/MenuInputs/TextColorPicker';
 import BackgroundColorPicker from './components/MenuInputs/BackgroundColorPicker';
 import FontSizeSelect from './components/MenuInputs/FontSizeSelect';
 import FontFamilySelect from './components/MenuInputs/FontFamilySelect';
+import SaveAsPNGButton from './components/MenuInputs/SaveAsPNGButton';
 
 const menuItems = (node) => ([
     {
@@ -33,6 +35,14 @@ const menuItems = (node) => ([
             },
             {
                 component: <BackgroundColorPicker node={node} />
+            },
+        ]
+    },
+    {
+        icon: <Save />,
+        components: [
+            {
+                component: <SaveAsPNGButton node={node} />
             },
         ]
     }
