@@ -8,11 +8,15 @@ export default class SaveAsPNGButton extends React.Component {
         domtoimage.toBlob(this.props.node)
             .then(imgBlob => {
                 const imgURL = URL.createObjectURL(imgBlob);
+
                 const link = document.createElement('a');
                 link.href = imgURL;
                 link.target = '_blank';
                 link.click();
-            });
+            })
+            .catch(err => {
+                console.log('error while saving as png: ' + err);
+            })
     }
 
     render() { 
