@@ -21,7 +21,8 @@ if (fileSystem.existsSync(secretsPath)) {
 var options = {
   entry: {
     background: path.join(__dirname, "src", "js", "background.js"),
-    injected: path.join(__dirname, "src", "js", "index.injected.js")
+    injected: path.join(__dirname, "src", "js", "index.injected.js"),
+    options: path.join(__dirname, "src", "js", "options", "App.js")
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -82,6 +83,11 @@ var options = {
       template: path.join(__dirname, "src", "background.html"),
       filename: "background.html",
       chunks: ["background"]
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "src", "options.html"),
+      filename: "options.html",
+      chunks: ["options"]
     }),
     new WriteFilePlugin()
   ]
