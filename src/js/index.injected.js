@@ -7,8 +7,6 @@ import { messages } from './helpers/utils';
 import injectStyles from './helpers/stylesInjector';
 import '../css/injected.css';
 
-const SHORTCUT = 'KeyQ';
-
 injectStyles(location.origin);
 
 const onNodeSelect = node => {
@@ -32,13 +30,4 @@ chrome.runtime.onMessage.addListener(({msg}) => {
     		Mounter.unmount();
     	break;
     }
-});
-
-// keyboard activation
-document.addEventListener('keyup', function(e) {
-    if (!e.ctrlKey || e.code !== SHORTCUT) return;
-
-    chrome.runtime.sendMessage({
-    	msg: messages.EDIT_MODE_TOGGLE 
-    });
 });

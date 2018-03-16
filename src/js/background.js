@@ -30,14 +30,6 @@ const init = ([currentTab]) => {
 
     const onIconClick = ({id}) => toggleEditMode(id);
 
-    const onMessage = ({msg}, {tab}) => {
-        switch (msg) {
-            case messages.EDIT_MODE_TOGGLE:
-                toggleEditMode(tab.id);
-            break;
-        }
-    }
-
     const onTabSwitch = ({tabId}) => {
         if (editMode) {
             toggleEditMode(activeTabId);
@@ -46,7 +38,6 @@ const init = ([currentTab]) => {
     }
 
     chrome.browserAction.onClicked.addListener(onIconClick);
-    chrome.runtime.onMessage.addListener(onMessage);
     chrome.tabs.onActivated.addListener(onTabSwitch);
 }
 
