@@ -29,7 +29,7 @@ const setPosition = (nodeToPos, relatedNode) => {
 	if (relatedNodeOffsetYHeight + nodeToPosRect.height > pageHeight || 
 		relatedNodeOffsetYHeight > window.innerHeight + window.scrollY) 
 	{
-		nodeToPos.style.top = relatedNodeOffsetY - nodeToPosRect.height - OUTLINE_WIDTH + 'px';
+		nodeToPos.style.top = (relatedNodeOffsetY - nodeToPosRect.height < 0 ? relatedNodeOffsetY : relatedNodeOffsetY - nodeToPosRect.height) - OUTLINE_WIDTH + 'px';
 	}
 	else {
 		nodeToPos.style.top = relatedNodeOffsetYHeight + OUTLINE_WIDTH + 'px';
