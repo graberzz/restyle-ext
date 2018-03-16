@@ -7,15 +7,17 @@ const storageManager = {
 
     },
 
-    getStylesheet(url, callback) {
+    getStylesheet(callback, url) {
         chrome.storage.sync.get(['styles'], styles => {            
-            if (styles[url]) {
-                callback(null, stylesheet);
+            if (url && styles[url]) {
+                callback(null, styles[url]);
             } else {
-                callback('Stylesheet not found');
+                callback(styles);
             }
         });
-    }
+    },
+
+
 };
 
 export default storageManager;

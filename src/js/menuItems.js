@@ -10,7 +10,7 @@ import BackgroundColorPicker from './components/MenuInputs/BackgroundColorPicker
 import FontSizeSelect from './components/MenuInputs/FontSizeSelect';
 import FontFamilySelect from './components/MenuInputs/FontFamilySelect';
 import SaveAsPNGButton from './components/MenuInputs/SaveAsPNGButton';
-
+import HideNodeButton from "./components/MenuInputs/HideNodeButton";
 const menuItems = (node) => ([
     {
         icon: <TextFields />,
@@ -44,6 +44,9 @@ const menuItems = (node) => ([
             {
                 component: <SaveAsPNGButton node={node} />
             },
+            {
+                component: <HideNodeButton node={node} />
+            }
         ]
     }
 ]);
