@@ -7,16 +7,20 @@ import { messages } from './helpers/utils';
 import injectStyles from './helpers/stylesInjector';
 import '../css/injected.css';
 
-injectStyles(location.origin);
+//injectStyles(location.origin);
 
-const onNodeSelect = node => {
+const onNodeSelect = (prevNode, node) => {
 	Mounter.mount(node, <Root node={node}/>);
-}
+	if (prevNode) {
+		prevNode.setAttribute('contenteditable', false);
+	}
+	node.setAttribute('contenteditable', true);
+};
 
 const nodeSelector = NodeSelector(document.body,
 								  onNodeSelect,  
 								  node => node.closest('.editpage__wrap') ||
-									      node.classList.contains('editpage__wrap')
+									      node.classList.contains('editpage__wrap',)
 );
 
 chrome.runtime.onMessage.addListener(({msg}) => {
@@ -25,8 +29,11 @@ chrome.runtime.onMessage.addListener(({msg}) => {
     		nodeSelector.enable();
     	break;
 
-    	case messages.EDIT_MODE_OFF:
-    		nodeSelector.disable();
+		case messages.EDIT_MODE_OFF:
+			if (nodeSelector.selectedNode) {
+				nodeSelector.selectedNode.setAttribute('contenteditable', false);
+			}
+			nodeSelector.disable();
     		Mounter.unmount();
     	break;
     }

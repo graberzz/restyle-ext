@@ -89,13 +89,14 @@ const NodeSelector = (root,
 					outline: ''
 				});	
 			}
+
+			onSelect(this.selectedNode, e.target);
 			this.selectedNode = e.target;
-
+			
 			setStyle(this.selectedNode, Object.assign({},
-													  hoverStyle,
-													  selectedStyle));
-
-			onSelect(this.selectedNode);
+				hoverStyle,
+				selectedStyle));
+				
 		},
 	};
 
