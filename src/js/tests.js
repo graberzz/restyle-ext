@@ -1,4 +1,4 @@
-const CSSJSON = require('css-to-json');
+const CSSJSON = require('./lib/cssjson');
 // const nodeSelector = require('./nodeSelector');
 
 const removeSpaces = str => str.replace(/\s/g, '');
@@ -28,9 +28,14 @@ const stylesheet = `.im-page .im-page--center-empty {
                         display: block;
                         width: 100%;
                         cursor: pointer;
+                    }
+                    @media (max-width: 400px) {
+                        .nim-dialog {
+                            width: 100px;
+                            margin-left: 10px;
+                        }
                     }`;
-
-
+console.log(CSSJSON.toJSON(stylesheet));
 console.assert(removeSpaces(stylesheet) === removeSpaces(CSSJSON.toCSS(CSSJSON.toJSON(stylesheet))));
 // CSS PARSER END
 
