@@ -15,7 +15,7 @@ export default class HideNodeButton extends React.Component {
         }, () => {
             setStyle(this.props.node, {
                 visibility: this.state.visible ? 'visible' : 'hidden'
-            });
+            }, true);
         })
     }
 

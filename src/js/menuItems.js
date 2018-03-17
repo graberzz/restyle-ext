@@ -11,6 +11,8 @@ import FontSizeSelect from './components/MenuInputs/FontSizeSelect';
 import FontFamilySelect from './components/MenuInputs/FontFamilySelect';
 import SaveAsPNGButton from './components/MenuInputs/SaveAsPNGButton';
 import HideNodeButton from "./components/MenuInputs/HideNodeButton";
+import SaveStylesButton from './components/MenuInputs/SaveStylesButton';
+
 const menuItems = (node) => ([
     {
         icon: <TextFields />,
@@ -46,6 +48,9 @@ const menuItems = (node) => ([
             },
             {
                 component: <HideNodeButton node={node} />
+            },
+            {
+                component: <SaveStylesButton node={node} />
             }
         ]
     }

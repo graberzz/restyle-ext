@@ -44,6 +44,7 @@ export {
 	messages,
 	getDefaultStyle,
     setStyle,
+    getClassSelector,
     rgbToHex,
     OUTLINE_WIDTH,
 }

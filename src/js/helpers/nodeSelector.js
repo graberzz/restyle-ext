@@ -1,4 +1,4 @@
-import { setStyle, OUTLINE_WIDTH } from './utils';
+import { setStyle, getClassSelector, OUTLINE_WIDTH } from './utils';
 
 const defaultHoverStyle = {
 	outlineStyle: 'solid',
@@ -29,6 +29,7 @@ const NodeSelector = (root,
 
 	const nodeSelector = {
 		selectedNode: null,
+		_selectedNodes: [],
 		hoveredNode: null,
 				
 		enable() {
@@ -49,6 +50,13 @@ const NodeSelector = (root,
 					outline: '',
 				});
 			}
+			for (let node of this._selectedNodes) {
+				setStyle(node, {
+					outline: ''
+				});
+			}
+				this._selectedNodes = [];
+			
 			this.enabled = false;
 			this.selectedNode = null;
 
@@ -92,7 +100,22 @@ const NodeSelector = (root,
 
 			onSelect(this.selectedNode, e.target);
 			this.selectedNode = e.target;
-			
+			// selecting all the nodes with provided node's class selector
+			for (let node of this._selectedNodes) {
+				setStyle(node, {
+					outline: ''
+				});
+			}
+			this._selectedNodes = [];
+			const nodesWithSameClasses = document.querySelectorAll(getClassSelector(e.target));
+			for (let node of nodesWithSameClasses) {
+				if (!this._validNode(node)) continue;
+				setStyle(node, Object.assign({},
+					hoverStyle,
+					selectedStyle));
+				this._selectedNodes.push(node);
+			}
+			// ---
 			setStyle(this.selectedNode, Object.assign({},
 				hoverStyle,
 				selectedStyle));
