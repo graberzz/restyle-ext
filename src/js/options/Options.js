@@ -35,7 +35,6 @@ import notify, { notifyTypes } from '../helpers/notify';
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-     // maxHeight: '500px',
     };
   }
   
@@ -63,7 +62,7 @@ export default class Options extends React.Component {
     state = {
         styles: {},
         deleteConfirmModalOpen: false,
-        urlIndexToDelete: -1,
+        urlToDelete: '',
         editorOpen: false,
         editorURL: '',
         editorContent: '',
@@ -89,13 +88,11 @@ export default class Options extends React.Component {
     };
   
     onDelete = url => {
-      // const siteIndex = this.state.sites.findIndex(site => site.url === url);
-      // if (siteIndex < 0) return;
-  
-      // this.setState({
-      //   deleteConfirmModalOpen: true,
-      //   urlIndexToDelete: siteIndex
-      // });
+      this.setState({
+        deleteConfirmModalOpen: true,
+        urlToDelete: url
+      });
+    
     };
 
     onSave = () => {
@@ -149,6 +146,15 @@ export default class Options extends React.Component {
       //   },
       //   this.handleClose
       // );
+      const styles = Object.assign({}, this.state.styles);
+      delete styles[this.state.urlToDelete];
+
+      storageManager.saveStyles(styles);
+
+      this.setState({
+        styles,
+        deleteConfirmModalOpen: false,
+      });
     };
   
     render() {

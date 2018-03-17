@@ -14,6 +14,13 @@ const storageManager = {
 
     },
 
+    saveStyles(styles) {
+        chrome.storage.sync.get(['styles'], oldStyles => {
+            oldStyles.styles = styles;
+            chrome.storage.sync.set({styles: oldStyles.styles});
+        });
+    },
+
     getStylesheet(callback) {
         chrome.storage.sync.get(['styles'], styles => { 
             callback(styles);
