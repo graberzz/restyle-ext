@@ -25,7 +25,12 @@ const storageManager = {
     },
 
     accumulateStyles(stylesheet) {
-        this._accumulatedStyles.children = deepMerge(this._accumulatedStyles.children, stylesheet)
+        console.clear();
+        console.log('ACC: ', this._accumulatedStyles);
+        console.log('STYLE: ', stylesheet);
+        const merged = deepMerge(this._accumulatedStyles.children, stylesheet);
+        console.log('MERGED: ', merged);
+        this._accumulatedStyles.children = merged;
     },
 
     saveAccumulatedStyles(url) {

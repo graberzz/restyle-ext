@@ -1,13 +1,19 @@
 import React from 'react';
-import { getDefaultStyle, setStyle } from '../../helpers/utils';
+import { getDefaultStyle, setStyle, rgbToHex } from '../../helpers/utils';
 import { SketchPicker } from 'react-color';
 import ToggleButton from '../BasicInputs/ToggleButton';
 import FormatColorFill from 'material-ui-icons/FormatColorFill';
 
 export default class BackgroundColorPicker extends React.Component {
-    state = {
-        open: false,
-        color: getDefaultStyle(this.props.node).backgroundColor
+    constructor({node}) {
+        super();
+        const bgColor = getDefaultStyle(node).backgroundColor;
+        const hexed = rgbToHex(bgColor);
+        this.state = {
+            open: false,
+            color: hexed === '' ?
+                   bgColor : hexed,
+        }
     }
 
     onChange = ({hex: color}) => {
@@ -37,6 +43,7 @@ export default class BackgroundColorPicker extends React.Component {
                     text="Background Color"
                     toggled={open}
                     onClick={this.onClick}
+                    className="editpage__color-picker-icon"
                 />
                 {
                     open ? 

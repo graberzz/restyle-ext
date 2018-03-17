@@ -29,3 +29,7 @@
 .editpage__colorpicker {
 	position: absolute;
 }
+
+.editpage__color-picker-icon svg {
+	filter: drop-shadow(0 0 2px #000);
+}

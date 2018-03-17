@@ -12,14 +12,23 @@ const formatToCSSProp = prop => {
     });
 }
 
+const rgbToHex = rgb => {
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+     ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+     ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+     ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+};
+
 const getDefaultStyle = node => getComputedStyle(node);
 
 const getClassSelector = node => node.tagName.toLowerCase() + (node.classList.length > 0 ? 
                                                               '.' + [...node.classList].join('.') :
                                                               '');
 
-const setStyle = (node, style) => {
+const setStyle = (node, style, addToStorage = false) => {
     Object.entries(style).forEach(([key, value]) => (node.style[key] = value));
+    if (!addToStorage) return;
 
     style = {
         [getClassSelector(node)]: {
@@ -28,14 +37,13 @@ const setStyle = (node, style) => {
                                                                       }, {})
         } 
     };
-    //storageManager.accumulateStyles(location.origin, style);
-    console.log(style);
-    return style;
+    storageManager.accumulateStyles(style);
 }
 
 export {
 	messages,
 	getDefaultStyle,
-	setStyle,
+    setStyle,
+    rgbToHex,
     OUTLINE_WIDTH,
 }

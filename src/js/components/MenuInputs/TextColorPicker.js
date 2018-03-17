@@ -1,15 +1,20 @@
 import React from 'react';
-import { getDefaultStyle, setStyle } from '../../helpers/utils';
+import { getDefaultStyle, setStyle, rgbToHex } from '../../helpers/utils';
 import { SketchPicker } from 'react-color';
 import ToggleButton from '../BasicInputs/ToggleButton';
 import TextFormat from 'material-ui-icons/TextFormat';
 
 export default class TextColorPicker extends React.Component {
-    state = {
-        open: false,
-        color: getDefaultStyle(this.props.node).color
+    constructor({node}) {
+        super();
+        const color = getDefaultStyle(node).color;
+        const hexed = rgbToHex(color);
+        this.state = {
+            open: false,
+            color: hexed === '' ?
+                   color : hexed,
+        }
     }
-
     onChange = ({hex: color}) => {
         this.setState({
             color
@@ -37,6 +42,7 @@ export default class TextColorPicker extends React.Component {
                     text="Text Color"
                     toggled={open}
                     onClick={this.onClick}
+                    className="editpage__color-picker-icon"
                 />
                 {
                     open ? 
