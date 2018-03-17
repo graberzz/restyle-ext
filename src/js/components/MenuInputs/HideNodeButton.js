@@ -23,7 +23,7 @@ export default class HideNodeButton extends React.Component {
         return (
             <Button onClick={this.onClick}
                     icon={this.state.visible ? <VisibilityOn /> : <VisibilityOff />}
-                    text={'Hide node'}
+                    text={'Hide'}
             />
         )
     }

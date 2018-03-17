@@ -39,7 +39,7 @@ export default class TextColorPicker extends React.Component {
                 <ToggleButton 
                     icon={<TextFormat />}
                     color={color}
-                    text="Text Color"
+                    text="Color"
                     toggled={open}
                     onClick={this.onClick}
                     className="editpage__color-picker-icon"

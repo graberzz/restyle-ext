@@ -3,6 +3,7 @@ import TextAlignSelect from './components/MenuInputs/TextAlignSelect';
 import TextFields from 'material-ui-icons/TextFields';
 import FormatAlignLeft from 'material-ui-icons/FormatAlignLeft';
 import Save from 'material-ui-icons/Save';
+import CropSquare from 'material-ui-icons/CropSquare';
 import BoldToggle from './components/MenuInputs/BoldToggle';
 import ItalicToggle from './components/MenuInputs/ItalicToggle';
 import TextColorPicker from './components/MenuInputs/TextColorPicker';
@@ -13,6 +14,8 @@ import SaveAsPNGButton from './components/MenuInputs/SaveAsPNGButton';
 import HideNodeButton from "./components/MenuInputs/HideNodeButton";
 import SaveStylesButton from './components/MenuInputs/SaveStylesButton';
 import ResetStyleButton from './components/MenuInputs/ResetStylesButton';
+import LineHeightSelect from './components/MenuInputs/LineHeightSelect';
+
 const menuItems = (node) => ([
     {
         icon: <TextFields />,
@@ -22,6 +25,9 @@ const menuItems = (node) => ([
             },
             {
                 component: <FontSizeSelect node={node} />
+            },
+            {
+                component: <LineHeightSelect node={node} />
             },
             {
                 component: <TextAlignSelect node={node} />
@@ -35,8 +41,16 @@ const menuItems = (node) => ([
             {
                 component: <TextColorPicker node={node} />
             },
+        ]
+    },
+    {
+        icon: <CropSquare />,
+        components: [
             {
                 component: <BackgroundColorPicker node={node} />
+            },
+            {
+                component: <HideNodeButton node={node} />
             },
         ]
     },
@@ -45,9 +59,6 @@ const menuItems = (node) => ([
         components: [
             {
                 component: <SaveAsPNGButton node={node} />
-            },
-            {
-                component: <HideNodeButton node={node} />
             },
             {
                 component: <SaveStylesButton node={node} />
