@@ -7,13 +7,14 @@ import storageManager from '../../helpers/storageManager';
 export default class SaveStylesButton extends React.Component {
     onClick = () => {
         console.log(storageManager._accumulatedStyles);
+        storageManager.saveAccumulatedStyles(location.origin);
     }
 
     render() { 
         return (
             <Button onClick={this.onClick}
                     icon={<Save />}
-                    text={'Hide node'}
+                    text={'Save styles'}
             />
         )
     }

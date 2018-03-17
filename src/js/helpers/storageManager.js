@@ -18,7 +18,7 @@ const storageManager = {
         chrome.storage.sync.get(['styles'], styles => {            
             if (url && styles[url]) {
                 callback(null, styles[url]);
-            } else {
+            } else if (styles) {
                 callback(styles);
             }
         });
@@ -33,10 +33,23 @@ const storageManager = {
         this._accumulatedStyles.children = merged;
     },
 
+    clearStorage() {
+        chrome.storage.sync.clear();
+    },
+
     saveAccumulatedStyles(url) {
         this.getStylesheet(oldStyles => {
-            const styles = Object.assign({}, oldStyles, deepMerge(oldStyles[url], this._accumulateStyles));
-            chrome.storage.sync.set({styles}, () => {
+            debugger;
+            if (!oldStyles) {
+                oldStyles = {};
+            }
+            if (!oldStyles[url]) {
+                oldStyles[url] = {};
+            }
+            const newStyles = deepMerge(oldStyles[url], this._accumulatedStyles);
+            oldStyles[url] = newStyles;
+            const styles = Object.assign({}, oldStyles, newStyles);
+            chrome.storage.sync.set({styles: oldStyles}, () => {
                 // reset acc
             });
         });

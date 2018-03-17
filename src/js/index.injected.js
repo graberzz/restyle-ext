@@ -7,7 +7,7 @@ import { messages } from './helpers/utils';
 import injectStyles from './helpers/stylesInjector';
 import '../css/injected.css';
 
-//injectStyles(location.origin);
+injectStyles(location.origin);
 
 const onNodeSelect = (prevNode, node) => {
 	Mounter.mount(node, <Root node={node}/>);
