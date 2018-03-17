@@ -1,16 +1,16 @@
 import React from 'react';
 import Button from '../BasicInputs/Button';
-import Save from 'material-ui-icons/Save';
+import Loop from 'material-ui-icons/Loop';
 import { setStyle, getDefaultStyle } from '../../helpers/utils';
 import storageManager from '../../helpers/storageManager';
 import notify, { notifyTypes } from '../../helpers/notify';
 
-export default class SaveStylesButton extends React.Component {
+export default class ResetStylesButton extends React.Component {
     onClick = () => {
         console.log(storageManager._accumulatedStyles);
-        storageManager.saveAccumulatedStyles(location.origin);
+        storageManager.clear();
         notify({
-            text: 'Styles have been saved',
+            text: 'Styles have been reset, reload the page',
             type: notifyTypes.SUCCESS,
         })
     }
@@ -18,8 +18,8 @@ export default class SaveStylesButton extends React.Component {
     render() { 
         return (
             <Button onClick={this.onClick}
-                    icon={<Save />}
-                    text={'Save styles'}
+                    icon={<Loop />}
+                    text={'Reset styles'}
             />
         )
     }

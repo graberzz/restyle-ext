@@ -14,13 +14,9 @@ const storageManager = {
 
     },
 
-    getStylesheet(callback, url) {
+    getStylesheet(callback) {
         chrome.storage.sync.get(['styles'], styles => {            
-            if (url && styles[url]) {
-                callback(null, styles[url]);
-            } else if (styles) {
-                callback(styles);
-            }
+            callback(styles);
         });
     },
 
@@ -33,13 +29,19 @@ const storageManager = {
         this._accumulatedStyles.children = merged;
     },
 
-    clearStorage() {
-        chrome.storage.sync.clear();
+    clear(url) {
+        if (!url) {
+            chrome.storage.sync.set({styles: {}});
+        } else {
+            this.getStylesheet(styles => {
+                styles[url] = {};
+                chrome.storage.sync.set({styles});
+            })
+        }
     },
 
     saveAccumulatedStyles(url) {
         this.getStylesheet(oldStyles => {
-            debugger;
             if (!oldStyles) {
                 oldStyles = {};
             }

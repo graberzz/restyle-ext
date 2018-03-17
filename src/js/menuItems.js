@@ -12,7 +12,7 @@ import FontFamilySelect from './components/MenuInputs/FontFamilySelect';
 import SaveAsPNGButton from './components/MenuInputs/SaveAsPNGButton';
 import HideNodeButton from "./components/MenuInputs/HideNodeButton";
 import SaveStylesButton from './components/MenuInputs/SaveStylesButton';
-
+import ResetStyleButton from './components/MenuInputs/ResetStylesButton';
 const menuItems = (node) => ([
     {
         icon: <TextFields />,
@@ -51,6 +51,9 @@ const menuItems = (node) => ([
             },
             {
                 component: <SaveStylesButton node={node} />
+            },
+            {
+                component: <ResetStyleButton node={node} />
             }
         ]
     }

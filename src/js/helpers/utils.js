@@ -34,7 +34,8 @@ const setStyle = (node, style, addToStorage = false) => {
         [getClassSelector(node)]: {
             attributes: Object.entries(style).reduce((obj, [k, v]) => { obj[formatToCSSProp(k)] = v;
                                                                         return obj;
-                                                                      }, {})
+                                                                      }, {}),
+            children: {}
         } 
     };
     storageManager.accumulateStyles(style);

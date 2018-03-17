@@ -187,7 +187,7 @@ var CSSJSON = new function () {
             breaks = false;
         }
         if (node.attributes) {
-            for (i in node.attributes) {
+            for (let i in node.attributes) {
                 var att = node.attributes[i];
                 if (att instanceof Array) {
                     for (var j = 0; j < att.length; j++) {
@@ -200,7 +200,7 @@ var CSSJSON = new function () {
         }
         if (node.children) {
             var first = true;
-            for (i in node.children) {
+            for (let i in node.children) {
                 if (breaks && !first) {
                     cssString += '\n';
                 } else {
