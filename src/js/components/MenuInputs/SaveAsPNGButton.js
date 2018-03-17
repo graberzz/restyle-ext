@@ -2,6 +2,7 @@ import React from 'react';
 import Button from '../BasicInputs/Button';
 import PhotoCamera from 'material-ui-icons/PhotoCamera';
 import domtoimage from 'dom-to-image';
+import notify, { notifyTypes } from '../../helpers/notify';
 
 export default class SaveAsPNGButton extends React.Component {
     onClick = () => {
@@ -16,6 +17,10 @@ export default class SaveAsPNGButton extends React.Component {
             })
             .catch(err => {
                 console.log('error while saving as png: ' + err);
+                notify({
+                    text: "Error while saving as PNG",
+                    type: notifyTypes.ERROR,
+                });
             })
     }
 
