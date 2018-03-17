@@ -8,14 +8,14 @@ const storageManager = {
 
     saveStylesheet(url, stylesheet, callback) {
         chrome.storage.sync.get(['styles'], styles => {
-            styles[url] = stylesheet;
-            chrome.storage.sync.set({styles}, callback);
+            styles.styles[url] = stylesheet;
+            chrome.storage.sync.set({styles: styles.styles}, callback);
         });
 
     },
 
     getStylesheet(callback) {
-        chrome.storage.sync.get(['styles'], styles => {            
+        chrome.storage.sync.get(['styles'], styles => { 
             callback(styles);
         });
     },
@@ -43,15 +43,14 @@ const storageManager = {
     saveAccumulatedStyles(url) {
         this.getStylesheet(oldStyles => {
             if (!oldStyles) {
-                oldStyles = {};
+                oldStyles = {styles: {}};
             }
-            if (!oldStyles[url]) {
-                oldStyles[url] = {};
+            if (!oldStyles.styles[url]) {
+                oldStyles.styles[url] = {};
             }
-            const newStyles = deepMerge(oldStyles[url], this._accumulatedStyles);
-            oldStyles[url] = newStyles;
-            const styles = Object.assign({}, oldStyles, newStyles);
-            chrome.storage.sync.set({styles: oldStyles}, () => {
+            const newStyles = deepMerge(oldStyles.styles[url], this._accumulatedStyles);
+            oldStyles.styles[url] = newStyles;
+            chrome.storage.sync.set({styles: oldStyles.styles}, () => {
                 // reset acc
             });
         });

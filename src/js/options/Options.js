@@ -22,8 +22,10 @@ import List, {
   import brace from "brace";
   import AceEditor from "react-ace";
   import storageManager from '../helpers/storageManager';
+  import CSSJSON from '../lib/cssjson';
   import "brace/mode/css";
   import "brace/theme/monokai";
+import notify, { notifyTypes } from '../helpers/notify';
   
   function getModalStyle() {
     const top = 50;
@@ -33,10 +35,12 @@ import List, {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      maxHeight: '500px',
+     // maxHeight: '500px',
     };
   }
   
+
+
   const modalInnerStyle = {
     width: "200px",
     height: "100px",
@@ -57,160 +61,179 @@ import List, {
   
 export default class Options extends React.Component {
     state = {
-        sites: [
-          {
-            url: "vk.com",
-            stylesheet: {}
-          },
-          {
-            url: "youtube.com",
-            stylesheet: {}
-          },
-          {
-            url: "fb.com",
-            stylesheet: {}
-          },
-          {
-            url: "vk.com",
-            stylesheet: {}
-          },
-          {
-            url: "youtube.com",
-            stylesheet: {}
-          }
-        ],
+        styles: {},
         deleteConfirmModalOpen: false,
         urlIndexToDelete: -1,
-        editorOpen: false
-      };
-      componentDidMount() {
-        // TODO: obtain styles from storageManager
+        editorOpen: false,
+        editorURL: '',
+        editorContent: '',
+        validationErrors: [],
       }
 
-      onEdit = url => {
+    componentDidMount() {
+      // TODO: obtain styles from storageManager
+      storageManager.getStylesheet(styles => {
         this.setState({
-          editorOpen: true
+          styles: styles.styles // :DDDD
         });
-      };
-    
-      onDelete = url => {
-        const siteIndex = this.state.sites.findIndex(site => site.url === url);
-        if (siteIndex < 0) return;
-    
-        this.setState({
-          deleteConfirmModalOpen: true,
-          urlIndexToDelete: siteIndex
+      })
+    }
+
+    onEdit = url => {
+      console.log(this.state);
+      this.setState({
+        editorOpen: true,
+        editorContent: CSSJSON.toCSS(this.state.styles[url]),
+        editorURL: url,
+      });
+    };
+  
+    onDelete = url => {
+      // const siteIndex = this.state.sites.findIndex(site => site.url === url);
+      // if (siteIndex < 0) return;
+  
+      // this.setState({
+      //   deleteConfirmModalOpen: true,
+      //   urlIndexToDelete: siteIndex
+      // });
+    };
+
+    onSave = () => {
+      if (this.state.validationErrors.length > 0) {
+        notify({
+          text: 'Incorrect CSS',
+          type: notifyTypes.ERROR,
         });
-      };
-    
-      handleClose = () => {
-        this.setState({
-          deleteConfirmModalOpen: false
+      } else {
+        notify({
+          text: 'CSS has been saved',
+          type: notifyTypes.SUCCESS,
         });
-      };
-    
-      closeEditor = () => {
-        this.setState({
-          editorOpen: false
-        });
-      };
-    
-      onDeleteConfirmed = () => {
-        this.setState(
-          {
-            sites: [
-              ...this.state.sites.slice(0, this.state.urlIndexToDelete),
-              ...this.state.sites.slice(this.state.urlIndexToDelete + 1)
-            ],
-            urlIndexToDelete: -1
-          },
-          this.handleClose
-        );
-      };
-    
-      render() {
-        const { sites, deleteConfirmModalOpen, editorOpen } = this.state;
-    
-        return (
+        storageManager.saveStylesheet(this.state.editorURL, CSSJSON.toJSON(this.state.editorContent));
+        this.closeEditor();
+      }
+    }
+  
+    onValidate = (annotations) => {
+      this.setState({
+        validationErrors: annotations.filter(a => a.type === 'error'),
+      });
+    }
+
+    handleClose = () => {
+      this.setState({
+        deleteConfirmModalOpen: false
+      });
+    }
+  
+    closeEditor = () => {
+      this.setState({
+        editorOpen: false
+      });
+    }
+
+    onEditorChange = (val) => {
+      this.setState({
+        editorContent: val
+      })
+    }
+  
+    onDeleteConfirmed = () => {
+      // this.setState(
+      //   {
+      //     sites: [
+      //       ...this.state.sites.slice(0, this.state.urlIndexToDelete),
+      //       ...this.state.sites.slice(this.state.urlIndexToDelete + 1)
+      //     ],
+      //     urlIndexToDelete: -1
+      //   },
+      //   this.handleClose
+      // );
+    };
+  
+    render() {
+      const { styles, deleteConfirmModalOpen, editorOpen, editorContent } = this.state;
+      console.log(styles);
+      return (
+        <div>
+          <Modal
+            open={editorOpen}
+            onClose={this.closeEditor}
+            style={getModalStyle()}
+          >
+            <div>
+              <AceEditor editorProps={{$blockScrolling: true}} onChange={this.onEditorChange} onValidate={this.onValidate} style={modalEditorStyle} mode="css" theme="monokai" value={editorContent}/>
+              <Button variant="raised" color="primary" onClick={this.onSave}>
+                Save
+              </Button>
+              <Button
+                variant="raised"
+                color="secondary"
+                onClick={this.closeEditor}
+              >
+                Close
+              </Button>
+            </div>
+          </Modal>
+          <Grid container>
+            <Grid item xs={12} md={6}>
+              <Typography variant="title">Your styles:</Typography>
+              <div>
+                <List>
+                  { Object.keys(styles).length > 0 ? Object.keys(styles).map((url, i) => (
+                                          <ListItem key={i}>
+                                              <ListItemAvatar>
+                                              <Avatar>
+                                                  <Web />
+                                              </Avatar>
+                                              </ListItemAvatar>
+                                              <ListItemText primary={url} />
+                                              <ListItemSecondaryAction>
+                                              <IconButton onClick={() => this.onEdit(url)}>
+                                                  <Edit />
+                                              </IconButton>
+                                              <IconButton onClick={() => this.onDelete(url)}>
+                                                  <DeleteIcon />
+                                              </IconButton>
+                                              </ListItemSecondaryAction>
+                                          </ListItem>
+                                          )) :
+                                          'No styles'
+                  }
+                </List>
+              </div>
+            </Grid>
+          </Grid>
           <div>
             <Modal
-              open={editorOpen}
-              onClose={this.closeEditor}
+              open={deleteConfirmModalOpen}
+              onClose={this.handleClose}
               style={getModalStyle()}
             >
-              <div>
-                <AceEditor style={modalEditorStyle} mode="css" theme="monokai" />
-                <Button variant="raised" color="primary" onClick={this.closeEditor}>
-                  Save
-                </Button>
-                <Button
-                  variant="raised"
-                  color="secondary"
-                  onClick={this.closeEditor}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </Modal>
-            <Grid container>
-              <Grid item xs={12} md={6}>
-                <Typography variant="title">Your styles:</Typography>
+              <Paper style={modalInnerStyle}>
+                <Typography variant="title" align="center" gutterBottom>
+                  Are you sure?
+                </Typography>
                 <div>
-                  <List>
-                    { sites.length > 0 ? sites.map(({ url }, i) => (
-                                            <ListItem key={i}>
-                                                <ListItemAvatar>
-                                                <Avatar>
-                                                    <Web />
-                                                </Avatar>
-                                                </ListItemAvatar>
-                                                <ListItemText primary={url} />
-                                                <ListItemSecondaryAction>
-                                                <IconButton onClick={() => this.onEdit(url)}>
-                                                    <Edit />
-                                                </IconButton>
-                                                <IconButton onClick={() => this.onDelete(url)}>
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                                </ListItemSecondaryAction>
-                                            </ListItem>
-                                            )) :
-                                            'No styles'
-                    }
-                  </List>
+                  <Button
+                    variant="raised"
+                    color="primary"
+                    onClick={this.onDeleteConfirmed}
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    variant="raised"
+                    color="secondary"
+                    onClick={this.handleClose}
+                  >
+                    No
+                  </Button>
                 </div>
-              </Grid>
-            </Grid>
-            <div>
-              <Modal
-                open={deleteConfirmModalOpen}
-                onClose={this.handleClose}
-                style={getModalStyle()}
-              >
-                <Paper style={modalInnerStyle}>
-                  <Typography variant="title" align="center" gutterBottom>
-                    Are you sure?
-                  </Typography>
-                  <div>
-                    <Button
-                      variant="raised"
-                      color="primary"
-                      onClick={this.onDeleteConfirmed}
-                    >
-                      Yes
-                    </Button>
-                    <Button
-                      variant="raised"
-                      color="secondary"
-                      onClick={this.handleClose}
-                    >
-                      No
-                    </Button>
-                  </div>
-                </Paper>
-              </Modal>
-            </div>
+              </Paper>
+            </Modal>
           </div>
-        );
-      }
+        </div>
+      );
+    }
 }
