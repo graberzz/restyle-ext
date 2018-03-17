@@ -17,7 +17,7 @@ export default class BoldToggle extends React.Component {
 
         setStyle(this.props.node, {
             fontWeight: toggled ? 'bold' : 'normal'
-        }, true);
+        }, true, true);
     }
 
     render() {

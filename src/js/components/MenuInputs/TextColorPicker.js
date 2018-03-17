@@ -22,7 +22,7 @@ export default class TextColorPicker extends React.Component {
 
         setStyle(this.props.node, {
             color
-        }, true);
+        }, true, true);
     }
 
     onClick = () => {

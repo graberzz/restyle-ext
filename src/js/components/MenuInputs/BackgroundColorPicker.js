@@ -23,7 +23,7 @@ export default class BackgroundColorPicker extends React.Component {
 
         setStyle(this.props.node, {
             backgroundColor : color
-        }, true);
+        }, true, true);
     }
 
     onClick = () => {

@@ -18,7 +18,7 @@ export default class FontFamilySelect extends React.Component {
 
     setStyle(this.props.node, {
       fontFamily: value === 'DEFAULT' ? '' : value
-    }, true);
+    }, true, true);
     
     this.setState({
       value

@@ -13,7 +13,7 @@ export default class FontSizeSelect extends React.Component {
 
     setStyle(this.props.node, {
       fontSize: value + 'px'
-    }, true);
+    }, true, true);
     
     this.setState({
       value

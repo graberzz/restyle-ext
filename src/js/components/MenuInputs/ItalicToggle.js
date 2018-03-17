@@ -17,7 +17,7 @@ export default class ItalicToggle extends React.Component {
 
         setStyle(this.props.node, {
             fontStyle: toggled ? 'italic' : 'normal'
-        }, true);
+        }, true, true);
     }
 
     render() {

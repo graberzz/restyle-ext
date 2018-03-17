@@ -13,7 +13,7 @@ export default class TextAlignSelect extends React.Component {
 
     setStyle(this.props.node, {
       textAlign: value
-    }, true);
+    }, true, true);
     
     this.setState({
       value

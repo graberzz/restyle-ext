@@ -26,8 +26,16 @@ const getClassSelector = node => node.tagName.toLowerCase() + (node.classList.le
                                                               '.' + [...node.classList].join('.') :
                                                               '');
 
-const setStyle = (node, style, addToStorage = false) => {
+const setStyle = (node, style, addToStorage = false, applytoAll) => {    
     Object.entries(style).forEach(([key, value]) => (node.style[key] = value));
+    applytoAll = applytoAll || false;
+    if (applytoAll) {
+        const nodes = document.querySelectorAll(getClassSelector(node));
+        for (let n of nodes) {
+            Object.entries(style).forEach(([key, value]) => (n.style[key] = value));
+        }
+    }
+
     if (!addToStorage) return;
 
     style = {
