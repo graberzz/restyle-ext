@@ -98,8 +98,17 @@ const NodeSelector = (root,
 				});	
 			}
 
-			onSelect(this.selectedNode, e.target);
+			this.pastSelectedNode = this.selectedNode;
 			this.selectedNode = e.target;
+
+			while (this.selectedNode.parentElement.children.length < 2) {
+				this.selectedNode = this.selectedNode.parentElement
+			}
+
+			onSelect(this.pastSelectedNode, this.selectedNode);
+
+			console.log(this.selectedNode)
+
 			// selecting all the nodes with provided node's class selector
 			for (let node of this._selectedNodes) {
 				setStyle(node, {
@@ -107,13 +116,18 @@ const NodeSelector = (root,
 				});
 			}
 			this._selectedNodes = [];
-			const nodesWithSameClasses = document.querySelectorAll(getClassSelector(e.target));
-			for (let node of nodesWithSameClasses) {
-				if (!this._validNode(node)) continue;
-				setStyle(node, Object.assign({},
-					hoverStyle,
-					selectedStyle));
-				this._selectedNodes.push(node);
+
+			const tagStr = getClassSelector(this.selectedNode);
+
+			if (tagStr.match(/div.\w*/)){
+				const nodesWithSameClasses = document.querySelectorAll(getClassSelector(this.selectedNode)); // ZACHEM VSTAVLYAT E.TARGET ESLI U TYA I TAK UZHE EST SELECTED NODE
+				for (let node of nodesWithSameClasses) {
+					if (!this._validNode(node)) continue;
+					setStyle(node, Object.assign({},
+						hoverStyle,
+						selectedStyle));
+					this._selectedNodes.push(node);
+				}
 			}
 			// ---
 			setStyle(this.selectedNode, Object.assign({},
