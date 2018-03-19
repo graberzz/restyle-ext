@@ -5,12 +5,17 @@ import { getDefaultStyle, setStyle } from '../../helpers/utils';
 
 const webSafeFonts = ['Arial', 'Arial Black', 'Times New Roman',
                       'Courier New', 'Verdana', 'Georgia',
-                      'Comic Sans MS', 'Consolas', 'Trebuchet MS']
+                      'Comic Sans MS', 'Consolas', 'Trebuchet MS'];
 
 export default class FontFamilySelect extends React.Component {
-  state = {
-    options: ['DEFAULT', ...webSafeFonts],
-    value: 'DEFAULT'
+  constructor(props) {
+    super();
+    const defaultFont = getDefaultStyle(props.node).fontFamily.replace(/"/g, '');
+    this.state = {
+      options: ['DEFAULT', ...webSafeFonts],
+      value: webSafeFonts.includes(defaultFont) ? defaultFont :
+                                                  'DEFAULT'
+    }
   }
 
   onChange = (e) => {
@@ -27,7 +32,7 @@ export default class FontFamilySelect extends React.Component {
 
   render() {
     const { options, value } = this.state;
-
+    
     return (
       <Select
         options={options}
