@@ -1,31 +1,32 @@
 import React from 'react';
 import List, {
-    ListItem,
-    ListItemAvatar,
-    ListItemIcon,
-    ListItemSecondaryAction,
-    ListItemText
-  } from "material-ui/List";
-  import Avatar from "material-ui/Avatar";
-  import IconButton from "material-ui/IconButton";
-  import { FormGroup, FormControlLabel } from "material-ui/Form";
-  import Checkbox from "material-ui/Checkbox";
-  import Grid from "material-ui/Grid";
-  import Typography from "material-ui/Typography";
-  import FolderIcon from "material-ui-icons/Folder";
-  import DeleteIcon from "material-ui-icons/Delete";
-  import Web from "material-ui-icons/Web";
-  import Edit from "material-ui-icons/Edit";
-  import Paper from "material-ui/Paper";
-  import Modal from "material-ui/Modal";
-  import Button from "material-ui/Button";
-  import brace from "brace";
-  import AceEditor from "react-ace";
-  import storageManager from '../helpers/storageManager';
-  import CSSJSON from '../lib/cssjson';
-  import "brace/mode/css";
-  import "brace/theme/monokai";
+  ListItem,
+  ListItemAvatar,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText
+} from "material-ui/List";
+import Avatar from "material-ui/Avatar";
+import IconButton from "material-ui/IconButton";
+import { FormGroup, FormControlLabel } from "material-ui/Form";
+import Checkbox from "material-ui/Checkbox";
+import Grid from "material-ui/Grid";
+import Typography from "material-ui/Typography";
+import FolderIcon from "material-ui-icons/Folder";
+import DeleteIcon from "material-ui-icons/Delete";
+import Web from "material-ui-icons/Web";
+import Edit from "material-ui-icons/Edit";
+import Paper from "material-ui/Paper";
+import Modal from "material-ui/Modal";
+import Button from "material-ui/Button";
+import brace from "brace";
+import AceEditor from "react-ace";
+import storageManager from '../helpers/storageManager';
+import CSSJSON from '../lib/cssjson';
+import "brace/mode/css";
+import "brace/theme/monokai";
 import notify, { notifyTypes } from '../helpers/notify';
+import Divider from 'material-ui/Divider';
   
   function getModalStyle() {
     const top = 50;
@@ -41,8 +42,8 @@ import notify, { notifyTypes } from '../helpers/notify';
 
 
   const modalInnerStyle = {
-    width: "200px",
-    height: "100px",
+    width: '100vw',
+    height: '100vh',
     textAlign: "center",
     display: "flex",
     flexDirection: "column",
@@ -79,7 +80,6 @@ export default class Options extends React.Component {
     }
 
     onEdit = url => {
-      console.log(this.state);
       this.setState({
         editorOpen: true,
         editorContent: CSSJSON.toCSS(this.state.styles[url]),
@@ -136,16 +136,6 @@ export default class Options extends React.Component {
     }
   
     onDeleteConfirmed = () => {
-      // this.setState(
-      //   {
-      //     sites: [
-      //       ...this.state.sites.slice(0, this.state.urlIndexToDelete),
-      //       ...this.state.sites.slice(this.state.urlIndexToDelete + 1)
-      //     ],
-      //     urlIndexToDelete: -1
-      //   },
-      //   this.handleClose
-      // );
       const styles = Object.assign({}, this.state.styles);
       delete styles[this.state.urlToDelete];
 
@@ -159,7 +149,6 @@ export default class Options extends React.Component {
   
     render() {
       const { styles, deleteConfirmModalOpen, editorOpen, editorContent } = this.state;
-      console.log(styles);
       return (
         <div>
           <Modal
@@ -181,28 +170,26 @@ export default class Options extends React.Component {
               </Button>
             </div>
           </Modal>
-          <Grid container>
+          <Grid container style={{padding: '5px'}}>
             <Grid item xs={12} md={6}>
               <Typography variant="title">Your styles:</Typography>
               <div>
                 <List>
                   { Object.keys(styles).length > 0 ? Object.keys(styles).map((url, i) => (
-                                          <ListItem key={i}>
-                                              <ListItemAvatar>
-                                              <Avatar>
-                                                  <Web />
-                                              </Avatar>
-                                              </ListItemAvatar>
-                                              <ListItemText primary={url} />
-                                              <ListItemSecondaryAction>
-                                              <IconButton onClick={() => this.onEdit(url)}>
-                                                  <Edit />
-                                              </IconButton>
-                                              <IconButton onClick={() => this.onDelete(url)}>
-                                                  <DeleteIcon />
-                                              </IconButton>
-                                              </ListItemSecondaryAction>
-                                          </ListItem>
+                                          <div>
+                                            <ListItem key={i}>
+                                                <ListItemText secondary={<a href={url}>{url}</a>}/>
+                                                <ListItemSecondaryAction>
+                                                <IconButton onClick={() => this.onEdit(url)}>
+                                                    <Edit />
+                                                </IconButton>
+                                                <IconButton onClick={() => this.onDelete(url)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                                </ListItemSecondaryAction>
+                                            </ListItem>
+                                            <Divider />
+                                          </div>
                                           )) :
                                           'No styles'
                   }

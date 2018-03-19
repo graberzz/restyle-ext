@@ -124,8 +124,6 @@ const NodeSelector = (root,
             }
             this._selectedNodes = [];
 
-            console.log(getParentClassSelector(this.selectedNode))
-
             const nodesWithSameClasses = document.querySelectorAll(getParentClassSelector(this.selectedNode));
             for (let node of nodesWithSameClasses) {
                 if (!this._validNode(node)) continue;

@@ -17,7 +17,7 @@
   },
   "options_ui": {
     "page": "options.html",
-    "chrome_style": false  
+    "chrome_style": true  
   },
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
