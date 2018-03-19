@@ -1,8 +1,8 @@
 import { messages } from './helpers/utils';
 
 const icons = {
-    default: 'img/icon-34.png',
-    active: 'img/icon-34-active.png'
+    default: 'img/ReSTYLE_38.png',
+    active: 'img/ReSTYLE_active_38.png'
 };
 
 const setIcon = icon => chrome.browserAction.setIcon({path: icon});
@@ -23,7 +23,7 @@ const init = ([currentTab]) => {
         const msg = editMode ?
                     messages.EDIT_MODE_ON :
                     messages.EDIT_MODE_OFF;
-
+        console.log(icon);
         sendMsg(tabId, msg);
         setIcon(icon);
     }

@@ -1,7 +1,7 @@
 {
   "name": "ReSTYLE",
-  "version": "0.0.1",
-  "description": "Google Chrome extension",
+  "version": "1.0.0",
+  "description": "Лёгкий и удобный способ подстроить под себя любые сайты.",
   "scripts": {
     "build": "node utils/build.js",
     "start": "node utils/webserver.js"
