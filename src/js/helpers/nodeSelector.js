@@ -1,13 +1,13 @@
-import { setStyle, getClassSelector, OUTLINE_WIDTH } from './utils';
+import { setStyle, getClassSelector, getParentClassSelector, OUTLINE_WIDTH } from './utils';
 
 const defaultHoverStyle = {
-	outlineStyle: 'solid',
-	outlineColor: 'red',
-	outlineWidth: OUTLINE_WIDTH + 'px',
+    outlineStyle: 'solid',
+    outlineColor: 'red',
+    outlineWidth: OUTLINE_WIDTH + 'px',
 };
 
 const defaultSelectedStyle = {
-	outlineColor: 'orange',
+    outlineColor: 'orange',
 };
 
 
@@ -22,126 +22,116 @@ const defaultSelectedStyle = {
  */
 
 const NodeSelector = (root,
-					  onSelect = _ => _,
-					  except = _ => false,
-					  hoverStyle = defaultHoverStyle,
-					  selectedStyle = defaultSelectedStyle) => {
+                      onSelect = _ => _,
+                      except = _ => false,
+                      hoverStyle = defaultHoverStyle,
+                      selectedStyle = defaultSelectedStyle) => {
 
-	const nodeSelector = {
-		selectedNode: null,
-		_selectedNodes: [],
-		hoveredNode: null,
-				
-		enable() {
-			this.selectedNode = null;
-	        root.addEventListener("mouseout", this._onMouseOut, true);
-			root.addEventListener("mouseover", this._onMouseOver, true);
-	        root.addEventListener("click", this._onMouseClick, true);
-		},
+    const nodeSelector = {
+        selectedNode: null,
+        _selectedNodes: [],
+        hoveredNode: null,
+                
+        enable() {
+            this.selectedNode = null;
+            root.addEventListener("mouseout", this._onMouseOut, true);
+            root.addEventListener("mouseover", this._onMouseOver, true);
+            root.addEventListener("click", this._onMouseClick, true);
+        },
 
-		disable() {
-			if (this.selectedNode) {
-				setStyle(this.selectedNode, {
-					outline: '',
-				});
-			}
-			if (this.hoveredNode) {
-				setStyle(this.hoveredNode, {
-					outline: '',
-				});
-			}
-			for (let node of this._selectedNodes) {
-				setStyle(node, {
-					outline: ''
-				});
-			}
-				this._selectedNodes = [];
-			
-			this.enabled = false;
-			this.selectedNode = null;
+        disable() {
+            if (this.selectedNode) {
+                setStyle(this.selectedNode, {
+                    outline: '',
+                });
+            }
+            if (this.hoveredNode) {
+                setStyle(this.hoveredNode, {
+                    outline: '',
+                });
+            }
+            for (let node of this._selectedNodes) {
+                setStyle(node, {
+                    outline: ''
+                });
+            }
+                this._selectedNodes = [];
+            
+            this.enabled = false;
+            this.selectedNode = null;
 
-	        root.removeEventListener("mouseout", this._onMouseOut, true);
-			root.removeEventListener("mouseover", this._onMouseOver, true);
-	        root.removeEventListener("click", this._onMouseClick, true);
-		},
+            root.removeEventListener("mouseout", this._onMouseOut, true);
+            root.removeEventListener("mouseover", this._onMouseOver, true);
+            root.removeEventListener("click", this._onMouseClick, true);
+        },
 
-		_validNode(node) {
-			return node !== this.selectedNode &&
-				   !except(node);;
-		},
+        _validNode(node) {
+            return node !== this.selectedNode &&
+                   !except(node);;
+        },
 
-		_onMouseOut(e) {
-			if (!this._validNode(e.target)) return;
+        _onMouseOut(e) {
+            if (!this._validNode(e.target)) return;
 
-			this.hoveredNode = null;
-			setStyle(e.target, {
-				outline: ''
-			});			
-		},
+            this.hoveredNode = null;
+            setStyle(e.target, {
+                outline: ''
+            });         
+        },
 
-		_onMouseOver(e) {
-			if (!this._validNode(e.target)) return;
-			
-			this.hoveredNode = e.target;
-			setStyle(e.target, hoverStyle);
-		},
+        _onMouseOver(e) {
+            if (!this._validNode(e.target)) return;
+            
+            this.hoveredNode = e.target;
+            setStyle(e.target, hoverStyle);
+        },
 
-		_onMouseClick(e) {
-			if (!this._validNode(e.target)) return;
+        _onMouseClick(e) {
+            if (!this._validNode(e.target)) return;
 
-			e.preventDefault();
-			e.stopImmediatePropagation();
+            e.preventDefault();
+            e.stopImmediatePropagation();
 
-			if (this.selectedNode) {
-				setStyle(this.selectedNode, {
-					outline: ''
-				});	
-			}
+            if (this.selectedNode) {
+                setStyle(this.selectedNode, {
+                    outline: ''
+                }); 
+            }
 
-			this.pastSelectedNode = this.selectedNode;
-			this.selectedNode = e.target;
+            this.pastSelectedNode = this.selectedNode;
+            this.selectedNode = e.target;
 
-			while (this.selectedNode.parentElement.children.length < 2) {
-				this.selectedNode = this.selectedNode.parentElement
-			}
+            onSelect(this.pastSelectedNode, this.selectedNode);
 
-			onSelect(this.pastSelectedNode, this.selectedNode);
+            // selecting all the nodes with provided node's class selector
+            // for (let node of this._selectedNodes) {
+            //     setStyle(node, {
+            //         outline: ''
+            //     });
+            // }
+            // this._selectedNodes = [];
 
-			console.log(this.selectedNode)
+            // const nodesWithSameClasses = document.querySelectorAll(getClassSelector(this.selectedNode));
+            // for (let node of nodesWithSameClasses) {
+            //     if (!this._validNode(node)) continue;
+            //     setStyle(node, Object.assign({},
+            //         hoverStyle,
+            //         selectedStyle));
+            //     this._selectedNodes.push(node);
+            // }
+            // ---
+            setStyle(this.selectedNode, Object.assign({},
+                hoverStyle,
+                selectedStyle));
+                
+        },
+    };
 
-			// selecting all the nodes with provided node's class selector
-			for (let node of this._selectedNodes) {
-				setStyle(node, {
-					outline: ''
-				});
-			}
-			this._selectedNodes = [];
+    nodeSelector._onMouseClick = nodeSelector._onMouseClick.bind(nodeSelector);
+    nodeSelector._onMouseOut = nodeSelector._onMouseOut.bind(nodeSelector);
+    nodeSelector._onMouseOver = nodeSelector._onMouseOver.bind(nodeSelector);
 
-			const tagStr = getClassSelector(this.selectedNode);
-
-			if (tagStr.match(/div.\w*/)){
-				const nodesWithSameClasses = document.querySelectorAll(getClassSelector(this.selectedNode)); // ZACHEM VSTAVLYAT E.TARGET ESLI U TYA I TAK UZHE EST SELECTED NODE
-				for (let node of nodesWithSameClasses) {
-					if (!this._validNode(node)) continue;
-					setStyle(node, Object.assign({},
-						hoverStyle,
-						selectedStyle));
-					this._selectedNodes.push(node);
-				}
-			}
-			// ---
-			setStyle(this.selectedNode, Object.assign({},
-				hoverStyle,
-				selectedStyle));
-				
-		},
-	};
-
-	nodeSelector._onMouseClick = nodeSelector._onMouseClick.bind(nodeSelector);
-	nodeSelector._onMouseOut = nodeSelector._onMouseOut.bind(nodeSelector);
-	nodeSelector._onMouseOver = nodeSelector._onMouseOver.bind(nodeSelector);
-
-	return nodeSelector;
+    return nodeSelector;
 };
 
 export default NodeSelector;

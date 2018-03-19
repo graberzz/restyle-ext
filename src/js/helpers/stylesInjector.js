@@ -2,6 +2,7 @@ import CSSJSON from '../lib/cssjson';
 import storageManager from './storageManager';
 
 const injectStyles = (url) => {
+
     storageManager.getStylesheet((style) => {
         console.log(style);
         if (!style) return;

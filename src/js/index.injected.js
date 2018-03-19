@@ -14,7 +14,7 @@ const onNodeSelect = (prevNode, node) => {
 	if (prevNode) {
 		prevNode.setAttribute('contenteditable', false);
 	}
-	node.setAttribute('contenteditable', true);
+	// node.setAttribute('contenteditable', true);
 };
 
 const nodeSelector = NodeSelector(document.body,
@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener(({msg}) => {
 
 		case messages.EDIT_MODE_OFF:
 			if (nodeSelector.selectedNode) {
-				nodeSelector.selectedNode.setAttribute('contenteditable', false);
+				// nodeSelector.selectedNode.setAttribute('contenteditable', false);
 			}
 			nodeSelector.disable();
     		Mounter.unmount();

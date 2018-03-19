@@ -25,31 +25,38 @@ const getDefaultStyle = node => getComputedStyle(node);
 const getClassSelector = node => node.tagName.toLowerCase() + (node.classList.length > 0 ? 
                                                               '.' + [...node.classList].join('.') :
                                                               '');
+const getParentClassSelector = node => {
+    let parent = node
+    let parentString = getClassSelector(parent)
+    while (parent.parentElement.children.length < 2) {
+        parent = parent.parentElement
+        parentString = getClassSelector(parent) + " " + parentString
+    }
+    return parentString
+} 
 
 const setStyle = (node, style, addToStorage = false, applytoAll) => {    
     Object.entries(style).forEach(([key, value]) => (node.style[key] = value));
     applytoAll = applytoAll || false;
 
-    const tagStr = getClassSelector(node);
-
-    if (tagStr.match(/div.\w*/)){
-        if (applytoAll) {
-            const nodes = document.querySelectorAll(getClassSelector(node));
-            for (let n of nodes) {
-                Object.entries(style).forEach(([key, value]) => (n.style[key] = value));
-            }
+    if (applytoAll) {
+        const nodes = document.querySelectorAll(getParentClassSelector(node));
+        for (let n of nodes) {
+            Object.entries(style).forEach(([key, value]) => (n.style[key] = value));
         }
     }
+
     if (!addToStorage) return;
 
     style = {
-        [getClassSelector(node)]: {
+        [getParentClassSelector(node)]: {
             attributes: Object.entries(style).reduce((obj, [k, v]) => { obj[formatToCSSProp(k)] = v;
                                                                         return obj;
                                                                       }, {}),
             children: {}
         } 
     };
+
     storageManager.accumulateStyles(style);
 }
 

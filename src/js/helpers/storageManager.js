@@ -1,4 +1,5 @@
 import deepMerge from 'deepmerge';
+import CSSJSON from '../lib/cssjson';
 
 const storageManager = {
     _accumulatedStyles: {
@@ -61,7 +62,7 @@ const storageManager = {
                 // reset acc
             });
         });
-    }
+    },
 };
 
 export default storageManager;

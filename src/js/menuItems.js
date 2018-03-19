@@ -12,6 +12,7 @@ import FontSizeSelect from './components/MenuInputs/FontSizeSelect';
 import FontFamilySelect from './components/MenuInputs/FontFamilySelect';
 import SaveAsPNGButton from './components/MenuInputs/SaveAsPNGButton';
 import HideNodeButton from "./components/MenuInputs/HideNodeButton";
+import DeleteNodeButton from "./components/MenuInputs/DeleteNodeButton";
 import SaveStylesButton from './components/MenuInputs/SaveStylesButton';
 import ResetStyleButton from './components/MenuInputs/ResetStylesButton';
 import LineHeightSelect from './components/MenuInputs/LineHeightSelect';
@@ -51,6 +52,9 @@ const menuItems = (node) => ([
             },
             {
                 component: <HideNodeButton node={node} />
+            },
+            {
+                component: <DeleteNodeButton node={node} />
             },
         ]
     },
