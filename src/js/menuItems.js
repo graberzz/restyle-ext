@@ -16,6 +16,7 @@ import DeleteNodeButton from "./components/MenuInputs/DeleteNodeButton";
 import SaveStylesButton from './components/MenuInputs/SaveStylesButton';
 import ResetStyleButton from './components/MenuInputs/ResetStylesButton';
 import LineHeightSelect from './components/MenuInputs/LineHeightSelect';
+import OptionsLinkButton from './components/MenuInputs/OptionsLinkButton';
 
 const menuItems = (node) => ([
     {
@@ -69,6 +70,9 @@ const menuItems = (node) => ([
             },
             {
                 component: <ResetStyleButton node={node} />
+            },
+            {
+                component: <OptionsLinkButton node={node} />
             }
         ]
     }

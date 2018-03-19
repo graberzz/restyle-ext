@@ -3,7 +3,8 @@ import storageManager from './storageManager';
 const OUTLINE_WIDTH = 2;
 const messages = {
 	EDIT_MODE_ON: 'EDIT_MODE_ON',
-	EDIT_MODE_OFF: 'EIT_MODE_OFF',
+    EDIT_MODE_OFF: 'EIT_MODE_OFF',
+    OPTIONS_OPEN: 'OPTIONS_OPEN',
 };
 
 const formatToCSSProp = prop => {

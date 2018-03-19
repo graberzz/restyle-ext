@@ -5,32 +5,40 @@ const icons = {
     active: 'img/ReSTYLE_active_38.png'
 };
 
-const setIcon = icon => chrome.browserAction.setIcon({path: icon});
-const sendMsg = (tabId, msg) => chrome.tabs.sendMessage(tabId, {msg});
+const setIcon = icon => chrome.browserAction.setIcon({ path: icon });
+const sendMsg = (tabId, msg) => chrome.tabs.sendMessage(tabId, { msg });
 
 const init = ([currentTab]) => {
     let activeTabId = currentTab.id,
         editMode = false;
-    console.log("ACTIVETAB:", activeTabId);
 
     const toggleEditMode = tabId => {
         editMode = !editMode;
-        
+
         const icon = editMode ?
-                     icons.active :
-                     icons.default;
+            icons.active :
+            icons.default;
 
         const msg = editMode ?
-                    messages.EDIT_MODE_ON :
-                    messages.EDIT_MODE_OFF;
-        console.log(icon);
+            messages.EDIT_MODE_ON :
+            messages.EDIT_MODE_OFF;
+
         sendMsg(tabId, msg);
         setIcon(icon);
     }
 
-    const onIconClick = ({id}) => toggleEditMode(id);
+    const onIconClick = ({ id }) => toggleEditMode(id);
 
-    const onTabSwitch = ({tabId}) => {
+    const onMessage = ({ msg }, { tab }) => {
+        switch (msg) {
+            case messages.OPTIONS_OPEN:
+                chrome.runtime.openOptionsPage();
+                return;
+        }
+    };
+
+
+    const onTabSwitch = ({ tabId }) => {
         if (editMode) {
             toggleEditMode(activeTabId);
         }
@@ -38,12 +46,13 @@ const init = ([currentTab]) => {
     }
 
     chrome.browserAction.onClicked.addListener(onIconClick);
+    chrome.runtime.onMessage.addListener(onMessage);
     chrome.tabs.onActivated.addListener(onTabSwitch);
 }
 
 chrome.tabs.query(
     {
         currentWindow: true,
-        active : true
+        active: true
     },
     init);
