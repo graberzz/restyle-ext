@@ -70,8 +70,19 @@ const NodeSelector = (root,
                    !except(node);;
         },
 
+        _validNodes(node) {
+            if (this._selectedNodes.length === 0) return true;
+            let bool = true
+            for (let i = 0; i < this._selectedNodes.length; i++) {
+                if (this._selectedNodes[i] === node)
+                    bool = false
+            }
+            return bool;
+        },
+
         _onMouseOut(e) {
             if (!this._validNode(e.target)) return;
+            if (!this._validNodes(e.target)) return;
 
             this.hoveredNode = null;
             setStyle(e.target, {
@@ -81,6 +92,7 @@ const NodeSelector = (root,
 
         _onMouseOver(e) {
             if (!this._validNode(e.target)) return;
+            if (!this._validNodes(e.target)) return;
             
             this.hoveredNode = e.target;
             setStyle(e.target, hoverStyle);
@@ -88,6 +100,7 @@ const NodeSelector = (root,
 
         _onMouseClick(e) {
             if (!this._validNode(e.target)) return;
+            if (!this._validNodes(e.target)) return;
 
             e.preventDefault();
             e.stopImmediatePropagation();
@@ -104,21 +117,23 @@ const NodeSelector = (root,
             onSelect(this.pastSelectedNode, this.selectedNode);
 
             // selecting all the nodes with provided node's class selector
-            // for (let node of this._selectedNodes) {
-            //     setStyle(node, {
-            //         outline: ''
-            //     });
-            // }
-            // this._selectedNodes = [];
+            for (let node of this._selectedNodes) {
+                setStyle(node, {
+                    outline: ''
+                });
+            }
+            this._selectedNodes = [];
 
-            // const nodesWithSameClasses = document.querySelectorAll(getClassSelector(this.selectedNode));
-            // for (let node of nodesWithSameClasses) {
-            //     if (!this._validNode(node)) continue;
-            //     setStyle(node, Object.assign({},
-            //         hoverStyle,
-            //         selectedStyle));
-            //     this._selectedNodes.push(node);
-            // }
+            console.log(getParentClassSelector(this.selectedNode))
+
+            const nodesWithSameClasses = document.querySelectorAll(getParentClassSelector(this.selectedNode));
+            for (let node of nodesWithSameClasses) {
+                if (!this._validNode(node)) continue;
+                setStyle(node, Object.assign({},
+                    hoverStyle,
+                    selectedStyle));
+                this._selectedNodes.push(node);
+            }
             // ---
             setStyle(this.selectedNode, Object.assign({},
                 hoverStyle,

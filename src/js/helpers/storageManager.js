@@ -29,11 +29,11 @@ const storageManager = {
     },
 
     accumulateStyles(stylesheet) {
-        console.clear();
-        console.log('ACC: ', this._accumulatedStyles);
-        console.log('STYLE: ', stylesheet);
+        // console.clear();
+        // console.log('ACC: ', this._accumulatedStyles);
+        // console.log('STYLE: ', stylesheet);
         const merged = deepMerge(this._accumulatedStyles.children, stylesheet);
-        console.log('MERGED: ', merged);
+        // console.log('MERGED: ', merged);
         this._accumulatedStyles.children = merged;
     },
 

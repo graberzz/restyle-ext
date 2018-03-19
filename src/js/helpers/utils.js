@@ -22,10 +22,11 @@ const rgbToHex = rgb => {
 
 const getDefaultStyle = node => getComputedStyle(node);
 
-const getClassSelector = node => node.tagName.toLowerCase() + (node.classList.length > 0 ? 
-                                                              '.' + [...node.classList].join('.') :
-                                                              '');
-const getParentClassSelector = node => {
+const getClassSelector = node => node.tagName.toLowerCase() + 
+                                (node.classList.length > 0 ? '.' + [...node.classList].join('.') : '') + 
+                                ((node.id.toString() !== '') && node.classList.length === 0 ? '#' + node.id : '');
+
+const getParentClassSelector = function (node) {
     let parent = node
     let parentString = getClassSelector(parent)
     while (parent.parentElement.children.length < 2) {
@@ -65,6 +66,7 @@ export {
 	getDefaultStyle,
     setStyle,
     getClassSelector,
+    getParentClassSelector,
     rgbToHex,
     OUTLINE_WIDTH,
 }
