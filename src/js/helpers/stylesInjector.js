@@ -4,7 +4,7 @@ import storageManager from './storageManager';
 const injectStyles = (url) => {
 
     storageManager.getStylesheet((style) => {
-        console.log(style);
+        // console.log(style);
         if (!style) return;
         if (!style.styles) return;
         if (!style.styles[url]) return;
