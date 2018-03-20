@@ -52,7 +52,7 @@ const setStyle = (node, style, addToStorage = false, applytoAll) => {
 
     style = {
         [getParentClassSelector(node)]: {
-            attributes: Object.entries(style).reduce((obj, [k, v]) => { obj[formatToCSSProp(k)] = v;
+            attributes: Object.entries(style).reduce((obj, [k, v]) => { obj[formatToCSSProp(k)] = v + ' !important';
                                                                         return obj;
                                                                       }, {}),
             children: {}

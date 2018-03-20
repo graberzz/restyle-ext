@@ -73,8 +73,11 @@ export default class Options extends React.Component {
     componentDidMount() {
       // TODO: obtain styles from storageManager
       storageManager.getStylesheet(styles => {
-        this.setState({
-          styles: styles.styles ||  {}// :DDDD
+        this.setState(oldState => {
+          console.log(oldState, styles);
+          return {
+            styles: styles || {}// :DDDD
+          }
         });
       })
     }
@@ -176,8 +179,8 @@ export default class Options extends React.Component {
               <div>
                 <List>
                   { Object.keys(styles).length > 0 ? Object.keys(styles).map((url, i) => (
-                                          <div>
-                                            <ListItem key={i}>
+                                          <div key={i}>
+                                            <ListItem>
                                                 <ListItemText secondary={<a href={url}>{url}</a>}/>
                                                 <ListItemSecondaryAction>
                                                 <IconButton onClick={() => this.onEdit(url)}>
