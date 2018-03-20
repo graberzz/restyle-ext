@@ -1,6 +1,6 @@
 {
   "name": "ReSTYLE",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Easy way to customize your web pages",
   "scripts": {
     "build": "node utils/build.js",
