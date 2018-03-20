@@ -23,8 +23,15 @@ const storageManager = {
     },
 
     getStylesheet(callback) {
-        chrome.storage.sync.get(['styles'], styles => { 
-            callback(styles.styles);
+        chrome.storage.sync.get(['styles'], styles => {
+            // console.log(styles)
+            if (styles.styles === undefined) {
+                this.clear();
+                callback({styles: {}});
+            }
+            else {
+                callback(styles);
+            }
         });
     },
 

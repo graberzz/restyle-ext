@@ -74,9 +74,9 @@ export default class Options extends React.Component {
       // TODO: obtain styles from storageManager
       storageManager.getStylesheet(styles => {
         this.setState(oldState => {
-          console.log(oldState, styles);
+          // console.log(oldState, styles);
           return {
-            styles: styles || {}// :DDDD
+            styles: styles.styles || {}// :DDDD
           }
         });
       })
