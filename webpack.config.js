@@ -1,100 +1,111 @@
-var webpack = require("webpack"),
-    path = require("path"),
-    fileSystem = require("fs"),
-    env = require("./utils/env"),
-    CleanWebpackPlugin = require("clean-webpack-plugin"),
-    CopyWebpackPlugin = require("copy-webpack-plugin"),
-    HtmlWebpackPlugin = require("html-webpack-plugin"),
-    WriteFilePlugin = require("write-file-webpack-plugin");
+const webpack = require('webpack');
+const path = require('path');
+const autoprefixer = require('autoprefixer');
+const postCssFlexBugsFixes = require('postcss-flexbugs-fixes');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 
-// load the secrets
-var alias = {};
-
-var secretsPath = path.join(__dirname, ("secrets." + env.NODE_ENV + ".js"));
-
-var fileExtensions = ["jpg", "jpeg", "png", "gif", "eot", "otf", "svg", "ttf", "woff", "woff2"];
-
-if (fileSystem.existsSync(secretsPath)) {
-  alias["secrets"] = secretsPath;
-}
-
-var options = {
+module.exports = {
+  devtool: 'cheap-module-source-map',
   entry: {
-    background: path.join(__dirname, "src", "js", "background.js"),
-    injected: path.join(__dirname, "src", "js", "index.injected.js"),
-    options: path.join(__dirname, "src", "js", "options", "App.js")
+    content: path.resolve(__dirname, 'src/content/content.js'),
+    background: path.resolve(__dirname, 'src/background/background.js'),
+    popup: path.resolve(__dirname, 'src/popup/popup.js'),
+    options: path.resolve(__dirname, 'src/options/options.js'),
   },
   output: {
-    path: path.join(__dirname, "build"),
-    filename: "[name].bundle.js"
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js',
   },
   module: {
     rules: [
       {
-        test: /\.css$/,
-        loader: "style-loader!css-loader",
-        exclude: /node_modules/
+        oneOf: [
+          {
+            test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+            loader: require.resolve('url-loader'),
+            options: {
+              limit: 10000,
+              name: 'media/[name].[hash:8].[ext]',
+            },
+          },
+          {
+            test: /\.(js|jsx|mjs)$/,
+            include: path.resolve(__dirname, 'src'),
+            loader: require.resolve('babel-loader'),
+            options: {
+              cacheDirectory: true,
+            },
+          },
+          {
+            test: /\.css$/,
+            use: [
+              require.resolve('style-loader'),
+              {
+                loader: require.resolve('css-loader'),
+                options: {
+                  importLoaders: 1,
+                },
+              },
+              {
+                loader: require.resolve('postcss-loader'),
+                options: {
+                  ident: 'postcss',
+                  plugins: () => [
+                    postCssFlexBugsFixes,
+                    autoprefixer({
+                      browsers: [
+                        '>1%',
+                        'last 4 versions',
+                        'Firefox ESR',
+                        'not ie < 9',
+                      ],
+                      flexbox: 'no-2009',
+                    }),
+                  ],
+                },
+              },
+            ],
+          },
+          {
+            exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
+            loader: require.resolve('file-loader'),
+            options: {
+              name: 'media/[name].[hash:8].[ext]',
+            },
+          },
+        ],
       },
-      {
-        test: new RegExp('\.(' + fileExtensions.join('|') + ')$'),
-        loader: "file-loader?name=[name].[ext]",
-        exclude: /node_modules/
-      },
-      {
-        test: /\.html$/,
-        loader: "html-loader",
-        exclude: /node_modules/
-      },
-      {
-        test: /\.(js|jsx)$/,
-        loader: "babel-loader",
-        exclude: /node_modules/
-      }
-    ]
-  },
-  resolve: {
-    alias: alias,
-    extensions: fileExtensions.map(extension => ("." + extension)).concat([".jsx", ".js", ".css"])
+    ],
   },
   plugins: [
-    // clean the build folder
-    new CleanWebpackPlugin(["build"]),
-    // expose and write the allowed env vars on the compiled bundle
-    new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify(env.NODE_ENV)
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development',
+      DEBUG: false,
     }),
-    new CopyWebpackPlugin([{
-      from: "src/manifest.json",
-      transform: function (content, path) {
-        // generates the manifest file using the package.json informations
-        return Buffer.from(JSON.stringify({
-          description: process.env.npm_package_description,
-          version: process.env.npm_package_version,
-          ...JSON.parse(content.toString())
-        }))
-      }
-    },
-    {
-      from: "src/img/",
-      to: "img/",
-    }
+    new CleanWebpackPlugin((['dist'])),
+    new HtmlWebpackPlugin({
+      chunks: ['options'],
+      filename: 'options.html',
+      template: path.resolve(__dirname, 'src/options/options.html'),
+    }),
+    new HtmlWebpackPlugin({
+      chunks: ['popup'],
+      filename: 'popup.html',
+      template: path.resolve(__dirname, 'src/popup/popup.html'),
+    }),
+    new CopyWebpackPlugin([
+      {
+        from: 'src/manifest.json',
+      },
+      {
+        from: 'src/icons',
+        to: 'icons',
+      },
     ]),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "background.html"),
-      filename: "background.html",
-      chunks: ["background"]
-    }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "options.html"),
-      filename: "options.html",
-      chunks: ["options"]
-    }),
-    new WriteFilePlugin()
-  ]
+    new ChromeExtensionReloader(),
+  ],
+  mode: 'development',
 };
-
-if (env.NODE_ENV === "development") {
-  options.devtool = "cheap-module-eval-source-map";
-}
-
-module.exports = options;
