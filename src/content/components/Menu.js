@@ -16,6 +16,7 @@ import TextFieldsIcon from '@material-ui/icons/TextFields';
 import SquareIcon from '@material-ui/icons/CropSquare';
 import SaveIcon from '@material-ui/icons/Save';
 import BuildIcon from '@material-ui/icons/Build';
+import UnitInput from './UnitInput';
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -86,6 +87,7 @@ const styles = theme => ({
 class Menu extends React.Component {
   state = {
     open: false,
+    u: 'px',
   };
 
   handleDrawerOpen = () => {
@@ -95,6 +97,12 @@ class Menu extends React.Component {
   handleDrawerClose = () => {
     this.setState({ open: false });
   };
+
+  onUnitChange = (e) => {
+    this.setState({
+      u: e.target.value,
+    });
+  }
 
   render() {
     const { classes, theme } = this.props;
@@ -164,7 +172,8 @@ class Menu extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <Typography noWrap>{'You think water moves fast? You should see ice.'}</Typography>
+            <UnitInput value={10} unit={this.state.u} label="Size" onUnitChange={this.onUnitChange}/>
+            <UnitInput value={10} unit={this.state.u} label="Size" onUnitChange={this.onUnitChange}/>
         </main>
       </div>
     );
