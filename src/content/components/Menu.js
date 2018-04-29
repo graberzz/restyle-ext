@@ -17,6 +17,8 @@ import SquareIcon from '@material-ui/icons/CropSquare';
 import SaveIcon from '@material-ui/icons/Save';
 import BuildIcon from '@material-ui/icons/Build';
 import UnitInput from './UnitInput';
+import ColorPicker from './ColorPicker';
+
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -156,7 +158,7 @@ class Menu extends React.Component {
           </List>
           <Divider />
           <List>
-          <ListItem button>
+            <ListItem button>
               <ListItemIcon>
                 <SaveIcon />
               </ListItemIcon>
@@ -172,8 +174,9 @@ class Menu extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-            <UnitInput value={10} unit={this.state.u} label="Size" onUnitChange={this.onUnitChange}/>
-            <UnitInput value={10} unit={this.state.u} label="Size" onUnitChange={this.onUnitChange}/>
+          <UnitInput value={10} unit={this.state.u} label="Size" onUnitChange={this.onUnitChange} />
+          <UnitInput value={10} unit={this.state.u} label="Size" onUnitChange={this.onUnitChange} />
+          <ColorPicker label="Color"/>
         </main>
       </div>
     );

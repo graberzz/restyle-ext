@@ -14,10 +14,22 @@ const styles = {
   },
 };
 
+const onNewTheme = () => {
+  chrome.tabs.query(
+    {
+      currentWindow: true,
+      active: true,
+    },
+    ([currentTab]) => {
+      chrome.tabs.sendMessage(currentTab.id, { msg: 'EDIT_MODE_ON' });
+    },
+  );  
+};
+
 const Menu = ({ classes }) => (
   <BottomNavigation className={classes.menu}
     showLabels>
-    <BottomNavigationAction label="New" icon={<AddIcon />} />
+    <BottomNavigationAction onClick={onNewTheme} label="New" icon={<AddIcon />} />
     <BottomNavigationAction label="Download" icon={<DownloadIcon />} />
     <BottomNavigationAction label="Manage" icon={<SettingsIcon />} />
   </BottomNavigation>

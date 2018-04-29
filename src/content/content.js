@@ -18,6 +18,6 @@ chrome.runtime.onMessage.addListener(({ msg }) => {
       mounter.unmount();
       break;
 
-    default: throw new Error('Unhandled message');
+    default: throw new Error(`Unhandled message: ${msg}`);
   }
 });
