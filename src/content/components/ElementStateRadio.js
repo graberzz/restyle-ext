@@ -1,13 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
+import { withStyles } from 'material-ui/styles';
 
-const ElementStateRadio = ({ selected, onClick }) => (
-  <div>
-    <Typography variant="title">
-      State:
-    </Typography>
+const styles = {
+  elemState: {
+    display: 'flex',
+    flexDirection: 'row-reverse',
+  },
+};
+
+const ElementStateRadio = ({ selected, onClick, classes }) => (
+  <div className={classes.elemState}>
     <Button variant={selected === 'default' ? 'raised' : 'flat'}
       color="primary"
       onClick={() => onClick('default')}>
@@ -35,4 +39,4 @@ ElementStateRadio.defaultProps = {
   selected: 'default',
 };
 
-export default ElementStateRadio;
+export default withStyles(styles)(ElementStateRadio);

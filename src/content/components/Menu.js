@@ -18,13 +18,16 @@ import SaveIcon from '@material-ui/icons/Save';
 import BuildIcon from '@material-ui/icons/Build';
 import UnitInput from './UnitInput';
 import ColorPicker from './ColorPicker';
+import MultiInput from './MultiInput';
+import Select from './Select';
 
 const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    height: 430,
+    minHeight: 430,
+    maxHeight: 800,
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
@@ -54,6 +57,7 @@ const styles = theme => ({
   },
   drawerPaper: {
     position: 'relative',
+    height: '100%',
     whiteSpace: 'nowrap',
     width: drawerWidth,
     transition: theme.transitions.create('width', {
@@ -80,17 +84,37 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   content: {
+    width: 294,
+    boxSizing: 'border-box',
+    overflow: 'auto',
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
   },
 });
 
+
 class Menu extends React.Component {
   state = {
     open: false,
+    selectedIndex: 0,
     u: 'px',
-  };
+  }
+
+  list = [
+    <React.Fragment>
+      <UnitInput value={10} unit={this.state.u} label="Size" onUnitChange={this.onUnitChange} />
+      <UnitInput value={10} unit={this.state.u} label="Line Height" onUnitChange={this.onUnitChange} />
+      <Select options={['Arial', 'Consolas']} value="Arial" label="Family" />
+      <ColorPicker label="Color" />
+    </React.Fragment>,
+    <React.Fragment>
+      <MultiInput label="Margin" />
+      <MultiInput label="Margin" />
+      <MultiInput label="Margin" />
+      <MultiInput label="Padding" />
+    </React.Fragment>,
+  ]
 
   handleDrawerOpen = () => {
     this.setState({ open: true });
@@ -106,8 +130,15 @@ class Menu extends React.Component {
     });
   }
 
+  onListItemClick = (index) => {
+    this.setState({
+      selectedIndex: index,
+    });
+  }
+
   render() {
     const { classes, theme } = this.props;
+    const { selectedIndex } = this.state;
 
     return (
       <div className={classes.root}>
@@ -143,13 +174,13 @@ class Menu extends React.Component {
           </div>
           <Divider />
           <List>
-            <ListItem button>
+            <ListItem onClick={() => this.onListItemClick(0)} button>
               <ListItemIcon>
                 <TextFieldsIcon />
               </ListItemIcon>
               <ListItemText primary="Text" />
             </ListItem>
-            <ListItem button>
+            <ListItem onClick={() => this.onListItemClick(1)} button>
               <ListItemIcon>
                 <SquareIcon />
               </ListItemIcon>
@@ -158,13 +189,13 @@ class Menu extends React.Component {
           </List>
           <Divider />
           <List>
-            <ListItem button>
+            <ListItem onClick={() => this.onListItemClick(2)} button>
               <ListItemIcon>
                 <SaveIcon />
               </ListItemIcon>
               <ListItemText primary="Save" />
             </ListItem>
-            <ListItem button>
+            <ListItem onClick={() => this.onListItemClick(3)} button>
               <ListItemIcon>
                 <BuildIcon />
               </ListItemIcon>
@@ -174,9 +205,7 @@ class Menu extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <UnitInput value={10} unit={this.state.u} label="Size" onUnitChange={this.onUnitChange} />
-          <UnitInput value={10} unit={this.state.u} label="Size" onUnitChange={this.onUnitChange} />
-          <ColorPicker label="Color"/>
+          {this.list[selectedIndex]}
         </main>
       </div>
     );

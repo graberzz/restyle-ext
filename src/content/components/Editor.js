@@ -5,21 +5,26 @@ import SelectIcon from '@material-ui/icons/Launch';
 import LeftIcon from '@material-ui/icons/ArrowBack';
 import RightIcon from '@material-ui/icons/ArrowForward';
 import Tooltip from 'material-ui/Tooltip';
+import { withStyles } from 'material-ui/styles';
 import ElementStateRadio from './ElementStateRadio';
 import Menu from './Menu';
 
-const style = {
-  position: 'fixed',
-  top: 0,
-  left: 'auto',
-  right: 0,
-  zIndex: 1337,
-};
-
-const styleLeft = {
-  ...style,
-  left: 0,
-  right: 'auto',
+const styles = {
+  editor: {
+    position: 'fixed',
+    top: 0,
+    left: 'auto',
+    right: 0,
+    zIndex: 1500,
+  },
+  editorLeft: {
+    left: 0,
+    right: 'auto',
+  },
+  top: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
 };
 
 class Editor extends React.Component {
@@ -41,25 +46,27 @@ class Editor extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     const { elementState, stick } = this.state;
 
     return (
-      <Paper style={stick === 'right' ? style : styleLeft}>
-        <Tooltip title="Select element">
-          <IconButton>
-            <SelectIcon />
+      <Paper className={classes.editor + ' ' + (stick !== 'right' ? classes.editorLeft : '')}>
+        <div className={classes.top}>
+          <Tooltip title="Select element">
+            <IconButton>
+              <SelectIcon />
+            </IconButton>
+          </Tooltip>
+          <IconButton onClick={this.onStickChange}>
+            {stick === 'right' ? <LeftIcon /> : <RightIcon />}
           </IconButton>
-        </Tooltip>
-        <IconButton onClick={this.onStickChange}>
-          {stick === 'right' ? <LeftIcon /> : <RightIcon />}
-        </IconButton>
+        </div>
         <ElementStateRadio onClick={this.onElementStateChange}
           selected={elementState} />
-
         <Menu />
       </Paper>
     );
   }
 }
 
-export default Editor;
+export default withStyles(styles)(Editor);

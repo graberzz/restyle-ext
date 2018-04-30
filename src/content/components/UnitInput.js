@@ -1,16 +1,12 @@
 import React from 'react';
 import Select from 'material-ui/Select';
 import TextField from 'material-ui/TextField';
-import { MenuItem } from 'material-ui/Menu';
+import { units } from '../../utils';
 
-const units = [
-  'px',
-  '%',
-  'em',
-  'rem',
-];
-
-const UnitInput = ({ value, unit, onValueChange, onUnitChange, ...rest }) => (
+const UnitInput = ({
+  value, unit, onValueChange,
+  onUnitChange, ...rest
+}) => (
   <div>
     <TextField
       value={value}

@@ -5,6 +5,14 @@ const messages = {
   OPTIONS_OPEN: 'OPTIONS_OPEN',
 };
 
+const units = [
+  'px',
+  '%',
+  'em',
+  'rem',
+];
+
+
 const formatToCSSProp = prop => prop.replace(/([A-Z])/g, (match, upperCase) => `-${upperCase.toLowerCase()}`);
 
 /* eslint-disable */
@@ -62,6 +70,7 @@ const setStyle = (node, style, addToStorage = false, applytoAll = false) => {
 
 export {
   messages,
+  units,
   getDefaultStyle,
   setStyle,
   getSelector,
