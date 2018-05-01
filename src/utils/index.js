@@ -10,8 +10,9 @@ const units = [
   '%',
   'em',
   'rem',
+  'vw',
+  'vh',
 ];
-
 
 const formatToCSSProp = prop => prop.replace(/([A-Z])/g, (match, upperCase) => `-${upperCase.toLowerCase()}`);
 

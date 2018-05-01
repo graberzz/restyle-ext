@@ -47,7 +47,7 @@ const init = ([currentTab]) => {
     activeTabId = tabId;
   };
 
-  chrome.browserAction.onClicked.addListener(onIconClick);
+  // chrome.browserAction.onClicked.addListener(onIconClick);
   chrome.runtime.onMessage.addListener(onMessage);
   chrome.tabs.onActivated.addListener(onTabSwitch);
 };
