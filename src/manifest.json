@@ -24,5 +24,5 @@
   },
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "permissions": ["tabs", "activeTab", "pageCapture", "downloads", "storage", "<all_urls>"]
+  "permissions": ["tabs", "activeTab", "storage", "<all_urls>"]
 }

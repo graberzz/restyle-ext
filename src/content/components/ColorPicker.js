@@ -9,6 +9,7 @@ const styles = {
     marginBottom: 4,
   },
   label: {
+    display: 'block',
     color: 'rgba(0, 0, 0, 0.54)',
     marginBottom: 5,
     padding: 0,
@@ -20,7 +21,7 @@ const styles = {
 
 const ColorPicker = ({ classes, label, onChange }) => (
   <div className={classes.container}>
-    <div className={classes.label}>{label}</div>
+    <label className={classes.label}>{label}</label>
     <LibColorPicker onChange={onChange}/>
   </div>
 );

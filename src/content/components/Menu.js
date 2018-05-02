@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
+import { withStyles, typography } from 'material-ui/styles';
 import classNames from 'classnames';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
@@ -22,6 +22,8 @@ import ColorPicker from './ColorPicker';
 import MultiInput from './MultiInput';
 import Select from './Select';
 import Checkbox from './Checkbox';
+import { TextField } from 'material-ui';
+import { Button } from 'material-ui';
 
 const drawerWidth = 240;
 
@@ -100,6 +102,7 @@ class Menu extends React.Component {
   state = {
     open: false,
     selectedIndex: 0,
+    domains: [location.hostname],
     styles: {
       units: {
         fontSize: '%',
@@ -162,6 +165,12 @@ class Menu extends React.Component {
     },
   })
 
+  onAddDomain = () => {
+    this.setState({
+      domains: [...this.state.domains, ''],
+    });
+  }
+
   getList = i => [
     // Text
     <React.Fragment>
@@ -169,7 +178,7 @@ class Menu extends React.Component {
       <UnitInput value={10} unit={this.state.styles.units.lineHeight} label="Line Height" onUnitChange={this.onUnitChange('lineHeight')} />
       <UnitInput value={10} unit={this.state.styles.units.letterSpacing} label="Letter Spacing" onUnitChange={this.onUnitChange('letterSpacing')} />
       <Select options={['Arial', 'Consolas']} value="Arial" label="Family" />
-      <Select options={['left', 'right', 'center', 'justify']} value="left" label="Align" />
+      <Select options={['left', 'right', 'center', 'justify']} value="left" />
       <ColorPicker label="Color" />
       <Checkbox label="Bold" checked={true} />
       <Checkbox label="Italic" checked={true} />
@@ -181,6 +190,7 @@ class Menu extends React.Component {
       <UnitInput value={10} unit={this.state.styles.units.width} label="Width" onUnitChange={this.onUnitChange('width')} />
       <UnitInput value={10} unit={this.state.styles.units.height} label="Height" onUnitChange={this.onUnitChange('height')} />
       <ColorPicker label="Color" />
+      <TextField label="Image URL" value={this.state.styles.image} fullWidth />
       <MultiInput label="Margin" />
       <MultiInput label="Padding" />
     </React.Fragment>,
@@ -191,6 +201,13 @@ class Menu extends React.Component {
       <MultiInput label="Width" />
       <ColorPicker label=" Color" />
     </React.Fragment>,
+
+    // Save
+    <React.Fragment>
+      <Typography>Domains to apply the theme</Typography>
+      { this.state.domains.map(domain => <TextField value={domain}/>)}
+      <Button onClick={this.onAddDomain}>ADD DOMAIN</Button>
+    </React.Fragment>
   ][i]
 
   handleDrawerOpen = () => this.setState({ open: true })
