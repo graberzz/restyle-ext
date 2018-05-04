@@ -32,12 +32,20 @@ const NodeSelector = (
     selectedNode: null,
     selectedNodes: [],
     hoveredNode: null,
+    enabled: false,
 
     enable() {
-      this.selectedNode = null;
+      this.enabled = true;
       root.addEventListener('mouseout', this.onMouseOut, true);
       root.addEventListener('mouseover', this.onMouseOver, true);
       root.addEventListener('click', this.onMouseClick, true);
+    },
+
+    suspend() {
+      this.enabled = false;
+      root.removeEventListener('mouseout', this.onMouseOut, true);
+      root.removeEventListener('mouseover', this.onMouseOver, true);
+      root.removeEventListener('click', this.onMouseClick, true);
     },
 
     disable() {
@@ -50,13 +58,17 @@ const NodeSelector = (
 
       this.selectedNodes.forEach(node => setStyle(node, { outline: '' }));
       this.selectedNodes = [];
-
-      this.enabled = false;
       this.selectedNode = null;
 
-      root.removeEventListener('mouseout', this.onMouseOut, true);
-      root.removeEventListener('mouseover', this.onMouseOver, true);
-      root.removeEventListener('click', this.onMouseClick, true);
+      this.suspend();
+    },
+
+    toggle() {
+      if (this.enabled) {
+        this.disable();
+      } else {
+        this.enable();
+      }
     },
 
     validNode(node) {
@@ -103,14 +115,13 @@ const NodeSelector = (
       this.pastSelectedNode = this.selectedNode;
       this.selectedNode = e.target;
 
-      onSelect(this.pastSelectedNode, this.selectedNode);
-
       // selecting all the nodes with provided node's class selector
 
       this.selectedNodes.forEach(node => setStyle(node, { outline: '' }));
-      this.selectedNodes = [];
+      this.selectedNodes = [];    
 
-      const sameClassNodes = Array.from(document.querySelectorAll(getSelector(this.selectedNode)));
+      const nodeCSSSelector = getSelector(this.selectedNode);
+      const sameClassNodes = Array.from(document.querySelectorAll(nodeCSSSelector));
       sameClassNodes.forEach((node) => {
         if (!this.validNode(node)) return;
         setStyle(node, {
@@ -124,9 +135,10 @@ const NodeSelector = (
         ...hoverStyle,
         ...selectedStyle,
       });
+      onSelect(this.pastSelectedNode, this.selectedNode, nodeCSSSelector);
     },
   };
-
+  
   nodeSelector.onMouseClick = nodeSelector.onMouseClick.bind(nodeSelector);
   nodeSelector.onMouseOut = nodeSelector.onMouseOut.bind(nodeSelector);
   nodeSelector.onMouseOver = nodeSelector.onMouseOver.bind(nodeSelector);

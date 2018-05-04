@@ -1,4 +1,5 @@
 const OUTLINE_WIDTH = 2;
+const CONTAINER_ID = 'ReSTYLE_CONTAINER';
 const messages = {
   EDIT_MODE_ON: 'EDIT_MODE_ON',
   EDIT_MODE_OFF: 'EIT_MODE_OFF',
@@ -33,9 +34,13 @@ const getDefaultStyle = node => getComputedStyle(node);
 
 const getSelector = (node, depth = 0) => {
   let selector = node.tagName.toLowerCase();
-
+  if (node.id) {
+    selector += `#${node.id}`;
+    return selector;
+  }
   if (node.classList.length > 0) {
     selector += `.${[...node.classList].join('.')}`;
+    return selector;
   }
   if (depth < 3 && node.parentElement) {
     selector = `${getSelector(node.parentElement, depth + 1)} ${selector}`;
@@ -70,6 +75,7 @@ const setStyle = (node, style, addToStorage = false, applytoAll = false) => {
 };
 
 export {
+  CONTAINER_ID,
   messages,
   units,
   getDefaultStyle,

@@ -1,17 +1,16 @@
 import React from 'react';
-import NodeSelector from '../utils/nodeSelector';
 import Mounter from '../utils/mounter';
-import { messages } from '../utils';
+import { messages, CONTAINER_ID } from '../utils';
 import Editor from './components/Editor';
 import './style.css';
 /* globals chrome */
 
-const mounter = Mounter();
+const mounter = Mounter(CONTAINER_ID);
 
 chrome.runtime.onMessage.addListener(({ msg }) => {
   switch (msg) {
     case messages.EDIT_MODE_ON:
-      mounter.mount(document.body, <Editor />);
+      mounter.mount(document.body, <Editor theme={{}} />);
       break;
 
     case messages.EDIT_MODE_OFF:

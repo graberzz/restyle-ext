@@ -238,7 +238,7 @@ class Menu extends React.Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" noWrap>
-              vk.com
+              { theme.name ? theme.name : 'Unnamed theme' }
             </Typography>
           </Toolbar>
         </AppBar>

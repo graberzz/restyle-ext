@@ -1,4 +1,5 @@
 import { getSelector, rgbToHex } from './';
+import { ExpansionPanel } from 'material-ui';
 /* global test, describe */
 
 describe('getSelector func', () => {
@@ -30,6 +31,31 @@ describe('getSelector func', () => {
     parent.appendChild(child);
 
     expect(getSelector(child)).toBe('article div p');
+  });
+
+  test('selector includes max 1 parent with class', () => {
+    const parent = document.createElement('div');
+    parent.className = 'className';
+    const child = document.createElement('div');
+    parent.appendChild(child);
+
+    expect(getSelector(child)).toBe('div.className div');
+  });
+
+  test('selector includes max 1 parent with id', () => {
+    const parent = document.createElement('div');
+    parent.id = 'id';
+    const child = document.createElement('div');
+    parent.appendChild(child);
+
+    expect(getSelector(child)).toBe('div#id div');
+  });
+
+  test('selector includes only id if elem has it', () => {
+    const elem = document.createElement('div');
+    elem.id = 'id';
+
+    expect(getSelector(elem)).toBe('div#id');
   });
 });
 

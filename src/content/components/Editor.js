@@ -8,6 +8,9 @@ import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import ElementStateRadio from './ElementStateRadio';
 import Menu from './Menu';
+import NodeSelector from '../../utils/nodeSelector';
+import { CONTAINER_ID } from '../../utils';
+import Select from './Select';
 
 const styles = {
   editor: {
@@ -31,6 +34,30 @@ class Editor extends React.Component {
   state = {
     elementState: 'default',
     stick: 'right',
+    selector: null,
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.nodeSelector = NodeSelector(
+      document.body,
+      this.onNodeSelect,
+      node => node.closest(`#${CONTAINER_ID}`) !== null,
+    );
+  }
+
+  onNodeSelect = (prevNode, node, selector) => {
+    console.log(prevNode);
+    console.log(node);
+    console.log(selector);
+
+    this.nodeSelector.suspend();
+    
+    this.setState({
+      selector,
+      selecting: false,
+    });
   }
 
   onElementStateChange = (state) => {
@@ -45,15 +72,23 @@ class Editor extends React.Component {
     });
   }
 
+  onSelectElement = () => {
+    this.nodeSelector.toggle();
+    this.setState(prevState => ({
+      selecting: !prevState.selecting,
+    }));
+  }
+
   render() {
-    const { classes } = this.props;
-    const { elementState, stick } = this.state;
+    const { classes, theme } = this.props;
+    const { elementState, stick, selector, selecting } = this.state;
 
     return (
-      <Paper className={classes.editor + ' ' + (stick !== 'right' ? classes.editorLeft : '')}>
+      <Paper className={`${classes.editor}  ${stick !== 'right' ? classes.editorLeft : ''}`}>
         <div className={classes.top}>
           <Tooltip title="Select element">
-            <IconButton>
+            <IconButton onClick={this.onSelectElement}
+            color={selecting ? 'primary' : 'default'}>
               <SelectIcon />
             </IconButton>
           </Tooltip>
@@ -63,7 +98,7 @@ class Editor extends React.Component {
         </div>
         <ElementStateRadio onClick={this.onElementStateChange}
           selected={elementState} />
-        <Menu />
+        <Menu selector={selector} state={elementState} theme={theme} />
       </Paper>
     );
   }
