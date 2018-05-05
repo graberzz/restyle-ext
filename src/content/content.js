@@ -7,10 +7,10 @@ import './style.css';
 
 const mounter = Mounter(CONTAINER_ID);
 
-chrome.runtime.onMessage.addListener(({ msg }) => {
+chrome.runtime.onMessage.addListener(({ msg, theme }) => {
   switch (msg) {
     case messages.EDIT_MODE_ON:
-      mounter.mount(document.body, <Editor theme={{}} />);
+      mounter.mount(document.body, <Editor theme={theme} />);
       break;
 
     case messages.EDIT_MODE_OFF:

@@ -6,11 +6,11 @@ import LeftIcon from '@material-ui/icons/ArrowBack';
 import RightIcon from '@material-ui/icons/ArrowForward';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
+import CreatableSelect from 'react-select/lib/Creatable';
 import ElementStateRadio from './ElementStateRadio';
 import Menu from './Menu';
 import NodeSelector from '../../utils/nodeSelector';
 import { CONTAINER_ID } from '../../utils';
-import Select from './Select';
 
 const styles = {
   editor: {
@@ -28,15 +28,14 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
   },
+  selectorsSelect: {
+    width: 250,
+    marginTop: 5,
+    zIndex: 9999,
+  },
 };
 
 class Editor extends React.Component {
-  state = {
-    elementState: 'default',
-    stick: 'right',
-    selector: null,
-  }
-
   constructor(props) {
     super(props);
 
@@ -45,19 +44,36 @@ class Editor extends React.Component {
       this.onNodeSelect,
       node => node.closest(`#${CONTAINER_ID}`) !== null,
     );
+
+    this.state = {
+      elementState: 'default',
+      stick: 'right',
+      selector: null,
+      theme: props.theme,
+    };
   }
 
-  onNodeSelect = (prevNode, node, selector) => {
-    console.log(prevNode);
-    console.log(node);
-    console.log(selector);
+  mapElementStateToPseudoClass = elementState => ({
+    hover: ':hover',
+    click: ':active',
+    default: '',
+  })[elementState];
 
+  onNodeSelect = (prevNode, node, nodeSelector) => {
     this.nodeSelector.suspend();
-    
+    const selector = nodeSelector + this.mapElementStateToPseudoClass(this.state.elementState);
+
     this.setState({
+      theme: this.state.theme.styles[selector] ? this.state.theme : {
+        ...this.state.theme,
+        styles: {
+          ...this.state.theme.styles,
+          [selector]: {},
+        },
+      },
       selector,
       selecting: false,
-    });
+    }, () => console.log(this.state));
   }
 
   onElementStateChange = (state) => {
@@ -79,19 +95,50 @@ class Editor extends React.Component {
     }));
   }
 
+  onSelectorChange = (sel) => {
+    this.setState({
+      selector: sel.value,
+    });
+  }
+
+  onCreateSelector = (selector) => {
+    this.setState({
+      theme: {
+        ...this.state.theme,
+        styles: {
+          ...this.state.theme.styles,
+          [selector]: {},
+        },
+      },
+      selector,
+    });
+  }
+
   render() {
-    const { classes, theme } = this.props;
-    const { elementState, stick, selector, selecting } = this.state;
+    const { classes } = this.props;
+    const {
+      elementState, stick, selector,
+      selecting, theme,
+    } = this.state;
+    const themeSelectors = Object.keys(theme.styles).map(sel => ({ value: sel, label: sel }));
+    const selectorValue = { value: selector, label: selector };
 
     return (
       <Paper className={`${classes.editor}  ${stick !== 'right' ? classes.editorLeft : ''}`}>
         <div className={classes.top}>
           <Tooltip title="Select element">
             <IconButton onClick={this.onSelectElement}
-            color={selecting ? 'primary' : 'default'}>
+              color={selecting ? 'primary' : 'default'}>
               <SelectIcon />
             </IconButton>
           </Tooltip>
+          <CreatableSelect
+            value={selectorValue}
+            options={themeSelectors}
+            onChange={this.onSelectorChange}
+            onCreateOption={this.onCreateSelector}
+            className={classes.selectorsSelect}
+            placeholder="CSS Selector" />
           <IconButton onClick={this.onStickChange}>
             {stick === 'right' ? <LeftIcon /> : <RightIcon />}
           </IconButton>
@@ -103,5 +150,23 @@ class Editor extends React.Component {
     );
   }
 }
+
+Editor.defaultProps = {
+  theme: {
+    name: 'unnamed theme',
+    author: 'author',
+    styles: {
+      body: {
+        background: 'red',
+      },
+      '.block.className': {
+        background: 'blue',
+      },
+      div: {
+        width: '100px',
+      },
+    },
+  },
+};
 
 export default withStyles(styles)(Editor);

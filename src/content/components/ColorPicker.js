@@ -22,7 +22,7 @@ const styles = {
 const ColorPicker = ({ classes, label, onChange }) => (
   <div className={classes.container}>
     <label className={classes.label}>{label}</label>
-    <LibColorPicker onChange={onChange}/>
+    <LibColorPicker onChange={({ color }) => onChange({ target: { value: color } }) }/>
   </div>
 );
 

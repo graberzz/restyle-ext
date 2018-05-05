@@ -3,6 +3,7 @@ import { withStyles } from 'material-ui/styles';
 import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
+import PropTypes from 'prop-types';
 
 const styles = {
   card: {
@@ -15,33 +16,43 @@ const styles = {
   },
 };
 
-const Theme = ({ classes, name, author }) => (
+const Theme = ({
+  classes, theme, onToggle,
+  onEdit, onDelete,
+}) => (
   <div>
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
-        image="https://www.sbs.com.au/popasia/sites/sbs.com.au.popasia/files/styles/full/public/end-of-evangelion.jpg?itok=cRV4AQNU&mtime=1471000677"
-        title="Contemplative Reptile"
+        image={theme.preview}
       />
       <CardContent>
         <Typography gutterBottom variant="headline" component="h2">
-          { name }
+          {theme.name}
         </Typography>
-        <Typography component="p">By { author }</Typography>
+        <Typography component="p">By {theme.author}</Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" color="primary">
-          Enable
-          </Button>
-        <Button size="small" color="primary">
+        <Button variant="raised" size="small" color={theme.enabled ? 'secondary' : 'primary'} onClick={() => onToggle(theme.enabled)}>
+          {theme.enabled ? 'Disable' : 'Enable'}
+        </Button>
+        <Button variant="raised" size="small" color="primary" onClick={onEdit}>
           Edit
-          </Button>
-        <Button size="small" color="primary">
+        </Button>
+        <Button variant="raised" size="small" color="primary" onClick={onDelete}>
           Delete
-          </Button>
+        </Button>
       </CardActions>
     </Card>
   </div>
 );
+
+Theme.propTypes = {
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
+  onToggle: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};
 
 export default withStyles(styles)(Theme);

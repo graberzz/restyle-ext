@@ -3,6 +3,7 @@ import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
+import PropTypes from 'prop-types';
 
 const styles = {
   root: {
@@ -18,11 +19,20 @@ const Header = ({ classes, site }) => (
     <AppBar position="static">
       <Toolbar>
         <Typography variant="title" color="inherit" className={classes.flex}>
-          Installed themes for { site }
+          Themes for { site }
         </Typography>
       </Toolbar>
     </AppBar>
   </div>
 );
+
+Header.propTypes = {
+  classes: PropTypes.object.isRequired,
+  site: PropTypes.string.isRequired,
+};
+
+Header.defaultProps = {
+  site: 'unknown site',
+};
 
 export default withStyles(styles)(Header);

@@ -118,7 +118,7 @@ const NodeSelector = (
       // selecting all the nodes with provided node's class selector
 
       this.selectedNodes.forEach(node => setStyle(node, { outline: '' }));
-      this.selectedNodes = [];    
+      this.selectedNodes = [];
 
       const nodeCSSSelector = getSelector(this.selectedNode);
       const sameClassNodes = Array.from(document.querySelectorAll(nodeCSSSelector));
@@ -138,7 +138,7 @@ const NodeSelector = (
       onSelect(this.pastSelectedNode, this.selectedNode, nodeCSSSelector);
     },
   };
-  
+
   nodeSelector.onMouseClick = nodeSelector.onMouseClick.bind(nodeSelector);
   nodeSelector.onMouseOut = nodeSelector.onMouseOut.bind(nodeSelector);
   nodeSelector.onMouseOver = nodeSelector.onMouseOver.bind(nodeSelector);

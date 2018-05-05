@@ -6,9 +6,8 @@ const Checkbox = ({ checked, onChange, label }) => (
   <FormControlLabel
   control={
     <LibCheckbox checked={checked}
-      onChange={onChange}
-      color="primary"
-      value="vlaue" />
+      onChange={e => onChange({ target: { value: e.target.checked } })}
+      color="primary" />
   }
   label={label} />
 );

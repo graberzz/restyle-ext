@@ -10,10 +10,12 @@ const styles = {
   },
 };
 
-const renderThemes = (themes) => {
+const renderThemes = (themes, onToggle, onEdit, onDelete) => {
   if (themes && themes.length) {
-    return themes.map(theme => <Theme name={theme.name}
-                                 author={theme.author} />);
+    return themes.map(theme => <Theme theme={theme}
+                                 onToggle={onToggle}
+                                 onEdit={onEdit}
+                                 onDelete={onDelete} />);
   }
 
   return <Typography variant="headline"

@@ -26,8 +26,9 @@ const styles = {
 const MultiInput = ({
   classes, unit, onUnitChange,
   leftValue, rightValue, topValue,
-  bottomValue, commonValue, onValueChange,
-  label,
+  bottomValue, commonValue, onLeftValueChange,
+  onRightValueChange, onTopValueChange, label,
+  onBottomValueChange, onCommonValueChange,
 }) => (
   <div className={classes.container}>
     <label className={classes.label}>{ label }</label>
@@ -37,7 +38,7 @@ const MultiInput = ({
           <td></td>
           <td><TextField value={topValue}
             className={classes.input}
-            onChange={e => onValueChange(e.target.value, 'top')} />
+            onChange={onTopValueChange} />
           </td>
           <td></td>
           <td></td>
@@ -45,17 +46,17 @@ const MultiInput = ({
         <tr>
           <td><TextField value={leftValue}
             className={classes.input}
-            onChange={e => onValueChange(e.target.value, 'left')} />
+            onChange={onLeftValueChange} />
           </td>
           <td>
             <TextField value={commonValue}
               className={classes.input}
-              onChange={e => onValueChange(e.target.value, 'common')} />
+              onChange={onCommonValueChange} />
           </td>
           <td>
             <TextField value={rightValue}
               className={classes.input}
-              onChange={e => onValueChange(e.target.value, 'right')} />
+              onChange={onRightValueChange} />
           </td>
           <td>
             <Select native
@@ -71,7 +72,7 @@ const MultiInput = ({
           <td>
             <TextField value={bottomValue}
               className={classes.input}
-              onChange={e => onValueChange(e.target.value, 'bottom')} />
+              onChange={onBottomValueChange} />
           </td>
           <td></td>
           <td></td>

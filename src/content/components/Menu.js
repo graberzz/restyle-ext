@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, typography } from 'material-ui/styles';
+import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
@@ -9,6 +9,8 @@ import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import Typography from 'material-ui/Typography';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
+import TextField from 'material-ui/TextField';
+import Button from 'material-ui/Button';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -22,8 +24,6 @@ import ColorPicker from './ColorPicker';
 import MultiInput from './MultiInput';
 import Select from './Select';
 import Checkbox from './Checkbox';
-import { TextField } from 'material-ui';
-import { Button } from 'material-ui';
 
 const drawerWidth = 240;
 
@@ -99,60 +99,56 @@ const styles = theme => ({
 
 
 class Menu extends React.Component {
-  state = {
-    open: false,
-    selectedIndex: 0,
-    domains: [location.hostname],
-    styles: {
-      units: {
-        fontSize: '%',
-        lineHeight: 'px',
-        letterSpacing: 'px',
-        width: 'px',
-        height: 'px',
-        margin: 'px',
-        padding: 'px',
-        borderWidth: 'px',
-      },
-      fontSize: 16,
-      lineHeight: 16,
-      letterSpacing: 16,
-      textAlign: 'left',
-      fontFamily: 'Arial',
-      color: '#000',
-      bold: false,
-      italic: false,
-      visible: true,
-      width: 100,
-      height: 100,
-      border: {
-        style: 'solid',
-        color: '#fff',
-        width: {
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
-          common: 0,
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      open: false,
+      selectedIndex: 0,
+      domains: [],
+      styles: {
+        units: {
+          fontSize: 'px',
+          lineHeight: 'px',
+          letterSpacing: 'px',
+          width: 'px',
+          height: 'px',
+          margin: 'px',
+          padding: 'px',
+          borderWidth: 'px',
         },
+        fontSize: 16,
+        lineHeight: 16,
+        letterSpacing: 16,
+        textAlign: 'left',
+        fontFamily: 'Arial',
+        color: '#0f0',
+        bold: false,
+        italic: false,
+
+        visible: true,
+        width: 100,
+        height: 100,
+
+        borderStyle: 'solid',
+        borderColor: '#fff',
+        borderWidth: 0,
+
+        backgroundColor: '#000',
+
+        margin: 0,
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 0,
+        marginBottom: 0,
+
+        padding: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
       },
-      backgroundColor: '#000',
-      margin: {
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        common: 0,
-      },
-      padding: {
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        common: 0,
-      },
-      image: 'https://placehold.it/300x300',
-    },
+    };
   }
 
   onUnitChange = property => e => this.setState({
@@ -165,6 +161,13 @@ class Menu extends React.Component {
     },
   })
 
+  onValueChange = property => e => this.setState({
+    styles: {
+      ...this.state.styles,
+      [property]: e.target.value,
+    },
+  }, () => console.log(this.state.styles))
+
   onAddDomain = () => {
     this.setState({
       domains: [...this.state.domains, ''],
@@ -174,40 +177,110 @@ class Menu extends React.Component {
   getList = i => [
     // Text
     <React.Fragment>
-      <UnitInput value={10} unit={this.state.styles.units.fontSize} label="Size" onUnitChange={this.onUnitChange('fontSize')} />
-      <UnitInput value={10} unit={this.state.styles.units.lineHeight} label="Line Height" onUnitChange={this.onUnitChange('lineHeight')} />
-      <UnitInput value={10} unit={this.state.styles.units.letterSpacing} label="Letter Spacing" onUnitChange={this.onUnitChange('letterSpacing')} />
-      <Select options={['Arial', 'Consolas']} value="Arial" label="Family" />
-      <Select options={['left', 'right', 'center', 'justify']} value="left" />
-      <ColorPicker label="Color" />
-      <Checkbox label="Bold" checked={true} />
-      <Checkbox label="Italic" checked={true} />
+      <UnitInput value={this.state.styles.fontSize}
+        unit={this.state.styles.units.fontSize}
+        label="Size"
+        type="number"
+        onChange={this.onValueChange('fontSize')}
+        onUnitChange={this.onUnitChange('fontSize')} />
+      <UnitInput value={this.state.styles.lineHeight}
+        unit={this.state.styles.units.lineHeight}
+        label="Line Height"
+        onChange={this.onValueChange('lineHeight')}
+        onUnitChange={this.onUnitChange('lineHeight')} />
+      <UnitInput value={this.state.styles.letterSpacing}
+        unit={this.state.styles.units.letterSpacing}
+        label="Letter Spacing"
+        onChange={this.onValueChange('letterSpacing')}
+        onUnitChange={this.onUnitChange('letterSpacing')} />
+      <Select value={this.state.styles.fontFamily}
+        label="Family"
+        options={['Arial', 'Consolas']}
+        onChange={this.onValueChange('fontFamily')} />
+      <Select value={this.state.styles.textAlign}
+        label="Align"
+        options={['left', 'right', 'center', 'justify']}
+        onChange={this.onValueChange('textAlign')} />
+      <ColorPicker label="Color"
+        color={this.state.styles.color} //        v
+        defaultColor={this.state.styles.color} // > does not work
+        onChange={this.onValueChange('color')} />
+      <Checkbox label="Bold"
+        checked={this.state.styles.bold}
+        onChange={this.onValueChange('bold')} />
+      <Checkbox label="Italic"
+        checked={this.state.styles.italic}
+        onChange={this.onValueChange('italic')} />
     </React.Fragment>,
 
     // Layout
     <React.Fragment>
-      <Checkbox label="Visible" checked={true} />
-      <UnitInput value={10} unit={this.state.styles.units.width} label="Width" onUnitChange={this.onUnitChange('width')} />
-      <UnitInput value={10} unit={this.state.styles.units.height} label="Height" onUnitChange={this.onUnitChange('height')} />
-      <ColorPicker label="Color" />
-      <TextField label="Image URL" value={this.state.styles.image} fullWidth />
-      <MultiInput label="Margin" />
-      <MultiInput label="Padding" />
+      <Checkbox label="Visible"
+        checked={this.state.styles.visible}
+        onChange={this.onValueChange('visible')} />
+      <UnitInput value={this.state.styles.width}
+        unit={this.state.styles.units.width}
+        label="Width"
+        onChange={this.onValueChange('width')}
+        onUnitChange={this.onUnitChange('width')} />
+      <UnitInput value={this.state.styles.height}
+        unit={this.state.styles.units.height}
+        label="Height"
+        onChange={this.onValueChange('height')}
+        onUnitChange={this.onUnitChange('height')} />
+      <ColorPicker label="Color"
+        color={this.state.styles.backgroundColor}
+        onChange={this.onValueChange('backgroundColor')} />
+      {/* <TextField label="Image URL"
+        value={this.state.styles.image}
+        fullWidth
+     /> */}
+      <MultiInput label="Margin"
+        leftValue={this.state.styles.marginLeft}
+        rightValue={this.state.styles.marginRight}
+        topValue={this.state.styles.marginTop}
+        bottomValue={this.state.styles.marginBottom}
+        commonValue={this.state.styles.margin}
+        onLeftValueChange={this.onValueChange('marginLeft')}
+        onRightValueChange={this.onValueChange('marginRight')}
+        onTopValueChange={this.onValueChange('marginTop')}
+        onBottomValueChange={this.onValueChange('marginBottom')}
+        onCommonValueChange={this.onValueChange('margin')} />
+      <MultiInput label="Padding"
+        leftValue={this.state.styles.paddingLeft}
+        rightValue={this.state.styles.paddingRight}
+        topValue={this.state.styles.paddingTop}
+        bottomValue={this.state.styles.paddingBottom}
+        commonValue={this.state.styles.padding}
+        onLeftValueChange={this.onValueChange('paddingLeft')}
+        onRightValueChange={this.onValueChange('paddingRight')}
+        onTopValueChange={this.onValueChange('paddingTop')}
+        onBottomValueChange={this.onValueChange('paddingBottom')}
+        onCommonValueChange={this.onValueChange('padding')} />
     </React.Fragment>,
 
     // Border
     <React.Fragment>
-      <Select options={['solid', 'dotted']} value="solid" label="Style" />
-      <MultiInput label="Width" />
-      <ColorPicker label=" Color" />
+      <Select value={this.state.styles.borderWidth}
+        label="Style"
+        options={['solid', 'dotted', 'dashed', 'double', 'groove', 'none']}
+        onChange={this.onValueChange('borderStyle')} />
+      <UnitInput value={this.state.styles.borderWidth}
+        unit={this.state.styles.units.borderWidth}
+        label="Width"
+        onChange={this.onValueChange('borderWidth')}
+        onUnitChange={this.onUnitChange('borderWidth')} />
+      <ColorPicker label="Color"
+        color={this.state.styles.borderColor}
+        onChange={this.onValueChange('borderColor')} />
     </React.Fragment>,
 
     // Save
     <React.Fragment>
       <Typography>Domains to apply the theme</Typography>
-      { this.state.domains.map(domain => <TextField value={domain}/>)}
+      {this.state.domains.map(domain => <TextField value={domain} />)}
       <Button onClick={this.onAddDomain}>ADD DOMAIN</Button>
-    </React.Fragment>
+    </React.Fragment>,
   ][i]
 
   handleDrawerOpen = () => this.setState({ open: true })
@@ -238,7 +311,7 @@ class Menu extends React.Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" noWrap>
-              { theme.name ? theme.name : 'Unnamed theme' }
+              {theme.name ? theme.name : 'Unnamed theme'}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -299,5 +372,9 @@ class Menu extends React.Component {
     );
   }
 }
+
+Menu.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
 export default withStyles(styles, { withTheme: true })(Menu);
