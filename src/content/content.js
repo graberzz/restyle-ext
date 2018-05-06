@@ -1,9 +1,12 @@
 import React from 'react';
 import Mounter from '../utils/mounter';
+import ThemeInjector from '../utils/themeInjector';
 import { messages, CONTAINER_ID } from '../utils';
 import Editor from './components/Editor';
 import './style.css';
 /* globals chrome */
+
+ThemeInjector.injectSuitable();
 
 const mounter = Mounter(CONTAINER_ID);
 

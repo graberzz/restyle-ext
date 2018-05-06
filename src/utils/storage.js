@@ -7,6 +7,10 @@ const themes = [
     author: 'author',
     preview: 'https://www.sbs.com.au/popasia/sites/sbs.com.au.popasia/files/styles/full/public/end-of-evangelion.jpg',
     enabled: true,
+    domains: [
+      'vk.com',
+      'vkontakte.ru',
+    ],
     styles: {
       body: {
         background: '#000',
@@ -19,6 +23,10 @@ const themes = [
     author: 'author',
     preview: 'https://www.sbs.com.au/popasia/sites/sbs.com.au.popasia/files/styles/full/public/end-of-evangelion.jpg',
     enabled: false,
+    domains: [
+      'google.com',
+      'google.ru',
+    ],
     styles: {
       body: {
         background: '#0f0',
