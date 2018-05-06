@@ -33,13 +33,13 @@ const Theme = ({
         <Typography component="p">By {theme.author}</Typography>
       </CardContent>
       <CardActions>
-        <Button variant="raised" size="small" color={theme.enabled ? 'secondary' : 'primary'} onClick={() => onToggle(theme.enabled)}>
+        <Button variant="raised" size="small" color={theme.enabled ? 'secondary' : 'primary'} onClick={() => onToggle(theme.id, theme.enabled)}>
           {theme.enabled ? 'Disable' : 'Enable'}
         </Button>
-        <Button variant="raised" size="small" color="primary" onClick={onEdit}>
+        <Button variant="raised" size="small" color="primary" onClick={() => onEdit(theme.id)}>
           Edit
         </Button>
-        <Button variant="raised" size="small" color="primary" onClick={onDelete}>
+        <Button variant="raised" size="small" color="primary" onClick={() => onDelete(theme.id)}>
           Delete
         </Button>
       </CardActions>

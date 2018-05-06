@@ -64,16 +64,35 @@ class Popup extends React.Component {
     // TODO: open options page
   }
 
-  onToggleTheme = () => {
-
+  onToggleTheme = (id, enabled) => {
+    Themes.edit({
+      id,
+      enabled: !enabled,
+    }).then(() => {
+      Themes.get()
+        .then(themes => this.setState({ themes }));
+    });
   }
 
-  onEditTheme = () => {
-
+  onEditTheme = (id) => {
+    chrome.tabs.query(
+      {
+        currentWindow: true,
+        active: true,
+      },
+      ([currentTab]) => {
+        chrome.tabs.sendMessage(currentTab.id, { msg: 'EDIT_MODE_ON', themeId: id });
+        window.close();
+      },
+    );
   }
 
-  onDeleteTheme = () => {
-
+  onDeleteTheme = (id) => {
+    Themes.delete(id)
+      .then(() => {
+        Themes.get()
+          .then(themes => this.setState({ themes }));
+      });
   }
 
   render() {

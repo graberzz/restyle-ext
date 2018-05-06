@@ -4,16 +4,23 @@ import ThemeInjector from '../utils/themeInjector';
 import { messages, CONTAINER_ID } from '../utils';
 import Editor from './components/Editor';
 import './style.css';
+import { Themes } from '../utils/storage';
 /* globals chrome */
 
 ThemeInjector.injectSuitable();
 
 const mounter = Mounter(CONTAINER_ID);
 
-chrome.runtime.onMessage.addListener(({ msg, theme }) => {
+chrome.runtime.onMessage.addListener(({ msg, themeId }) => {
   switch (msg) {
     case messages.EDIT_MODE_ON:
-      mounter.mount(document.body, <Editor theme={theme} />);
+      if (Number.isInteger(themeId)) {
+        Themes.get(themeId)
+          .then(theme => mounter.mount(document.body, <Editor theme={theme} />));
+      } else {
+        mounter.mount(document.body, <Editor />);
+      }
+
       break;
 
     case messages.EDIT_MODE_OFF:

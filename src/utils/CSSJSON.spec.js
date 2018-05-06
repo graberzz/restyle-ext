@@ -80,7 +80,7 @@ describe('CSS to JSON and back converter', () => {
           transform: 'rotate(360deg)',
           'background-color': '#000',
         },
-      }
+      },
     };
 
     const css = `

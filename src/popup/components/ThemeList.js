@@ -10,7 +10,9 @@ const styles = {
   },
 };
 
-const renderThemes = (themes, onToggle, onEdit, onDelete) => {
+const renderThemes = ({
+  themes, onToggle, onEdit, onDelete,
+}) => {
   if (themes && themes.length) {
     return themes.map(theme => <Theme theme={theme}
                                  onToggle={onToggle}
@@ -21,13 +23,13 @@ const renderThemes = (themes, onToggle, onEdit, onDelete) => {
   return <Typography variant="headline"
            align="center"
            component="h2">
-           NO THEMES
+           No Themes Yet!
          </Typography>;
 };
 
-const ThemeList = ({ themes, classes }) => (
-  <div className={classes.list}>
-    { renderThemes(themes) }
+const ThemeList = props => (
+  <div className={props.classes.list}>
+    { renderThemes(props) }
   </div>
 );
 
