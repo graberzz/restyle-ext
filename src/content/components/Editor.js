@@ -114,6 +114,14 @@ class Editor extends React.Component {
     });
   }
 
+  onStyleChange = (styles) => {
+    console.log(styles);
+  }
+
+  onDomainsChange = (domains) => {
+    console.log(domains);
+  }
+
   render() {
     const { classes } = this.props;
     const {
@@ -145,7 +153,9 @@ class Editor extends React.Component {
         </div>
         <ElementStateRadio onClick={this.onElementStateChange}
           selected={elementState} />
-        <Menu selector={selector} state={elementState} theme={theme} />
+        <Menu selector={selector} state={elementState} theme={theme} 
+          onStyleChange={this.onStyleChange}
+          onDomainsChange={this.onDomainsChange} />
       </Paper>
     );
   }
@@ -161,6 +171,9 @@ Editor.defaultProps = {
       },
       '.block.className': {
         background: 'blue',
+      },
+      'span.welcomefriend': {
+        fontSize: '.5em',
       },
       div: {
         width: '100px',

@@ -1,13 +1,13 @@
 import { setStyle, getSelector, OUTLINE_WIDTH } from './';
 
 const defaultHoverStyle = {
-  outlineStyle: 'solid',
-  outlineColor: 'red',
-  outlineWidth: `${OUTLINE_WIDTH}px`,
+  boxShadow: '0 0 10px rgba(0, 0, 0, .7)',
+  transition: 'all .5s',
 };
 
 const defaultSelectedStyle = {
-  outlineColor: 'orange',
+  boxShadow: '0 0 15px rgba(0, 0, 0, .7)',
+  transform: 'scale(1.1)',
 };
 
 /**
@@ -50,13 +50,13 @@ const NodeSelector = (
 
     disable() {
       if (this.selectedNode) {
-        setStyle(this.selectedNode, { outline: '' });
+        setStyle(this.selectedNode, { boxShadow: '' });
       }
       if (this.hoveredNode) {
-        setStyle(this.hoveredNode, { outline: '' });
+        setStyle(this.hoveredNode, { boxShadow: '' });
       }
 
-      this.selectedNodes.forEach(node => setStyle(node, { outline: '' }));
+      this.selectedNodes.forEach(node => setStyle(node, { boxShadow: '' }));
       this.selectedNodes = [];
       this.selectedNode = null;
 
@@ -91,7 +91,7 @@ const NodeSelector = (
       if (!this.validNodes(e.target)) return;
 
       this.hoveredNode = null;
-      setStyle(e.target, { outline: '' });
+      setStyle(e.target, { boxShadow: '' });
     },
 
     onMouseOver(e) {
@@ -109,7 +109,7 @@ const NodeSelector = (
       e.stopImmediatePropagation();
 
       if (this.selectedNode) {
-        setStyle(this.selectedNode, { outline: '' });
+        setStyle(this.selectedNode, { boxShadow: '' });
       }
 
       this.pastSelectedNode = this.selectedNode;
@@ -117,7 +117,7 @@ const NodeSelector = (
 
       // selecting all the nodes with provided node's class selector
 
-      this.selectedNodes.forEach(node => setStyle(node, { outline: '' }));
+      this.selectedNodes.forEach(node => setStyle(node, { boxShadow: '' }));
       this.selectedNodes = [];
 
       const nodeCSSSelector = getSelector(this.selectedNode);

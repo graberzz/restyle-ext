@@ -105,10 +105,28 @@ class Menu extends React.Component {
     this.state = {
       open: false,
       selectedIndex: 0,
+    };
+
+    this.initStyles(props, true);
+  }
+
+  componentWillReceiveProps(props) {
+    this.initStyles(props);
+  }
+
+  initStyles(props, constructor = false) {
+    const selectorStyles = props.theme.styles[props.selector] ?
+      props.theme.styles[props.selector] : {};
+
+    const getUnit = cssValue => cssValue.match(/\D+$/)[0];
+
+    const state = {
+      open: false,
+      selectedIndex: 0,
       domains: [],
       styles: {
         units: {
-          fontSize: 'px',
+          fontSize: selectorStyles.fontSize ? getUnit(selectorStyles.fontSize) : 'px',
           lineHeight: 'px',
           letterSpacing: 'px',
           width: 'px',
@@ -149,6 +167,50 @@ class Menu extends React.Component {
         paddingBottom: 0,
       },
     };
+
+    if (constructor) {
+      this.state = state;
+    } else {
+      this.setState(state);
+    }
+  }
+
+  getCSSObject() {
+    const { styles } = this.state;
+    const { units } = styles;
+
+    return {
+      fontSize: styles.fontSize + units.fontSize,
+      lineHeight: styles.lineHeight + units.lineHeight,
+      letterSpacing: styles.letterSpacing + units.letterSpacing,
+      textAlign: styles.textAlign,
+      fontFamily: styles.fontFamily,
+      color: styles.color,
+      fontWeight: styles.bold ? '800' : '400',
+      fontStyle: styles.italic ? 'italic' : 'normal',
+
+      visibility: styles.visible ? 'visible' : 'hidden',
+      width: styles.width + units.width,
+      height: styles.height + units.height,
+
+      borderStyle: styles.borderStyle,
+      borderColor: styles.borderColor,
+      borderWidth: styles.borderWidth + units.borderWidth,
+
+      backgroundColor: styles.backgroundColor,
+
+      margin: styles.margin + units.margin,
+      marginLeft: styles.marginLeft + units.margin,
+      marginRight: styles.marginRight + units.margin,
+      marginTop: styles.marginTop + units.margin,
+      marginBottom: styles.marginBottom + units.margin,
+
+      padding: styles.padding + units.padding,
+      paddingLeft: styles.paddingLeft + units.padding,
+      paddingRight: styles.paddingRight + units.padding,
+      paddingTop: styles.paddingTop + units.padding,
+      paddingBottom: styles.paddingBottom + units.padding,
+    };
   }
 
   onUnitChange = property => e => this.setState({
@@ -159,19 +221,26 @@ class Menu extends React.Component {
         [property]: e.target.value,
       },
     },
-  })
+  }, () => this.props.onStyleChange(this.getCSSObject()))
 
   onValueChange = property => e => this.setState({
     styles: {
       ...this.state.styles,
       [property]: e.target.value,
     },
-  }, () => console.log(this.state.styles))
+  }, () => this.props.onStyleChange(this.getCSSObject()))
 
+
+  onDomainChange = (e, index) => {
+    const domains = [...this.state.domains];
+    domains[index] = e.target.value;
+
+    this.setState({ domains });
+  }
   onAddDomain = () => {
     this.setState({
       domains: [...this.state.domains, ''],
-    });
+    }, () => this.props.onDomainsChange(this.state.domains));
   }
 
   getList = i => [
@@ -278,7 +347,8 @@ class Menu extends React.Component {
     // Save
     <React.Fragment>
       <Typography>Domains to apply the theme</Typography>
-      {this.state.domains.map(domain => <TextField value={domain} />)}
+      {this.state.domains.map((domain, index) => <TextField value={domain} 
+                                                            onChange={e => this.onDomainChange(e, index)} />)}
       <Button onClick={this.onAddDomain}>ADD DOMAIN</Button>
     </React.Fragment>,
   ][i]
