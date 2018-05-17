@@ -115,11 +115,39 @@ class Editor extends React.Component {
   }
 
   onStyleChange = (styles) => {
-    console.log(styles);
+    if (this.state.selector === null) return;
+
+    this.setState({
+      theme: {
+        ...this.state.theme,
+        styles: {
+          ...this.state.theme.styles,
+          [this.state.selector]: { ...styles },
+        },
+      },
+    });
   }
 
   onDomainsChange = (domains) => {
-    console.log(domains);
+    this.setState({
+      theme: {
+        ...this.state.theme,
+        domains: domains.filter(domain => domain.trim() !== ''),
+      },
+    });
+  }
+
+  onThemeNameChange = (e) => {
+    this.setState({
+      theme: {
+        ...this.state.theme,
+        name: e.target.value,
+      },
+    });
+  }
+
+  onThemeSave = () => {
+    console.log(this.state);
   }
 
   render() {
@@ -155,7 +183,9 @@ class Editor extends React.Component {
           selected={elementState} />
         <Menu selector={selector} state={elementState} theme={theme} 
           onStyleChange={this.onStyleChange}
-          onDomainsChange={this.onDomainsChange} />
+          onDomainsChange={this.onDomainsChange}
+          onThemeNameChange={this.onThemeNameChange}
+          onThemeSave={this.onThemeSave} />
       </Paper>
     );
   }

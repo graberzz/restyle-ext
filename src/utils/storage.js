@@ -36,13 +36,15 @@ const themes = [
 ];
 
 const Themes = {
-  get: (id = -1) => {
-    if (id === -1) {
-      return Promise.resolve(themes);
-    }
-
-    return Promise.resolve(themes.find(theme => theme.id === id));
-  },
+  get: (id = -1) => new Promise((res) => {
+    chrome.storage.sync.get(['themes'], (themes) => {
+      if (id === -1) {
+        res(themes);
+      } else {
+        res(themes.find(theme => theme.id === id));
+      }
+    });
+  }),
 
   add: (theme) => {
     themes.push(theme);

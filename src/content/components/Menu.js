@@ -95,6 +95,9 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
   },
+  themeTextField: {
+    color: '#fff',
+  },
 });
 
 
@@ -105,6 +108,7 @@ class Menu extends React.Component {
     this.state = {
       open: false,
       selectedIndex: 0,
+      domains: props.theme.domains || [],
     };
 
     this.initStyles(props, true);
@@ -118,35 +122,45 @@ class Menu extends React.Component {
     const selectorStyles = props.theme.styles[props.selector] ?
       props.theme.styles[props.selector] : {};
 
-    const getUnit = cssValue => cssValue.match(/\D+$/)[0];
+    const getValue = (cssValue) => {
+      const regExp = cssValue.match(/^\d+/);
+      if (regExp) {
+        return regExp[0];
+      }
+      return null;
+    };
+    const getUnit = (cssValue) => {
+      const regExp = cssValue.match(/\D+$/);
+      if (regExp) {
+        return regExp[0];
+      }
+      return null;
+    };
 
     const state = {
-      open: false,
-      selectedIndex: 0,
-      domains: [],
       styles: {
         units: {
           fontSize: selectorStyles.fontSize ? getUnit(selectorStyles.fontSize) : 'px',
-          lineHeight: 'px',
-          letterSpacing: 'px',
-          width: 'px',
-          height: 'px',
-          margin: 'px',
-          padding: 'px',
-          borderWidth: 'px',
+          lineHeight: selectorStyles.lineHeight ? getUnit(selectorStyles.lineHeight) : '%',
+          letterSpacing: selectorStyles.letterSpacing ? getUnit(selectorStyles.letterSpacing) : 'px',
+          width: selectorStyles.width ? getUnit(selectorStyles.width) : 'px',
+          height: selectorStyles.height ? getUnit(selectorStyles.height) : 'px',
+          margin: selectorStyles.margin ? getUnit(selectorStyles.margin) : 'px',
+          padding: selectorStyles.padding ? getUnit(selectorStyles.padding) : 'px',
+          borderWidth: selectorStyles.borderWidth ? getUnit(selectorStyles.borderWidth) : 'px',
         },
-        fontSize: 16,
-        lineHeight: 16,
-        letterSpacing: 16,
-        textAlign: 'left',
-        fontFamily: 'Arial',
-        color: '#0f0',
-        bold: false,
-        italic: false,
+        fontSize: selectorStyles.fontSize ? getValue(selectorStyles.fontSize) : null,
+        lineHeight: selectorStyles.lineHeight ? getValue(selectorStyles.lineHeight) : null,
+        letterSpacing: selectorStyles.letterSpacing ? getValue(selectorStyles.letterSpacing) : null,
+        textAlign: selectorStyles.textAlign ? getValue(selectorStyles.textAlign) : null,
+        fontFamily: selectorStyles.fontFamily ? getValue(selectorStyles.fontFamily) : null,
+        color: selectorStyles.color ? getValue(selectorStyles.color) : null,
+        bold: selectorStyles.fontWeight === 'bold' || selectorStyles.fontWeight > 600,
+        italic: selectorStyles.fontStyle === 'italic',
 
-        visible: true,
-        width: 100,
-        height: 100,
+        visible: selectorStyles.visibility === 'visible',
+        width: selectorStyles.width ? getValue(selectorStyles.width) : null,
+        height: selectorStyles.height ? getValue(selectorStyles.height) : null,
 
         borderStyle: 'solid',
         borderColor: '#fff',
@@ -169,7 +183,10 @@ class Menu extends React.Component {
     };
 
     if (constructor) {
-      this.state = state;
+      this.state = {
+        ...this.state,
+        ...state,
+      };
     } else {
       this.setState(state);
     }
@@ -347,9 +364,14 @@ class Menu extends React.Component {
     // Save
     <React.Fragment>
       <Typography>Domains to apply the theme</Typography>
-      {this.state.domains.map((domain, index) => <TextField value={domain} 
-                                                            onChange={e => this.onDomainChange(e, index)} />)}
+      {this.state.domains.map((domain, index) => <TextField value={domain}
+        onChange={e => this.onDomainChange(e, index)} />)}
       <Button onClick={this.onAddDomain}>ADD DOMAIN</Button>
+      <Button variant="raised"
+        color="primary"
+        onClick={this.props.onThemeSave}>
+        SAVE THEME
+      </Button>
     </React.Fragment>,
   ][i]
 
@@ -380,9 +402,9 @@ class Menu extends React.Component {
               className={classNames(classes.menuButton, this.state.open && classes.hide)}>
               <MenuIcon />
             </IconButton>
-            <Typography variant="title" color="inherit" noWrap>
-              {theme.name ? theme.name : 'Unnamed theme'}
-            </Typography>
+            <TextField value={theme.name}
+              onChange={this.props.onThemeNameChange}
+              InputProps={{ className: classes.themeTextField }} />
           </Toolbar>
         </AppBar>
         <Drawer

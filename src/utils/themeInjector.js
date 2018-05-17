@@ -23,6 +23,8 @@ const ThemeInjector = {
   injectSuitable() {
     Themes.get()
       .then((themes) => {
+        if (!themes) return;
+
         const suitableThemes = themes.filter(theme =>
           theme.domains.includes(window.location.hostname));
 
