@@ -9,12 +9,14 @@ const ThemeInjector = {
     style.textContent = toCSS(theme.styles);
     this.injected.push({ theme, style });
     document.head.appendChild(style);
+
+    return this.injected.length - 1;
   },
 
   eject(ejectTheme) {
-    const index = this.injected.findIndex(({ theme }) => theme === ejectTheme);
+    const index = typeof ejectTheme === 'number' ? ejectTheme : this.injected.findIndex(({ theme }) => theme === ejectTheme);
 
-    if (index === -1) throw new Error('Theme not found');
+    if (index === -1) return;
 
     document.head.removeChild(this.injected[index].style);
     this.injected.splice(index, 1);
@@ -24,6 +26,7 @@ const ThemeInjector = {
     Themes.get()
       .then((themes) => {
         if (!themes) return;
+        if (!Array.isArray(themes)) return;
 
         const suitableThemes = themes.filter(theme =>
           theme.domains.includes(window.location.hostname));

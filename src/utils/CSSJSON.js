@@ -58,7 +58,6 @@ const toJSON = (css) => {
     }
     if (currentProp) json[currentProp] += css[i];
   }
-
   return json;
 };
 
@@ -67,8 +66,10 @@ const toCSS = (json, nested = false) => {
   if (nested) css += '{';
 
   for (const prop of Object.keys(json)) {
-    if (typeof json[prop] === 'string') {
-      css += prop + ':' + json[prop] + ';';
+    if (typeof json[prop] !== 'object') {
+      if (json[prop]) {
+        css += prop + ':' + json[prop] + ';';
+      }
     } else {
       css += prop;
       css += toCSS(json[prop], true);

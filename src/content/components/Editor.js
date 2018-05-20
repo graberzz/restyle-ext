@@ -33,6 +33,7 @@ import Checkbox from './Checkbox';
 import ElementStateRadio from './ElementStateRadio';
 import NodeSelector from '../../utils/nodeSelector';
 import { CONTAINER_ID } from '../../utils';
+import ThemeInjector from '../../utils/themeInjector';
 
 
 const drawerWidth = 240;
@@ -156,67 +157,79 @@ class Editor extends React.Component {
   setSelectorStyles = () => {
     const { REtheme, selector } = this.state;
     const selectorStyles = REtheme.styles[selector] ? REtheme.styles[selector] : {};
-
     const getValue = (cssValue) => {
-      const regExp = cssValue.match(/^\d+/);
+      if (!cssValue) return '';
+      const regExp = cssValue.match(/^(\d|\.)+/);
       if (regExp) {
         return regExp[0];
       }
-      return null;
+      return '';
     };
 
     const getUnit = (cssValue) => {
+      if (!cssValue) return 'px';
       const regExp = cssValue.match(/\D+$/);
       if (regExp) {
         return regExp[0];
       }
-      return null;
+      return 'px';
     };
+
+    this.setState({
+      REtheme: {
+        ...REtheme,
+        styles: {
+          ...REtheme.styles,
+          [selector]: {
+            ...selectorStyles,
+            ...this.getCSSObject(),
+          },
+        },
+      },
+    });
 
     this.setState({
       selectorStyles: {
         units: {
-          fontSize: selectorStyles.fontSize ? getUnit(selectorStyles.fontSize) : 'px',
-          lineHeight: selectorStyles.lineHeight ? getUnit(selectorStyles.lineHeight) : '%',
-          letterSpacing: selectorStyles.letterSpacing ? getUnit(selectorStyles.letterSpacing) : 'px',
-          width: selectorStyles.width ? getUnit(selectorStyles.width) : 'px',
-          height: selectorStyles.height ? getUnit(selectorStyles.height) : 'px',
-          margin: selectorStyles.margin ? getUnit(selectorStyles.margin) : 'px',
-          padding: selectorStyles.padding ? getUnit(selectorStyles.padding) : 'px',
-          borderWidth: selectorStyles.borderWidth ? getUnit(selectorStyles.borderWidth) : 'px',
+          fontSize: getUnit(selectorStyles.fontSize),
+          lineHeight: getUnit(selectorStyles.lineHeight),
+          letterSpacing: getUnit(selectorStyles.letterSpacing),
+          width: getUnit(selectorStyles.width),
+          height: getUnit(selectorStyles.height),
+          margin: getUnit(selectorStyles.margin),
+          padding: getUnit(selectorStyles.padding),
+          borderWidth: getUnit(selectorStyles.borderWidth),
         },
-        fontSize: selectorStyles.fontSize ? getValue(selectorStyles.fontSize) : null,
-        lineHeight: selectorStyles.lineHeight ? getValue(selectorStyles.lineHeight) : null,
-        letterSpacing: selectorStyles.letterSpacing ? getValue(selectorStyles.letterSpacing) : null,
-        textAlign: selectorStyles.textAlign ? getValue(selectorStyles.textAlign) : null,
-        fontFamily: selectorStyles.fontFamily ? getValue(selectorStyles.fontFamily) : null,
-        color: selectorStyles.color ? getValue(selectorStyles.color) : null,
-        bold: selectorStyles.fontWeight === 'bold' || selectorStyles.fontWeight > 600,
-        italic: selectorStyles.fontStyle === 'italic',
+        fontSize: getValue(selectorStyles.fontSize),
+        lineHeight: getValue(selectorStyles.lineHeight),
+        letterSpacing: getValue(selectorStyles.letterSpacing),
+        textAlign: getValue(selectorStyles.textAlign),
+        fontFamily: getValue(selectorStyles.fontFamily),
+        color: getValue(selectorStyles.color),
+        bold: selectorStyles.fontWeight ? (selectorStyles.fontWeight === 'bold' || selectorStyles.fontWeight) > 60 : undefined,
+        italic: selectorStyles.fontStyle ? selectorStyles.fontStyle === 'italic' : undefined,
 
-        visible: selectorStyles.visibility === 'visible',
-        width: selectorStyles.width ? getValue(selectorStyles.width) : null,
-        height: selectorStyles.height ? getValue(selectorStyles.height) : null,
+        visible: selectorStyles.visibility ? selectorStyles.visibility === 'visible' : undefined,
+        width: getValue(selectorStyles.width),
+        height: getValue(selectorStyles.height),
 
-        borderStyle: 'solid',
-        borderColor: '#fff',
-        borderWidth: 0,
+        borderStyle: getValue(selectorStyles.borderStyle),
+        borderColor: getValue(selectorStyles.borderColor),
+        borderWidth: getValue(selectorStyles.borderWidth),
 
-        backgroundColor: '#000',
+        backgroundColor: getValue(selectorStyles.backgroundColor),
 
-        margin: 0,
-        marginLeft: 0,
-        marginRight: 0,
-        marginTop: 0,
-        marginBottom: 0,
+        marginLeft: getValue(selectorStyles.marginLeft),
+        marginRight: getValue(selectorStyles.marginRight),
+        marginTop: getValue(selectorStyles.marginTop),
+        marginBottom: getValue(selectorStyles.marginBottom),
 
-        padding: 0,
-        paddingLeft: 0,
-        paddingRight: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
+        paddingLeft: getValue(selectorStyles.paddingLeft),
+        paddingRight: getValue(selectorStyles.paddingRight),
+        paddingTop: getValue(selectorStyles.paddingTop),
+        paddingBottom: getValue(selectorStyles.paddingBottom),
       },
-    });
+    }, () => console.log(this.state));
   }
 
   mapElementStateToPseudoClass = elementState => ({
@@ -236,6 +249,7 @@ class Editor extends React.Component {
           ...this.state.REtheme.styles,
           [selector]: {},
         },
+
       },
       selector,
       selecting: false,
@@ -317,6 +331,15 @@ class Editor extends React.Component {
     });
   }
 
+  injectLivePreviewTheme = () => {
+    ThemeInjector.eject(this.liveThemeId);
+    const liveTheme = {
+      name: 'LIVE_PREVIEW',
+      styles: this.getCSSObject(),
+    };
+    this.liveThemeId = ThemeInjector.inject(liveTheme);
+  }
+
   onUnitChange = property => e => this.setState({
     selectorStyles: {
       ...this.state.selectorStyles,
@@ -325,14 +348,14 @@ class Editor extends React.Component {
         [property]: e.target.value,
       },
     },
-  })
+  }, this.injectLivePreviewTheme)
 
   onValueChange = property => e => this.setState({
     selectorStyles: {
       ...this.state.selectorStyles,
       [property]: e.target.value,
     },
-  })
+  }, this.injectLivePreviewTheme)
 
   onDomainChange = (e, index) => {
     const domains = [...this.state.REtheme.domains];
@@ -356,40 +379,40 @@ class Editor extends React.Component {
   }
 
   getCSSObject = () => {
-    const { styles } = this.state;
+    const { selectorStyles: styles, selector } = this.state;
     const { units } = styles;
 
     return {
-      fontSize: styles.fontSize + units.fontSize,
-      lineHeight: styles.lineHeight + units.lineHeight,
-      letterSpacing: styles.letterSpacing + units.letterSpacing,
-      textAlign: styles.textAlign,
-      fontFamily: styles.fontFamily,
-      color: styles.color,
-      fontWeight: styles.bold ? '800' : '400',
-      fontStyle: styles.italic ? 'italic' : 'normal',
+      [selector]: {
+        ['font-size']: styles.fontSize ? (styles.fontSize + units.fontSize) : undefined,
+        ['line-height']: styles.lineHeight ? (styles.lineHeight + units.lineHeight) : undefined,
+        ['letter-spacing']: styles.letterSpacing ? (styles.letterSpacing + units.letterSpacing) : undefined,
+        ['text-align']: styles.textAlign,
+        ['font-family']: styles.fontFamily,
+        color: styles.color,
+        ['font-weight']: typeof styles.bold === 'boolean' ? (styles.bold ? '800' : '400') : undefined,
+        ['font-style']: typeof styles.italic === 'boolean' ? (styles.italic ? 'italic' : 'normal') : undefined,
 
-      visibility: styles.visible ? 'visible' : 'hidden',
-      width: styles.width + units.width,
-      height: styles.height + units.height,
+        visibility: typeof styles.visible === 'boolean' ? (styles.visible ? 'visible' : 'hidden') : undefined,
+        width: styles.width ? (styles.width + units.width) : undefined,
+        height: styles.height ? (styles.height + units.height) : undefined,
 
-      borderStyle: styles.borderStyle,
-      borderColor: styles.borderColor,
-      borderWidth: styles.borderWidth + units.borderWidth,
+        ['border-style']: styles.borderStyle,
+        ['border-color']: styles.borderColor,
+        ['border-width']: styles.borderWidth ? (styles.borderWidth + units.borderWidth) : undefined,
 
-      backgroundColor: styles.backgroundColor,
+        ['background-color']: styles.backgroundColor,
 
-      margin: styles.margin + units.margin,
-      marginLeft: styles.marginLeft + units.margin,
-      marginRight: styles.marginRight + units.margin,
-      marginTop: styles.marginTop + units.margin,
-      marginBottom: styles.marginBottom + units.margin,
+        ['margin-left']: styles.marginLeft ? (styles.marginLeft + units.margin) : undefined,
+        ['margin-right']: styles.marginRight ? (styles.marginRight + units.margin) : undefined,
+        ['margin-top']: styles.marginTop ? (styles.marginTop + units.margin) : undefined,
+        ['margin-bottom']: styles.marginBottom ? (styles.marginBottom + units.margin) : undefined,
 
-      padding: styles.padding + units.padding,
-      paddingLeft: styles.paddingLeft + units.padding,
-      paddingRight: styles.paddingRight + units.padding,
-      paddingTop: styles.paddingTop + units.padding,
-      paddingBottom: styles.paddingBottom + units.padding,
+        ['padding-left']: styles.paddingLeft ? (styles.paddingLeft + units.padding) : undefined,
+        ['padding-right']: styles.paddingRight ? (styles.paddingRight + units.padding) : undefined,
+        ['padding-top']: styles.paddingTop ? (styles.paddingTop + units.padding) : undefined,
+        ['padding-bottom']: styles.paddingBottom ? (styles.paddingBottom + units.padding) : undefined,
+      },
     };
   }
 
@@ -399,7 +422,6 @@ class Editor extends React.Component {
       <UnitInput value={this.state.selectorStyles.fontSize}
         unit={this.state.selectorStyles.units.fontSize}
         label="Size"
-        type="number"
         onChange={this.onValueChange('fontSize')}
         onUnitChange={this.onUnitChange('fontSize')} />
       <UnitInput value={this.state.selectorStyles.lineHeight}
@@ -459,23 +481,19 @@ class Editor extends React.Component {
         rightValue={this.state.selectorStyles.marginRight}
         topValue={this.state.selectorStyles.marginTop}
         bottomValue={this.state.selectorStyles.marginBottom}
-        commonValue={this.state.selectorStyles.margin}
         onLeftValueChange={this.onValueChange('marginLeft')}
         onRightValueChange={this.onValueChange('marginRight')}
         onTopValueChange={this.onValueChange('marginTop')}
-        onBottomValueChange={this.onValueChange('marginBottom')}
-        onCommonValueChange={this.onValueChange('margin')} />
+        onBottomValueChange={this.onValueChange('marginBottom')} />
       <MultiInput label="Padding"
         leftValue={this.state.selectorStyles.paddingLeft}
         rightValue={this.state.selectorStyles.paddingRight}
         topValue={this.state.selectorStyles.paddingTop}
         bottomValue={this.state.selectorStyles.paddingBottom}
-        commonValue={this.state.selectorStyles.padding}
         onLeftValueChange={this.onValueChange('paddingLeft')}
         onRightValueChange={this.onValueChange('paddingRight')}
         onTopValueChange={this.onValueChange('paddingTop')}
-        onBottomValueChange={this.onValueChange('paddingBottom')}
-        onCommonValueChange={this.onValueChange('padding')} />
+        onBottomValueChange={this.onValueChange('paddingBottom')} />
     </React.Fragment>,
 
     // Border
@@ -503,13 +521,12 @@ class Editor extends React.Component {
       <Button variant="raised"
         color="primary"
         onClick={this.props.onREthemeSave}>
-        SAVE REtheme
+        SAVE THEME
       </Button>
     </React.Fragment>,
   ][i]
 
   render() {
-    console.log(this.state);
     const { classes } = this.props;
     const {
       elementState, stick, selector,

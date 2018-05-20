@@ -26,9 +26,9 @@ const styles = {
 const MultiInput = ({
   classes, unit, onUnitChange,
   leftValue, rightValue, topValue,
-  bottomValue, commonValue, onLeftValueChange,
+  bottomValue, onLeftValueChange,
   onRightValueChange, onTopValueChange, label,
-  onBottomValueChange, onCommonValueChange,
+  onBottomValueChange,
 }) => (
   <div className={classes.container}>
     <label className={classes.label}>{ label }</label>
@@ -48,11 +48,7 @@ const MultiInput = ({
             className={classes.input}
             onChange={onLeftValueChange} />
           </td>
-          <td>
-            <TextField value={commonValue}
-              className={classes.input}
-              onChange={onCommonValueChange} />
-          </td>
+          <td></td>
           <td>
             <TextField value={rightValue}
               className={classes.input}
