@@ -34,6 +34,7 @@ import ElementStateRadio from './ElementStateRadio';
 import NodeSelector from '../../utils/nodeSelector';
 import { CONTAINER_ID } from '../../utils';
 import ThemeInjector from '../../utils/themeInjector';
+import { Themes } from '../../utils/storage';
 
 
 const drawerWidth = 240;
@@ -131,6 +132,24 @@ const styles = theme => ({
   },
 });
 
+const getValue = (cssValue) => {
+  if (!cssValue) return '';
+  const regExp = cssValue.match(/^(\d|\.)+/);
+  if (regExp) {
+    return regExp[0];
+  }
+  return '';
+};
+
+const getUnit = (cssValue) => {
+  if (!cssValue) return 'px';
+  const regExp = cssValue.match(/\D+$/);
+  if (regExp) {
+    return regExp[0];
+  }
+  return 'px';
+};
+
 class Editor extends React.Component {
   constructor(props) {
     super(props);
@@ -142,91 +161,13 @@ class Editor extends React.Component {
     );
 
     this.state = {
+      REtheme: props.REtheme,
       elementState: 'default',
       stick: 'right',
       selectedIndex: 0,
       open: false,
       selector: null,
-      selectorStyles: {
-        units: {},
-      },
-      REtheme: props.REtheme,
     };
-  }
-
-  setSelectorStyles = (prevSelector) => {
-    const { REtheme, selector } = this.state;
-
-    if (!selector) return;
-
-    const selectorStyles = REtheme.styles[selector] ? REtheme.styles[selector] : {};
-    const getValue = (cssValue) => {
-      if (!cssValue) return '';
-      const regExp = cssValue.match(/^(\d|\.)+/);
-      if (regExp) {
-        return regExp[0];
-      }
-      return '';
-    };
-
-    const getUnit = (cssValue) => {
-      if (!cssValue) return 'px';
-      const regExp = cssValue.match(/\D+$/);
-      if (regExp) {
-        return regExp[0];
-      }
-      return 'px';
-    };
-
-    this.setState({
-      selectorStyles: {
-        units: {
-          fontSize: getUnit(selectorStyles['font-size']),
-          lineHeight: getUnit(selectorStyles['line-height']),
-          letterSpacing: getUnit(selectorStyles['letter-spacing']),
-          width: getUnit(selectorStyles.width),
-          height: getUnit(selectorStyles.height),
-          margin: getUnit(selectorStyles.margin),
-          padding: getUnit(selectorStyles.padding),
-          borderWidth: getUnit(selectorStyles['border-width']),
-        },
-        fontSize: getValue(selectorStyles['font-size']),
-        lineHeight: getValue(selectorStyles['line-height']),
-        letterSpacing: getValue(selectorStyles['letter-spacing']),
-        textAlign: getValue(selectorStyles['text-align']),
-        fontFamily: getValue(selectorStyles['font-family']),
-        color: getValue(selectorStyles.color),
-        bold: selectorStyles['font-weight'] ? (selectorStyles['font-weight'] === 'bold' || selectorStyles['font-weight']) > 60 : undefined,
-        italic: selectorStyles['font-style'] ? selectorStyles['font-style'] === 'italic' : undefined,
-
-        visible: selectorStyles.visibility ? selectorStyles.visibility === 'visible' : undefined,
-        width: getValue(selectorStyles.width),
-        height: getValue(selectorStyles.height),
-
-        borderStyle: getValue(selectorStyles['border-style']),
-        borderColor: getValue(selectorStyles['border-color']),
-        borderWidth: getValue(selectorStyles['border-width']),
-
-        backgroundColor: getValue(selectorStyles['background-color']),
-
-        marginLeft: getValue(selectorStyles['margin-left']),
-        marginRight: getValue(selectorStyles['margin-right']),
-        marginTop: getValue(selectorStyles['margin-top']),
-        marginBottom: getValue(selectorStyles['margin-bottom']),
-
-        paddingLeft: getValue(selectorStyles['padding-left']),
-        paddingRight: getValue(selectorStyles['padding-right']),
-        paddingTop: getValue(selectorStyles['padding-top']),
-        paddingBottom: getValue(selectorStyles['padding-bottom']),
-      },
-      REtheme: {
-        ...REtheme,
-        styles: {
-          ...REtheme.styles,
-          ...this.getCSSObject(prevSelector),
-        },
-      },
-    }, () => console.log(this.state));
   }
 
   mapElementStateToPseudoClass = elementState => ({
@@ -238,7 +179,6 @@ class Editor extends React.Component {
   onNodeSelect = (prevNode, node, nodeSelector) => {
     this.nodeSelector.suspend();
     const selector = nodeSelector + this.mapElementStateToPseudoClass(this.state.elementState);
-    const prevSelector = this.state.selector;
 
     this.setState({
       REtheme: this.state.REtheme.styles[selector] ? this.state.REtheme : {
@@ -250,7 +190,7 @@ class Editor extends React.Component {
       },
       selector,
       selecting: false,
-    }, () => prevSelector !== selector && this.setSelectorStyles(prevSelector));
+    });
   }
 
   onElementStateChange = (state) => {
@@ -273,16 +213,12 @@ class Editor extends React.Component {
   }
 
   onSelectorChange = (sel) => {
-    const prevSelector = this.state.selector;
-
     this.setState({
       selector: sel.value,
-    }, prevSelector !== sel && this.setSelectorStyles(prevSelector));
+    });
   }
 
   onCreateSelector = (selector) => {
-    const prevSelector = this.state.selector;
-
     this.setState({
       REtheme: {
         ...this.state.REtheme,
@@ -292,7 +228,7 @@ class Editor extends React.Component {
         },
       },
       selector,
-    }, prevSelector !== selector && this.setSelectorStyles(prevSelector));
+    });
   }
 
   onNameChange = (e) => {
@@ -305,7 +241,19 @@ class Editor extends React.Component {
   }
 
   onREthemeSave = () => {
-    console.log(this.state);
+    // TODO: check whether theme is new
+    this.setState({
+      REtheme: {
+        ...this.state.REtheme,
+        domains: this.state.REtheme.domains.filter(domain => domain.trim() !== ''),
+      },
+    }, () => {
+      if (this.props.editing) {
+        Themes.edit(this.state.REtheme);
+      } else {
+        Themes.add(this.state.REtheme);
+      }
+    });
   }
 
   handleDrawerOpen = () => this.setState({ open: true })
@@ -320,31 +268,53 @@ class Editor extends React.Component {
 
   injectLivePreviewTheme = () => {
     ThemeInjector.eject(this.liveThemeId);
-    this.liveThemeId = ThemeInjector.inject({
-      ...this.state.REtheme,
-      styles: {
-        ...this.state.REtheme.styles,
-        ...this.getCSSObject(this.state.selector),
-      },
-    });
+    this.liveThemeId = ThemeInjector.inject(this.state.REtheme);
   }
 
-  onUnitChange = property => e => this.setState({
-    selectorStyles: {
-      ...this.state.selectorStyles,
-      units: {
-        ...this.state.selectorStyles.units,
-        [property]: e.target.value,
-      },
-    },
-  }, this.injectLivePreviewTheme)
+  onUnitChange = property => (e) => {
+    const { REtheme, selector } = this.state;
+    const selectorStyles = REtheme.styles[selector] ? REtheme.styles[selector] : {};
 
-  onValueChange = property => e => this.setState({
-    selectorStyles: {
-      ...this.state.selectorStyles,
-      [property]: e.target.value,
-    },
-  }, this.injectLivePreviewTheme)
+    if (!selectorStyles[property]) return;
+
+    this.setState({
+      REtheme: {
+        ...REtheme,
+        styles: {
+          ...REtheme.styles,
+          [this.state.selector]: {
+            ...selectorStyles,
+            [property]: getValue(selectorStyles[property]) + e.target.value,
+          },
+        },
+      },
+    }, this.injectLivePreviewTheme);
+  }
+
+  onValueChange = property => (e) => {
+    const { REtheme, selector } = this.state;
+    const selectorStyles = REtheme.styles[selector] ? REtheme.styles[selector] : {};
+    let addUnit = true;
+
+    if (['font-weight', 'font-style', 'visibility',
+      'color', 'background-color', 'font-family',
+      'text-align', 'border-style', 'border-color'].includes(property)) {
+      addUnit = false;
+    }
+
+    this.setState({
+      REtheme: {
+        ...REtheme,
+        styles: {
+          ...REtheme.styles,
+          [this.state.selector]: {
+            ...selectorStyles,
+            [property]: e.target.value + (addUnit ? getUnit(selectorStyles[property]) : ''),
+          },
+        },
+      },
+    }, this.injectLivePreviewTheme);
+  }
 
   onDomainChange = (e, index) => {
     const domains = [...this.state.REtheme.domains];
@@ -357,8 +327,7 @@ class Editor extends React.Component {
       },
     });
   }
-
-  onAddDomain = () => {
+  onDomainAdd = () => {
     this.setState({
       REtheme: {
         ...this.state.REtheme,
@@ -367,153 +336,140 @@ class Editor extends React.Component {
     });
   }
 
-  getCSSObject = (selector) => {
-    const { selectorStyles: styles } = this.state;
-    const { units } = styles;
+  getList = (i) => {
+    const styles = this.state.REtheme.styles[this.state.selector] || {};
 
-    return {
-      [selector]: {
-        'font-size': styles.fontSize ? (styles.fontSize + units.fontSize) : undefined,
-        'line-height': styles.lineHeight ? (styles.lineHeight + units.lineHeight) : undefined,
-        'letter-spacing': styles.letterSpacing ? (styles.letterSpacing + units.letterSpacing) : undefined,
-        'text-align': styles.textAlign,
-        'font-family': styles.fontFamily,
-        color: styles.color,
-        'font-weight': typeof styles.bold === 'boolean' ? (styles.bold ? '800' : '400') : undefined,
-        'font-style': typeof styles.italic === 'boolean' ? (styles.italic ? 'italic' : 'normal') : undefined,
+    return [
+      // Text
+      <React.Fragment>
+        <UnitInput value={getValue(styles['font-size'])}
+          unit={getUnit(styles['font-size'])}
+          label="Size"
+          onChange={this.onValueChange('font-size')}
+          onUnitChange={this.onUnitChange('font-size')} />
+        <UnitInput value={getValue(styles['line-height'])}
+          unit={getUnit(styles['line-height'])}
+          label="Line Height"
+          onChange={this.onValueChange('line-height')}
+          onUnitChange={this.onUnitChange('line-height')} />
+        <UnitInput value={getValue(styles['letter-spacing'])}
+          unit={getUnit(styles['letter-spacing'])}
+          label="Letter Spacing"
+          onChange={this.onValueChange('letter-spacing')}
+          onUnitChange={this.onUnitChange('letter-spacing')} />
+        <Select value={styles['font-family']}
+          label="Family"
+          options={['Arial', 'Consolas']}
+          onChange={this.onValueChange('font-family')} />
+        <Select value={styles['text-align']}
+          label="Align"
+          options={['left', 'right', 'center', 'justify']}
+          onChange={this.onValueChange('text-align')} />
+        <ColorPicker label="Color"
+          color={styles.color}
+          defaultColor="#ffffff"
+          onChange={this.onValueChange('color')} />
+        <Checkbox label="Bold"
+          checked={styles['font-weight'] === 'bold' || styles['font-weight'] > 600}
+          onChange={() => this.onValueChange('font-weight')({ target: { value: (styles['font-weight'] === 'bold' || styles['font-weight'] > 600) ? 'normal' : 'bold' } })} />
+        <Checkbox label="Italic"
+          checked={styles['font-style'] === 'italic'}
+          onChange={() => this.onValueChange('font-style')({ target: { value: styles['font-style'] === 'italic' ? 'normal' : 'italic' } })} />
+      </React.Fragment>,
 
-        visibility: typeof styles.visible === 'boolean' ? (styles.visible ? 'visible' : 'hidden') : undefined,
-        width: styles.width ? (styles.width + units.width) : undefined,
-        height: styles.height ? (styles.height + units.height) : undefined,
-
-        'border-style': styles.borderStyle,
-        'border-color': styles.borderColor,
-        'border-width': styles.borderWidth ? (styles.borderWidth + units.borderWidth) : undefined,
-
-        'background-color': styles.backgroundColor,
-
-        'margin-left': styles.marginLeft ? (styles.marginLeft + units.margin) : undefined,
-        'margin-right': styles.marginRight ? (styles.marginRight + units.margin) : undefined,
-        'margin-top': styles.marginTop ? (styles.marginTop + units.margin) : undefined,
-        'margin-bottom': styles.marginBottom ? (styles.marginBottom + units.margin) : undefined,
-
-        'padding-left': styles.paddingLeft ? (styles.paddingLeft + units.padding) : undefined,
-        'padding-right': styles.paddingRight ? (styles.paddingRight + units.padding) : undefined,
-        'padding-top': styles.paddingTop ? (styles.paddingTop + units.padding) : undefined,
-        'padding-bottom': styles.paddingBottom ? (styles.paddingBottom + units.padding) : undefined,
-      },
-    };
-  }
-
-  getList = i => [
-    // Text
-    <React.Fragment>
-      <UnitInput value={this.state.selectorStyles.fontSize}
-        unit={this.state.selectorStyles.units.fontSize}
-        label="Size"
-        onChange={this.onValueChange('fontSize')}
-        onUnitChange={this.onUnitChange('fontSize')} />
-      <UnitInput value={this.state.selectorStyles.lineHeight}
-        unit={this.state.selectorStyles.units.lineHeight}
-        label="Line Height"
-        onChange={this.onValueChange('lineHeight')}
-        onUnitChange={this.onUnitChange('lineHeight')} />
-      <UnitInput value={this.state.selectorStyles.letterSpacing}
-        unit={this.state.selectorStyles.units.letterSpacing}
-        label="Letter Spacing"
-        onChange={this.onValueChange('letterSpacing')}
-        onUnitChange={this.onUnitChange('letterSpacing')} />
-      <Select value={this.state.selectorStyles.fontFamily}
-        label="Family"
-        options={['Arial', 'Consolas']}
-        onChange={this.onValueChange('fontFamily')} />
-      <Select value={this.state.selectorStyles.textAlign}
-        label="Align"
-        options={['left', 'right', 'center', 'justify']}
-        onChange={this.onValueChange('textAlign')} />
-      <ColorPicker label="Color"
-        color={this.state.selectorStyles.color} //        v
-        defaultColor={this.state.selectorStyles.color} // > does not work
-        onChange={this.onValueChange('color')} />
-      <Checkbox label="Bold"
-        checked={this.state.selectorStyles.bold}
-        onChange={this.onValueChange('bold')} />
-      <Checkbox label="Italic"
-        checked={this.state.selectorStyles.italic}
-        onChange={this.onValueChange('italic')} />
-    </React.Fragment>,
-
-    // Layout
-    <React.Fragment>
-      <Checkbox label="Visible"
-        checked={this.state.selectorStyles.visible}
-        onChange={this.onValueChange('visible')} />
-      <UnitInput value={this.state.selectorStyles.width}
-        unit={this.state.selectorStyles.units.width}
-        label="Width"
-        onChange={this.onValueChange('width')}
-        onUnitChange={this.onUnitChange('width')} />
-      <UnitInput value={this.state.selectorStyles.height}
-        unit={this.state.selectorStyles.units.height}
-        label="Height"
-        onChange={this.onValueChange('height')}
-        onUnitChange={this.onUnitChange('height')} />
-      <ColorPicker label="Color"
-        color={this.state.selectorStyles.backgroundColor}
-        onChange={this.onValueChange('backgroundColor')} />
-      {/* <TextField label="Image URL"
+      // Layout
+      <React.Fragment>
+        <Checkbox label="Visible"
+          checked={styles.visibility === 'visible'}
+          onChange={() => this.onValueChange('visibility')({ target: { value: styles.visibility === 'visible' ? 'hidden' : 'visible' } })} />
+        <UnitInput value={getValue(styles.width)}
+          unit={getUnit(styles.width)}
+          label="Width"
+          onChange={this.onValueChange('width')}
+          onUnitChange={this.onUnitChange('width')} />
+        <UnitInput value={getValue(styles.height)}
+          unit={getUnit(styles.height)}
+          label="Height"
+          onChange={this.onValueChange('height')}
+          onUnitChange={this.onUnitChange('height')} />
+        <ColorPicker label="Color"
+          color={styles['background-color']}
+          onChange={this.onValueChange('background-color')} />
+        {/* <TextField label="Image URL"
         value={this.state.selectorStyles.image}
         fullWidth
      /> */}
-      <MultiInput label="Margin"
-        leftValue={this.state.selectorStyles.marginLeft}
-        rightValue={this.state.selectorStyles.marginRight}
-        topValue={this.state.selectorStyles.marginTop}
-        bottomValue={this.state.selectorStyles.marginBottom}
-        onLeftValueChange={this.onValueChange('marginLeft')}
-        onRightValueChange={this.onValueChange('marginRight')}
-        onTopValueChange={this.onValueChange('marginTop')}
-        onBottomValueChange={this.onValueChange('marginBottom')} />
-      <MultiInput label="Padding"
-        leftValue={this.state.selectorStyles.paddingLeft}
-        rightValue={this.state.selectorStyles.paddingRight}
-        topValue={this.state.selectorStyles.paddingTop}
-        bottomValue={this.state.selectorStyles.paddingBottom}
-        onLeftValueChange={this.onValueChange('paddingLeft')}
-        onRightValueChange={this.onValueChange('paddingRight')}
-        onTopValueChange={this.onValueChange('paddingTop')}
-        onBottomValueChange={this.onValueChange('paddingBottom')} />
-    </React.Fragment>,
+        <MultiInput label="Margin"
+          leftValue={getValue(styles['margin-left'])}
+          rightValue={getValue(styles['margin-right'])}
+          topValue={getValue(styles['margin-top'])}
+          bottomValue={getValue(styles['margin-bottom'])}
+          unit={styles['margin-left'] ?
+            getUnit(styles['margin-left']) : styles['margin-right'] ?
+              getUnit(styles['margin-right']) : styles['margin-top'] ?
+                getUnit(styles['margin-top']) : getUnit(styles['margin-bottom'])}
+          onUnitChange={(e) => {
+            this.onUnitChange('margin-left')(e);
+            this.onUnitChange('margin-right')(e);
+            this.onUnitChange('margin-top')(e);
+            this.onUnitChange('margin-bottom')(e);
+          }}
+          onLeftValueChange={this.onValueChange('margin-left')}
+          onRightValueChange={this.onValueChange('margin-right')}
+          onTopValueChange={this.onValueChange('margin-top')}
+          onBottomValueChange={this.onValueChange('margin-bottom')} />
+        <MultiInput label="Padding"
+          leftValue={getValue(styles['padding-left'])}
+          rightValue={getValue(styles['padding-right'])}
+          topValue={getValue(styles['padding-top'])}
+          bottomValue={getValue(styles['padding-bottom'])}
+          unit={styles['padding-left'] ?
+            getUnit(styles['padding-left']) : styles['padding-right'] ?
+              getUnit(styles['padding-right']) : styles['padding-top'] ?
+                getUnit(styles['padding-top']) : getUnit(styles['padding-bottom'])}
+          onUnitChange={(e) => {
+            this.onUnitChange('padding-left')(e);
+            this.onUnitChange('padding-right')(e);
+            this.onUnitChange('padding-top')(e);
+            this.onUnitChange('padding-bottom')(e);
+          }}
+          onLeftValueChange={this.onValueChange('padding-left')}
+          onRightValueChange={this.onValueChange('padding-right')}
+          onTopValueChange={this.onValueChange('padding-top')}
+          onBottomValueChange={this.onValueChange('padding-bottom')} />
+      </React.Fragment>,
 
-    // Border
-    <React.Fragment>
-      <Select value={this.state.selectorStyles.borderWidth}
-        label="Style"
-        options={['solid', 'dotted', 'dashed', 'double', 'groove', 'none']}
-        onChange={this.onValueChange('borderStyle')} />
-      <UnitInput value={this.state.selectorStyles.borderWidth}
-        unit={this.state.selectorStyles.units.borderWidth}
-        label="Width"
-        onChange={this.onValueChange('borderWidth')}
-        onUnitChange={this.onUnitChange('borderWidth')} />
-      <ColorPicker label="Color"
-        color={this.state.selectorStyles.borderColor}
-        onChange={this.onValueChange('borderColor')} />
-    </React.Fragment>,
+      // Border
+      <React.Fragment>
+        <Select value={styles['border-style']}
+          label="Style"
+          options={['solid', 'dotted', 'dashed', 'double', 'groove', 'none']}
+          onChange={this.onValueChange('border-style')} />
+        <UnitInput value={getValue(styles['border-width'])}
+          unit={getUnit(styles['border-width'])}
+          label="Width"
+          onChange={this.onValueChange('border-width')}
+          onUnitChange={this.onUnitChange('border-width')} />
+        <ColorPicker label="Color"
+          color={styles['border-color']}
+          defaultColor="#ffffff"
+          onChange={this.onValueChange('border-color')} />
+      </React.Fragment>,
 
-    // Save
-    <React.Fragment>
-      <Typography>Domains to apply the REtheme</Typography>
-      {this.state.REtheme.domains.map((domain, index) => <TextField value={domain}
-        onChange={e => this.onDomainChange(e, index)} />)}
-      <Button onClick={this.onAddDomain}>ADD DOMAIN</Button>
-      <Button variant="raised"
-        color="primary"
-        onClick={this.onREthemeSave}>
-        SAVE THEME
+      // Save
+      <React.Fragment>
+        <Typography>Domains to apply the REtheme</Typography>
+        {this.state.REtheme.domains.map((domain, index) => <TextField value={domain}
+          onChange={e => this.onDomainChange(e, index)} />)}
+        <Button onClick={this.onDomainAdd}>ADD DOMAIN</Button>
+        <Button variant="raised"
+          color="primary"
+          onClick={this.onREthemeSave}>
+          SAVE THEME
       </Button>
-    </React.Fragment>,
-  ][i]
+      </React.Fragment>,
+    ][i];
+  }
 
   render() {
     const { classes } = this.props;
@@ -624,17 +580,10 @@ class Editor extends React.Component {
 
 Editor.defaultProps = {
   REtheme: {
-    name: 'unnamed REtheme',
+    name: 'New Theme',
     author: 'author',
-    styles: {
-      '.block.className': {
-        background: 'blue',
-      },
-      'span.welcomefriend': {
-        fontSize: '.5em',
-      },
-    },
-    domains: ['vk.com', 'vkontakte.ru'],
+    styles: {},
+    domains: [window.location.hostname],
   },
 };
 

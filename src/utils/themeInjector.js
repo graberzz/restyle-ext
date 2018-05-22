@@ -29,7 +29,7 @@ const ThemeInjector = {
         if (!Array.isArray(themes)) return;
 
         const suitableThemes = themes.filter(theme =>
-          theme.domains.includes(window.location.hostname));
+          theme.domains.includes(window.location.hostname) && theme.enabled);
 
         suitableThemes.forEach(theme => this.inject(theme));
       });

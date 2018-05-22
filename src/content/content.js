@@ -16,7 +16,9 @@ chrome.runtime.onMessage.addListener(({ msg, themeId }) => {
     case messages.EDIT_MODE_ON:
       if (Number.isInteger(themeId)) {
         Themes.get(themeId)
-          .then(theme => mounter.mount(document.body, <Editor theme={theme} />));
+          .then((theme) => {
+            mounter.mount(document.body, <Editor REtheme={theme} editing={true} />);
+          });
       } else {
         mounter.mount(document.body, <Editor />);
       }

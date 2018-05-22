@@ -1,4 +1,4 @@
-import { setStyle, getSelector, OUTLINE_WIDTH } from './';
+import { setStyle, getSelector } from './';
 
 const defaultHoverStyle = {
   boxShadow: '0 0 10px rgba(0, 0, 0, .7)',
@@ -117,7 +117,7 @@ const NodeSelector = (
 
       // selecting all the nodes with provided node's class selector
 
-      this.selectedNodes.forEach(node => setStyle(node, { boxShadow: '' }));
+      this.selectedNodes.forEach(node => setStyle(node, { boxShadow: '', transform: '' }));
       this.selectedNodes = [];
 
       const nodeCSSSelector = getSelector(this.selectedNode);

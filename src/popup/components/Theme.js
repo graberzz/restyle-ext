@@ -16,6 +16,8 @@ const styles = {
   },
 };
 
+const noPreviewImg = 'http://ctt.trains.com/sitefiles/images/no-preview-available.png';
+
 const Theme = ({
   classes, theme, onToggle,
   onEdit, onDelete,
@@ -24,7 +26,7 @@ const Theme = ({
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
-        image={theme.preview}
+        image={theme.preview || noPreviewImg}
       />
       <CardContent>
         <Typography gutterBottom variant="headline" component="h2">

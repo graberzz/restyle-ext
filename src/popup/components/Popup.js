@@ -24,9 +24,6 @@ class Popup extends React.Component {
   constructor(props) {
     super(props);
 
-    Themes.get()
-      .then(themes => this.setState({ themes }));
-
     chrome.tabs.query(
       {
         currentWindow: true,
@@ -37,9 +34,11 @@ class Popup extends React.Component {
         const temp = document.createElement('a');
         temp.href = currentTab.url;
 
-        this.setState({
-          site: temp.hostname,
-        });
+        Themes.get()
+          .then(themes => this.setState({
+            themes: themes.filter(theme => theme.domains.includes(temp.hostname)),
+            site: temp.hostname,
+          }));
       },
     );
   }
@@ -61,17 +60,16 @@ class Popup extends React.Component {
   }
 
   onSettings = () => {
-    // TODO: open options page
+    chrome.tabs.create({ url: `chrome-extension://${chrome.runtime.id}/options.html` });
   }
 
   onToggleTheme = (id, enabled) => {
     Themes.edit({
       id,
       enabled: !enabled,
-    }).then(() => {
-      Themes.get()
-        .then(themes => this.setState({ themes }));
-    });
+    }).then(themes => this.setState({
+      themes: themes.filter(theme => theme.domains.includes(this.state.site)),
+    }));
   }
 
   onEditTheme = (id) => {
@@ -89,10 +87,9 @@ class Popup extends React.Component {
 
   onDeleteTheme = (id) => {
     Themes.delete(id)
-      .then(() => {
-        Themes.get()
-          .then(themes => this.setState({ themes }));
-      });
+      .then(themes => this.setState({
+        themes: themes.filter(theme => theme.domains.includes(this.state.site)),
+      }));
   }
 
   render() {
