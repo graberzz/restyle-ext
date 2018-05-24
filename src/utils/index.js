@@ -4,6 +4,7 @@ const messages = {
   EDIT_MODE_ON: 'EDIT_MODE_ON',
   EDIT_MODE_OFF: 'EIT_MODE_OFF',
   OPTIONS_OPEN: 'OPTIONS_OPEN',
+  REINJECT: 'REINJECT',
 };
 
 const units = [

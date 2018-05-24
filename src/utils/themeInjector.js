@@ -34,6 +34,13 @@ const ThemeInjector = {
         suitableThemes.forEach(theme => this.inject(theme));
       });
   },
+
+  clear() {
+    while (this.injected.length > 0) {
+      this.eject(this.injected.length - 1);
+      console.log(this.ejected);
+    }
+  },
 };
 
 export default ThemeInjector;

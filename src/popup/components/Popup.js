@@ -5,6 +5,7 @@ import { Themes } from '../../utils/storage';
 import Header from './Header';
 import Menu from './Menu';
 import ThemeList from './ThemeList';
+import ThemeInjector from '../../utils/themeInjector';
 /* global chrome */
 
 const styles = {
@@ -69,6 +70,16 @@ class Popup extends React.Component {
       enabled: !enabled,
     }).then(themes => this.setState({
       themes: themes.filter(theme => theme.domains.includes(this.state.site)),
+    }, () => {
+      chrome.tabs.query(
+        {
+          currentWindow: true,
+          active: true,
+        },
+        ([currentTab]) => {
+          chrome.tabs.sendMessage(currentTab.id, { msg: 'REINJECT' });
+        },
+      );
     }));
   }
 

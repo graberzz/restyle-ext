@@ -29,6 +29,11 @@ chrome.runtime.onMessage.addListener(({ msg, themeId }) => {
       mounter.unmount();
       break;
 
+    case messages.REINJECT:
+      ThemeInjector.clear();
+      ThemeInjector.injectSuitable();
+      break;
+
     default: throw new Error(`Unhandled message: ${msg}`);
   }
 });

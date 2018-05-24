@@ -1,4 +1,7 @@
 import React from 'react';
+import AceEditor from 'react-ace';
+import 'brace/mode/css';
+import 'brace/theme/monokai';
 import Paper from 'material-ui/Paper';
 import SelectIcon from '@material-ui/icons/Launch';
 import LeftIcon from '@material-ui/icons/ArrowBack';
@@ -35,6 +38,8 @@ import NodeSelector from '../../utils/nodeSelector';
 import { CONTAINER_ID } from '../../utils';
 import ThemeInjector from '../../utils/themeInjector';
 import { Themes } from '../../utils/storage';
+import vkbeautify from '../../utils/vkbeautify';
+import { toCSS } from '../../utils/CSSJSON';
 
 
 const drawerWidth = 240;
@@ -241,7 +246,7 @@ class Editor extends React.Component {
   }
 
   onREthemeSave = () => {
-    // TODO: check whether theme is new
+    console.log(this.state.REtheme);
     this.setState({
       REtheme: {
         ...this.state.REtheme,
@@ -467,6 +472,17 @@ class Editor extends React.Component {
           onClick={this.onREthemeSave}>
           SAVE THEME
       </Button>
+      </React.Fragment>,
+
+      // Advanced
+      <React.Fragment>
+        <AceEditor mode="css"
+          theme="monokai"
+          value={vkbeautify.css(toCSS(this.state.REtheme.styles))}
+          editorProps={{ $blockScrolling: true }}
+          wrapEnabled
+          width="260px"
+          height="400px" />
       </React.Fragment>,
     ][i];
   }
