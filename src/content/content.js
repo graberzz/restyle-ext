@@ -17,10 +17,16 @@ chrome.runtime.onMessage.addListener(({ msg, themeId }) => {
       if (Number.isInteger(themeId)) {
         Themes.get(themeId)
           .then((theme) => {
-            mounter.mount(document.body, <Editor REtheme={theme} editing={true} />);
+            mounter.mount(
+              document.body,
+              <Editor REtheme={theme} editing={true} />,
+            );
           });
       } else {
-        mounter.mount(document.body, <Editor />);
+        mounter.mount(
+          document.body,
+          <Editor />,
+        );
       }
 
       break;

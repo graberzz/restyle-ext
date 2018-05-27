@@ -3,11 +3,11 @@ import LibSelect from 'material-ui/Select';
 import { InputLabel } from 'material-ui/Input';
 import { FormControl } from 'material-ui/Form';
 
-const renderOptions = options => options.map((option) => {
+const renderOptions = options => options.map((option, i) => {
   if (typeof option === 'string') {
-    return <option value={option}>{option}</option>;
+    return <option key={i} value={option}>{option}</option>;
   }
-  return <option value={option.value}>{option.name}</option>;
+  return <option key={i} value={option.value}>{option.name}</option>;
 });
 
 const Select = ({ value, options, onChange, label }) => (

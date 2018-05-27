@@ -10,13 +10,17 @@
     "@material-ui/icons": "^1.0.0-beta.43",
     "brace": "^0.11.1",
     "classnames": "^2.2.5",
+    "jss": "^9.8.1",
     "material-ui": "^1.0.0-beta.43",
     "prop-types": "^15.6.1",
     "rc-color-picker": "^1.2.6",
     "react": "^16.3.2",
     "react-ace": "^6.1.1",
     "react-dom": "^16.3.2",
-    "react-select": "^2.0.0-beta.2"
+    "react-jss": "^8.4.0",
+    "react-select": "^2.0.0-beta.2",
+    "react-shadow": "^16.3.0",
+    "symbol-observable": "^1.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^8.3.0",

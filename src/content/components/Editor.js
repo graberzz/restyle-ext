@@ -464,7 +464,8 @@ class Editor extends React.Component {
       // Save
       <React.Fragment>
         <Typography>Domains to apply the REtheme</Typography>
-        {this.state.REtheme.domains.map((domain, index) => <TextField value={domain}
+        {this.state.REtheme.domains.map((domain, index) => <TextField key={index}
+          value={domain}
           onChange={e => this.onDomainChange(e, index)} />)}
         <Button onClick={this.onDomainAdd}>ADD DOMAIN</Button>
         <Button variant="raised"
