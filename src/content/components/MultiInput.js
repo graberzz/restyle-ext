@@ -28,54 +28,59 @@ const MultiInput = ({
   leftValue, rightValue, topValue,
   bottomValue, onLeftValueChange,
   onRightValueChange, onTopValueChange, label,
-  onBottomValueChange,
+  onBottomValueChange, ...rest,
 }) => (
-  <div className={classes.container}>
-    <label className={classes.label}>{ label }</label>
-    <table>
-      <tbody>
-        <tr>
-          <td></td>
-          <td><TextField value={topValue}
-            className={classes.input}
-            onChange={onTopValueChange} />
-          </td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td><TextField value={leftValue}
-            className={classes.input}
-            onChange={onLeftValueChange} />
-          </td>
-          <td></td>
-          <td>
-            <TextField value={rightValue}
+    <div className={classes.container}>
+      <label className={classes.label}>{label}</label>
+      <table>
+        <tbody>
+          <tr>
+            <td></td>
+            <td><TextField value={topValue}
               className={classes.input}
-              onChange={onRightValueChange} />
-          </td>
-          <td>
-            <Select native
-              value={unit}
-              onChange={onUnitChange}
-              className={classes.input}>
-              {units.map(u => <option value={u}>{u}</option>)}
-            </Select>
-          </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>
-            <TextField value={bottomValue}
+              onChange={onTopValueChange}
+              {...rest} />
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><TextField value={leftValue}
               className={classes.input}
-              onChange={onBottomValueChange} />
+              onChange={onLeftValueChange}
+              {...rest} />
+            </td>
+            <td></td>
+            <td>
+              <TextField value={rightValue}
+                className={classes.input}
+                onChange={onRightValueChange}
+                {...rest} />
           </td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+            <td>
+              <Select native
+                value={unit}
+                onChange={onUnitChange}
+                className={classes.input}
+                {...rest}>
+                {units.map(u => <option value={u}>{u}</option>)}
+              </Select>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <TextField value={bottomValue}
+                className={classes.input}
+                onChange={onBottomValueChange}
+                {...rest} />
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
 
 export default withStyles(styles)(MultiInput);

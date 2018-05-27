@@ -16,8 +16,9 @@ const UnitInput = ({
     <Select
       native
       value={unit}
-      onChange={onUnitChange}>
-      {units.map(u => <option value={u}>{u}</option>)}
+      onChange={onUnitChange}
+      {...rest}>
+      {units.map((u, i) => <option key={i} value={u}>{u}</option>)}
     </Select>
   </div>
 );

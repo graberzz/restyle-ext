@@ -100,6 +100,16 @@ class Popup extends React.Component {
     Themes.delete(id)
       .then(themes => this.setState({
         themes: themes.filter(theme => theme.domains.includes(this.state.site)),
+      }, () => {
+        chrome.tabs.query(
+          {
+            currentWindow: true,
+            active: true,
+          },
+          ([currentTab]) => {
+            chrome.tabs.sendMessage(currentTab.id, { msg: 'REINJECT' });
+          },
+        );
       }));
   }
 

@@ -39,7 +39,7 @@ import { CONTAINER_ID } from '../../utils';
 import ThemeInjector from '../../utils/themeInjector';
 import { Themes } from '../../utils/storage';
 import vkbeautify from '../../utils/vkbeautify';
-import { toCSS } from '../../utils/CSSJSON';
+import { toCSS, toJSON } from '../../utils/CSSJSON';
 
 
 const drawerWidth = 240;
@@ -164,6 +164,10 @@ class Editor extends React.Component {
       this.onNodeSelect,
       node => node.closest(`#${CONTAINER_ID}`) !== null,
     );
+    let editorValue = '';
+    if (Object.keys(props.REtheme.styles) !== 0) {
+      editorValue = vkbeautify.css(toCSS(props.REtheme.styles));
+    }
 
     this.state = {
       REtheme: props.REtheme,
@@ -172,6 +176,7 @@ class Editor extends React.Component {
       selectedIndex: 0,
       open: false,
       selector: null,
+      editorValue,
     };
   }
 
@@ -246,7 +251,6 @@ class Editor extends React.Component {
   }
 
   onREthemeSave = () => {
-    console.log(this.state.REtheme);
     this.setState({
       REtheme: {
         ...this.state.REtheme,
@@ -280,6 +284,7 @@ class Editor extends React.Component {
     const { REtheme, selector } = this.state;
     const selectorStyles = REtheme.styles[selector] ? REtheme.styles[selector] : {};
 
+    if (selector === null) return;
     if (!selectorStyles[property]) return;
 
     this.setState({
@@ -293,13 +298,41 @@ class Editor extends React.Component {
           },
         },
       },
-    }, this.injectLivePreviewTheme);
+    }, () => {
+      this.setState({
+        editorValue: vkbeautify.css(toCSS(this.state.REtheme.styles)),
+      });
+      this.injectLivePreviewTheme();
+    });
   }
 
   onValueChange = property => (e) => {
     const { REtheme, selector } = this.state;
     const selectorStyles = REtheme.styles[selector] ? REtheme.styles[selector] : {};
     let addUnit = true;
+
+    if (selector === null) return;
+    if (e.target.value.trim() === '') {
+      this.setState({
+        REtheme: {
+          ...REtheme,
+          styles: {
+            ...REtheme.styles,
+            [this.state.selector]: {
+              ...selectorStyles,
+              [property]: undefined,
+            },
+          },
+        },
+      }, () => {
+        this.setState({
+          editorValue: vkbeautify.css(toCSS(this.state.REtheme.styles)),
+        });
+        this.injectLivePreviewTheme();
+      });
+
+      return;
+    }
 
     if (['font-weight', 'font-style', 'visibility',
       'color', 'background-color', 'font-family',
@@ -318,7 +351,12 @@ class Editor extends React.Component {
           },
         },
       },
-    }, this.injectLivePreviewTheme);
+    }, () => {
+      this.setState({
+        editorValue: vkbeautify.css(toCSS(this.state.REtheme.styles)),
+      });
+      this.injectLivePreviewTheme();
+    });
   }
 
   onDomainChange = (e, index) => {
@@ -341,43 +379,71 @@ class Editor extends React.Component {
     });
   }
 
+  onEditorChange = (value) => {
+    this.setState({ editorValue: value });
+
+    let json = null;
+    try {
+      json = toJSON(value);
+    } catch (e) { }
+
+    if (Object.keys(json).length === 0 && json.constructor === Object) return;
+
+    this.setState({
+      REtheme: {
+        ...this.state.REtheme,
+        styles: json,
+      },
+    }, this.injectLivePreviewTheme);
+  }
+
   getList = (i) => {
     const styles = this.state.REtheme.styles[this.state.selector] || {};
+    const disabled = this.state.selector === null;
+    const { editorValue } = this.state;
 
     return [
       // Text
       <React.Fragment>
         <UnitInput value={getValue(styles['font-size'])}
+          disabled={disabled}
           unit={getUnit(styles['font-size'])}
           label="Size"
           onChange={this.onValueChange('font-size')}
           onUnitChange={this.onUnitChange('font-size')} />
         <UnitInput value={getValue(styles['line-height'])}
+          disabled={disabled}
           unit={getUnit(styles['line-height'])}
           label="Line Height"
           onChange={this.onValueChange('line-height')}
           onUnitChange={this.onUnitChange('line-height')} />
         <UnitInput value={getValue(styles['letter-spacing'])}
+          disabled={disabled}
           unit={getUnit(styles['letter-spacing'])}
           label="Letter Spacing"
           onChange={this.onValueChange('letter-spacing')}
           onUnitChange={this.onUnitChange('letter-spacing')} />
         <Select value={styles['font-family']}
+          disabled={disabled}
           label="Family"
           options={['Arial', 'Consolas']}
           onChange={this.onValueChange('font-family')} />
         <Select value={styles['text-align']}
+          disabled={disabled}
           label="Align"
           options={['left', 'right', 'center', 'justify']}
           onChange={this.onValueChange('text-align')} />
         <ColorPicker label="Color"
+          disabled={disabled}
           color={styles.color}
           defaultColor="#ffffff"
           onChange={this.onValueChange('color')} />
         <Checkbox label="Bold"
+          disabled={disabled}
           checked={styles['font-weight'] === 'bold' || styles['font-weight'] > 600}
           onChange={() => this.onValueChange('font-weight')({ target: { value: (styles['font-weight'] === 'bold' || styles['font-weight'] > 600) ? 'normal' : 'bold' } })} />
         <Checkbox label="Italic"
+          disabled={disabled}
           checked={styles['font-style'] === 'italic'}
           onChange={() => this.onValueChange('font-style')({ target: { value: styles['font-style'] === 'italic' ? 'normal' : 'italic' } })} />
       </React.Fragment>,
@@ -385,19 +451,23 @@ class Editor extends React.Component {
       // Layout
       <React.Fragment>
         <Checkbox label="Visible"
+          disabled={disabled}
           checked={styles.visibility === 'visible'}
           onChange={() => this.onValueChange('visibility')({ target: { value: styles.visibility === 'visible' ? 'hidden' : 'visible' } })} />
         <UnitInput value={getValue(styles.width)}
+          disabled={disabled}
           unit={getUnit(styles.width)}
           label="Width"
           onChange={this.onValueChange('width')}
           onUnitChange={this.onUnitChange('width')} />
         <UnitInput value={getValue(styles.height)}
+          disabled={disabled}
           unit={getUnit(styles.height)}
           label="Height"
           onChange={this.onValueChange('height')}
           onUnitChange={this.onUnitChange('height')} />
         <ColorPicker label="Color"
+          disabled={disabled}
           color={styles['background-color']}
           onChange={this.onValueChange('background-color')} />
         {/* <TextField label="Image URL"
@@ -405,6 +475,7 @@ class Editor extends React.Component {
         fullWidth
      /> */}
         <MultiInput label="Margin"
+          disabled={disabled}
           leftValue={getValue(styles['margin-left'])}
           rightValue={getValue(styles['margin-right'])}
           topValue={getValue(styles['margin-top'])}
@@ -424,6 +495,7 @@ class Editor extends React.Component {
           onTopValueChange={this.onValueChange('margin-top')}
           onBottomValueChange={this.onValueChange('margin-bottom')} />
         <MultiInput label="Padding"
+          disabled={disabled}
           leftValue={getValue(styles['padding-left'])}
           rightValue={getValue(styles['padding-right'])}
           topValue={getValue(styles['padding-top'])}
@@ -447,15 +519,18 @@ class Editor extends React.Component {
       // Border
       <React.Fragment>
         <Select value={styles['border-style']}
+          disabled={disabled}
           label="Style"
           options={['solid', 'dotted', 'dashed', 'double', 'groove', 'none']}
           onChange={this.onValueChange('border-style')} />
         <UnitInput value={getValue(styles['border-width'])}
+          disabled={disabled}
           unit={getUnit(styles['border-width'])}
           label="Width"
           onChange={this.onValueChange('border-width')}
           onUnitChange={this.onUnitChange('border-width')} />
         <ColorPicker label="Color"
+          disabled={disabled}
           color={styles['border-color']}
           defaultColor="#ffffff"
           onChange={this.onValueChange('border-color')} />
@@ -465,6 +540,8 @@ class Editor extends React.Component {
       <React.Fragment>
         <Typography>Domains to apply the REtheme</Typography>
         {this.state.REtheme.domains.map((domain, index) => <TextField value={domain}
+          key={index}
+          fullWidth
           onChange={e => this.onDomainChange(e, index)} />)}
         <Button onClick={this.onDomainAdd}>ADD DOMAIN</Button>
         <Button variant="raised"
@@ -478,9 +555,10 @@ class Editor extends React.Component {
       <React.Fragment>
         <AceEditor mode="css"
           theme="monokai"
-          value={vkbeautify.css(toCSS(this.state.REtheme.styles))}
+          value={editorValue}
           editorProps={{ $blockScrolling: true }}
           wrapEnabled
+          onChange={this.onEditorChange}
           width="260px"
           height="400px" />
       </React.Fragment>,

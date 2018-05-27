@@ -17,6 +17,7 @@ chrome.runtime.onMessage.addListener(({ msg, themeId }) => {
       if (Number.isInteger(themeId)) {
         Themes.get(themeId)
           .then((theme) => {
+            ThemeInjector.eject(theme);
             mounter.mount(document.body, <Editor REtheme={theme} editing={true} />);
           });
       } else {

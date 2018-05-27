@@ -4,7 +4,7 @@ const Themes = {
   get: (id = -1) => new Promise((res) => {
     chrome.storage.sync.get(['themes'], (themes) => {
       if (id === -1) {
-        res(themes.themes); // ???
+        res(themes.themes || []); // ???
       } else {
         res(themes.themes.find(theme => theme.id === id));
       }
@@ -13,7 +13,7 @@ const Themes = {
 
   add: theme => new Promise((res) => {
     Themes.get()
-      .then((themes = {}) => {
+      .then((themes = []) => {
         chrome.storage.sync.set({
           themes: [...themes, { ...theme, id: themes.length || 0 }],
         }, () => res(themes));

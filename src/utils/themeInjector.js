@@ -38,7 +38,6 @@ const ThemeInjector = {
   clear() {
     while (this.injected.length > 0) {
       this.eject(this.injected.length - 1);
-      console.log(this.ejected);
     }
   },
 };

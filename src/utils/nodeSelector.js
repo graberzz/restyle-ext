@@ -7,7 +7,6 @@ const defaultHoverStyle = {
 
 const defaultSelectedStyle = {
   boxShadow: '0 0 15px rgba(0, 0, 0, .7)',
-  transform: 'scale(1.1)',
 };
 
 /**
@@ -117,7 +116,7 @@ const NodeSelector = (
 
       // selecting all the nodes with provided node's class selector
 
-      this.selectedNodes.forEach(node => setStyle(node, { boxShadow: '', transform: '' }));
+      this.selectedNodes.forEach(node => setStyle(node, { boxShadow: '' }));
       this.selectedNodes = [];
 
       const nodeCSSSelector = getSelector(this.selectedNode);
