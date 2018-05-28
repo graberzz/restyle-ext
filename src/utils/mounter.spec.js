@@ -1,11 +1,11 @@
 import React from 'react';
 import Mounter from './mounter';
+import { CONTAINER_ID } from './';
 /* globals test */
-const mounter = Mounter('TESTCASE');
-describe('mounter', () => {
+describe('Mounter', () => {
   test('mounts component', () => {
-    mounter.mount(document.body, <p>Test</p>);
-    const container = document.getElementById('TESTCASE');
+    Mounter.mount(document.body, <p>Test</p>);
+    const container = document.getElementById(CONTAINER_ID);
 
     expect(container).not.toBe(null);
     expect(container.children.length).toBe(1);
@@ -13,14 +13,14 @@ describe('mounter', () => {
   });
 
   test('unmounts component', () => {
-    mounter.mount(document.body, <p>Test</p>);
-    mounter.unmount();
-    const container = document.getElementById('TESTCASE');
+    Mounter.mount(document.body, <p>Test</p>);
+    Mounter.unmount();
+    const container = document.getElementById(window.postMessage('GET_INSALLED_THEMES', '*'));
 
     expect(container).toBe(null);
   });
 
   test('throws error if no container to unmount', () => {
-    expect(() => mounter.unmount()).toThrowError();
+    expect(() => Mounter.unmount()).toThrowError();
   });
 });
