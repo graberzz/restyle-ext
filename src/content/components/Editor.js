@@ -3,12 +3,14 @@ import AceEditor from 'react-ace';
 import 'brace/mode/css';
 import 'brace/theme/monokai';
 import Paper from 'material-ui/Paper';
-import SelectIcon from '@material-ui/icons/Launch';
+import SelectIcon from '@material-ui/icons/TouchApp';
 import LeftIcon from '@material-ui/icons/ArrowBack';
 import RightIcon from '@material-ui/icons/ArrowForward';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from 'material-ui/styles';
 import CreatableSelect from 'react-select/lib/Creatable';
+import AddIcon from '@material-ui/icons/Add';
+import ImgIcon from '@material-ui/icons/Image';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Drawer from 'material-ui/Drawer';
@@ -40,6 +42,7 @@ import ThemeInjector from '../../utils/themeInjector';
 import { Themes } from '../../utils/storage';
 import vkbeautify from '../../utils/vkbeautify';
 import { toCSS, toJSON } from '../../utils/CSSJSON';
+import Mounter from '../../utils/mounter';
 
 
 const drawerWidth = 240;
@@ -135,6 +138,18 @@ const styles = theme => ({
   themeTextField: {
     color: '#fff',
   },
+  button: {
+    margin: '10px 0',
+  },
+  divider: {
+    margin: '15px 0',
+  },
+  menuItemActive: {
+    backgroundColor: 'rgba(0,0,0, .1)',
+  },
+  tooltip: {
+    fontSize: 24,
+  },
 });
 
 const getValue = (cssValue) => {
@@ -176,8 +191,19 @@ class Editor extends React.Component {
       selectedIndex: 0,
       open: false,
       selector: null,
+      tooltipOpen: false,
       editorValue,
     };
+
+    setTimeout(() => this.setState({ tooltipOpen: true }), 1000);
+  }
+
+  onTooltipOpen = () => {
+    this.setState({ tooltipOpen: true });
+  }
+
+  onTooltipClose = () => {
+    this.setState({ tooltipOpen: false });
   }
 
   mapElementStateToPseudoClass = elementState => ({
@@ -205,8 +231,22 @@ class Editor extends React.Component {
 
   onElementStateChange = (state) => {
     if (state === this.state.elementState) return;
-
     this.setState({ elementState: state });
+
+    const { selector } = this.state;
+    if (selector === null) return;
+
+    const pseudoElems = ['before', 'after', 'first-letter', 'first-line', 'selection'];
+    let newSelector = selector;
+    const match = selector.match(/:{1,1}\S+$/);
+    if (match && !pseudoElems.some(elem => selector.endsWith(':' + elem))) {
+      console.log(match);
+      newSelector = newSelector.slice(0, match.index) + this.mapElementStateToPseudoClass(state);
+    } else {
+      newSelector += this.mapElementStateToPseudoClass(state);
+    }
+
+    this.setState({ selector: newSelector });
   }
 
   onStickChange = () => {
@@ -265,6 +305,11 @@ class Editor extends React.Component {
     });
   }
 
+  onSaveAndClose = () => {
+    this.onREthemeSave();
+    Mounter.unmount();
+  }
+
   handleDrawerOpen = () => this.setState({ open: true })
 
   handleDrawerClose = () => this.setState({ open: false })
@@ -311,6 +356,8 @@ class Editor extends React.Component {
     const selectorStyles = REtheme.styles[selector] ? REtheme.styles[selector] : {};
     let addUnit = true;
 
+    console.log(e);
+
     if (selector === null) return;
     if (e.target.value.trim() === '') {
       this.setState({
@@ -336,8 +383,16 @@ class Editor extends React.Component {
 
     if (['font-weight', 'font-style', 'visibility',
       'color', 'background-color', 'font-family',
-      'text-align', 'border-style', 'border-color'].includes(property)) {
+      'text-align', 'border-style', 'border-color', 'background-image',
+      'background-size', 'background-position', 'background-repeat',
+      'background-attachment'].includes(property)) {
       addUnit = false;
+    }
+
+    let value = e.target.value;
+
+    if (property === 'background-image') {
+      value = `url('${value}')`;
     }
 
     this.setState({
@@ -347,7 +402,7 @@ class Editor extends React.Component {
           ...REtheme.styles,
           [this.state.selector]: {
             ...selectorStyles,
-            [property]: e.target.value + (addUnit ? getUnit(selectorStyles[property]) : ''),
+            [property]: value + (addUnit ? getUnit(selectorStyles[property]) : ''),
           },
         },
       },
@@ -426,7 +481,7 @@ class Editor extends React.Component {
         <Select value={styles['font-family']}
           disabled={disabled}
           label="Family"
-          options={['Arial', 'Consolas']}
+          options={['Arial', 'Consolas', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana', 'Georgia', 'Comic Sans MS']}
           onChange={this.onValueChange('font-family')} />
         <Select value={styles['text-align']}
           disabled={disabled}
@@ -516,6 +571,31 @@ class Editor extends React.Component {
           onBottomValueChange={this.onValueChange('padding-bottom')} />
       </React.Fragment>,
 
+      // Background Image
+      <React.Fragment>
+        <TextField value={styles['background-image'] ? styles['background-image'].match(/url\('(.+)'\)/)[1] : undefined}
+          disabled={disabled}
+          fullWidth
+          label="Image URL"
+          onChange={this.onValueChange('background-image')}
+        />
+        <Select value={styles['background-repeat']}
+          disabled={disabled}
+          label="Repeat"
+          options={['repeat', 'no-repeat', 'repeat-x', 'repeat-y']}
+          onChange={this.onValueChange('background-repeat')} />
+        <Select value={styles['background-size']}
+          disabled={disabled}
+          label="Size"
+          options={['cover', 'contain']}
+          onChange={this.onValueChange('background-size')} />
+        <Select value={styles['background-position']}
+          disabled={disabled}
+          label="Position"
+          options={['top', 'bottom', 'left', 'right', 'center']}
+          onChange={this.onValueChange('background-position')} />
+      </React.Fragment>,
+
       // Border
       <React.Fragment>
         <Select value={styles['border-style']}
@@ -538,28 +618,43 @@ class Editor extends React.Component {
 
       // Save
       <React.Fragment>
-        <Typography>Domains to apply the REtheme</Typography>
+        <Button variant="raised"
+          className={this.props.classes.button}
+          fullWidth
+          color="primary"
+          onClick={this.onREthemeSave}>
+          SAVE STYLE
+        </Button>
+        <Button variant="raised"
+          className={this.props.classes.button}
+          color="secondary"
+          fullWidth
+          onClick={this.onSaveAndClose}>
+          CLOSE
+        </Button>
+        <Divider className={this.props.classes.divider}
+          light />
+        <Typography>Domains to apply the styles</Typography>
         {this.state.REtheme.domains.map((domain, index) => <TextField value={domain}
           key={index}
           fullWidth
           onChange={e => this.onDomainChange(e, index)} />)}
-        <Button onClick={this.onDomainAdd}>ADD DOMAIN</Button>
-        <Button variant="raised"
-          color="primary"
-          onClick={this.onREthemeSave}>
-          SAVE THEME
-      </Button>
+        <Button onClick={this.onDomainAdd}
+          variant="raised"
+          className={this.props.classes.button}>
+          <AddIcon />ADD DOMAIN
+        </Button>
       </React.Fragment>,
 
       // Advanced
       <React.Fragment>
         <AceEditor mode="css"
-          theme="monokai"
+          theme="xcode"
           value={editorValue}
           editorProps={{ $blockScrolling: true }}
           wrapEnabled
           onChange={this.onEditorChange}
-          width="260px"
+          width="294px"
           height="400px" />
       </React.Fragment>,
     ][i];
@@ -570,16 +665,23 @@ class Editor extends React.Component {
     const {
       elementState, stick, selector,
       selecting, REtheme, selectedIndex,
+      tooltipOpen,
     } = this.state;
     const REthemeSelectors = Object.keys(REtheme.styles).map(sel => ({ value: sel, label: sel }));
     const selectorValue = { value: selector, label: selector };
 
+    const highlighted = n => selectedIndex === n ? classes.menuItemActive : '';
+
     return (
       <Paper className={`${classes.editor}  ${stick !== 'right' ? classes.editorLeft : ''}`}>
         <div className={classes.top}>
-          <Tooltip title="Select element">
+          <Tooltip open={tooltipOpen}
+            className={classes.tooltip}
+            onClose={this.onTooltipClose}
+            onOpen={this.onTooltipOpen}
+            title="Select element">
             <IconButton onClick={this.onSelectElement}
-              color={selecting ? 'primary' : 'default'}>
+              color={selecting ? 'primary' : tooltipOpen ? 'secondary' : 'default'}>
               <SelectIcon />
             </IconButton>
           </Tooltip>
@@ -609,6 +711,7 @@ class Editor extends React.Component {
                 <MenuIcon />
               </IconButton>
               <TextField value={REtheme.name}
+                fullWidth
                 onChange={this.onNameChange}
                 InputProps={{ className: classes.themeTextField }} />
             </Toolbar>
@@ -627,19 +730,29 @@ class Editor extends React.Component {
             </div>
             <Divider />
             <List>
-              <ListItem onClick={() => this.onListItemClick(0)} button>
+              <ListItem onClick={() => this.onListItemClick(0)}
+                className={highlighted(0)} button>
                 <ListItemIcon>
-                  <TextFieldsIcon />
+                  <TextFieldsIcon color="primary" />
                 </ListItemIcon>
                 <ListItemText primary="Text" />
               </ListItem>
-              <ListItem onClick={() => this.onListItemClick(1)} button>
+              <ListItem onClick={() => this.onListItemClick(1)}
+                className={highlighted(1)} button>
                 <ListItemIcon>
                   <SquareIcon />
                 </ListItemIcon>
                 <ListItemText primary="Layout" />
               </ListItem>
-              <ListItem onClick={() => this.onListItemClick(2)} button>
+              <ListItem onClick={() => this.onListItemClick(2)}
+                className={highlighted(2)} button>
+                <ListItemIcon>
+                  <ImgIcon />
+                </ListItemIcon>
+                <ListItemText primary="Image" />
+              </ListItem>
+              <ListItem onClick={() => this.onListItemClick(3)}
+                className={highlighted(3)} button>
                 <ListItemIcon>
                   <BorderIcon />
                 </ListItemIcon>
@@ -648,13 +761,16 @@ class Editor extends React.Component {
             </List>
             <Divider />
             <List>
-              <ListItem onClick={() => this.onListItemClick(3)} button>
+              <ListItem
+                onClick={() => this.onListItemClick(4)}
+                className={highlighted(4)} button>
                 <ListItemIcon>
                   <SaveIcon />
                 </ListItemIcon>
                 <ListItemText primary="Save" />
               </ListItem>
-              <ListItem onClick={() => this.onListItemClick(4)} button>
+              <ListItem onClick={() => this.onListItemClick(5)}
+                className={highlighted(5)} button>
                 <ListItemIcon>
                   <BuildIcon />
                 </ListItemIcon>
@@ -662,7 +778,7 @@ class Editor extends React.Component {
               </ListItem>
             </List>
           </Drawer>
-          <main className={classes.content}>
+          <main className={classes.content} style={selectedIndex === 5 ? { padding: '0', paddingTop: '5px' } : {}}>
             <div className={classes.toolbar} />
             {this.getList(selectedIndex)}
           </main>
@@ -674,7 +790,7 @@ class Editor extends React.Component {
 
 Editor.defaultProps = {
   REtheme: {
-    name: 'New Theme',
+    name: 'New Style',
     author: 'author',
     styles: {},
     domains: [window.location.hostname],

@@ -1,6 +1,7 @@
 import { render, unmountComponentAtNode } from 'react-dom';
+import { CONTAINER_ID } from './';
 
-const Mounter = (id = 'ReSTYLE_CONTAINER') => {
+const Mounter = (id = CONTAINER_ID) => {
   const container = document.createElement('div');
   container.id = id;
   let rootElement = null;
@@ -21,4 +22,4 @@ const Mounter = (id = 'ReSTYLE_CONTAINER') => {
   };
 };
 
-export default Mounter;
+export default Mounter();

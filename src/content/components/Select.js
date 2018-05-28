@@ -11,7 +11,7 @@ const renderOptions = options => options.map((option, i) => {
 });
 
 const Select = ({ value, options, onChange, label, ...rest }) => (
-  <FormControl>
+  <FormControl fullWidth margin="normal">
     <InputLabel>{label}</InputLabel>
     <LibSelect native defaultValue={value} onChange={onChange} {...rest}>
       {renderOptions(options)}

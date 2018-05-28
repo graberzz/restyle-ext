@@ -19,7 +19,7 @@ const Header = ({ classes, site }) => (
     <AppBar position="static">
       <Toolbar>
         <Typography variant="title" color="inherit" className={classes.flex}>
-          Themes for { site }
+          Styles for { site }
         </Typography>
       </Toolbar>
     </AppBar>

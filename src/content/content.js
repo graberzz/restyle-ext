@@ -9,7 +9,14 @@ import { Themes } from '../utils/storage';
 
 ThemeInjector.injectSuitable();
 
-const mounter = Mounter(CONTAINER_ID);
+window.addEventListener('message', (e) => {
+  if (e.data === 'GET_INSTALLED_THEMES') {
+    Themes.get().then(themes => window.postMessage({
+      msg: 'RESTYLE_THEMES',
+      payload: themes,
+    }, '*'));
+  }
+});
 
 chrome.runtime.onMessage.addListener(({ msg, themeId }) => {
   switch (msg) {
@@ -18,16 +25,16 @@ chrome.runtime.onMessage.addListener(({ msg, themeId }) => {
         Themes.get(themeId)
           .then((theme) => {
             ThemeInjector.eject(theme);
-            mounter.mount(document.body, <Editor REtheme={theme} editing={true} />);
+            Mounter.mount(document.body, <Editor REtheme={theme} editing={true} />);
           });
       } else {
-        mounter.mount(document.body, <Editor />);
+        Mounter.mount(document.body, <Editor />);
       }
 
       break;
 
     case messages.EDIT_MODE_OFF:
-      mounter.unmount();
+      Mounter.unmount();
       break;
 
     case messages.REINJECT:

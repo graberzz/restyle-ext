@@ -63,7 +63,7 @@ const MultiInput = ({
                 onChange={onUnitChange}
                 className={classes.input}
                 {...rest}>
-                {units.map(u => <option value={u}>{u}</option>)}
+                {units.map((u, i) => <option key={i} value={u}>{u}</option>)}
               </Select>
             </td>
           </tr>

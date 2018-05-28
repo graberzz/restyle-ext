@@ -24,12 +24,12 @@ const Menu = ({
     <BottomNavigationAction label="New"
       onClick={onNewTheme}
       icon={<AddIcon />} />
-    <BottomNavigationAction label="More Themes"
+    <BottomNavigationAction label="More Styles"
       onClick={onMoreThemes}
       icon={<DownloadIcon />} />
-    <BottomNavigationAction label="Manage"
+    {/* <BottomNavigationAction label="Manage"
       onClick={onSettings}
-      icon={<SettingsIcon />} />
+      icon={<SettingsIcon />} /> */}
   </BottomNavigation>
 );
 
