@@ -6,7 +6,7 @@
   },
   "browser_action": {
     "default_popup": "popup.html",
-    "default_icon": "icons/ReSTYLE_256.png"
+    "default_icon": "icons/ReSTYLE_38.png"
   },
   "content_scripts": [
         {
@@ -17,7 +17,7 @@
     ],
   "icons": {
     "38": "icons/ReSTYLE_38.png",
-    "128": "icons/ReSTYLE_256.png" 
+    "256": "icons/ReSTYLE_256.png"
   },
   "options_ui": {
     "page": "options.html",

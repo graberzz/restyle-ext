@@ -22,8 +22,9 @@ const renderThemes = ({
 
   return <Typography variant="headline"
            align="center"
-           component="h2">
-           No Themes Yet!
+           component="h2"
+           style={{ margin: '10px 0' }}>
+           No Styles Yet!
          </Typography>;
 };
 

@@ -10,11 +10,22 @@ import { Themes } from '../utils/storage';
 ThemeInjector.injectSuitable();
 
 window.addEventListener('message', (e) => {
-  if (e.data === 'GET_INSTALLED_THEMES') {
-    Themes.get().then(themes => window.postMessage({
-      msg: 'RESTYLE_THEMES',
-      payload: themes,
-    }, '*'));
+  switch (e.msg) {
+    case 'RESTYLE_GET_INSALLED_THEMES':
+      Themes.get().then(themes => window.postMessage({
+        msg: 'RESTYLE_THEMES',
+        themes,
+      }, '*'));
+      break;
+
+    case 'RESTYLE_INSTALL_THEME':
+      Themes.add(e.theme);
+      break;
+
+    case 'RESTYLE_UNINSTALL_THEME':
+      Themes.delete(e.id);
+      break;
+    default:
   }
 });
 
