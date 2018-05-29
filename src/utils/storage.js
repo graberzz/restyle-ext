@@ -15,7 +15,7 @@ const Themes = {
     Themes.get()
       .then((themes = []) => {
         chrome.storage.sync.set({
-          themes: [...themes, { ...theme, id: themes.length || 0 }],
+          themes: [...themes, { ...theme, id: theme.id || -themes.length }],
         }, () => res(themes));
       });
   }),

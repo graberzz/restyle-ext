@@ -195,6 +195,8 @@ class Editor extends React.Component {
       editorValue,
     };
 
+    this.injectLivePreviewTheme();
+
     setTimeout(() => this.setState({ tooltipOpen: true }), 1000);
   }
 
@@ -307,6 +309,9 @@ class Editor extends React.Component {
 
   onSaveAndClose = () => {
     this.onREthemeSave();
+    this.nodeSelector.disable();
+    ThemeInjector.clear();
+    ThemeInjector.injectSuitable();
     Mounter.unmount();
   }
 

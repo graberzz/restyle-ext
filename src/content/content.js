@@ -10,7 +10,7 @@ import { Themes } from '../utils/storage';
 ThemeInjector.injectSuitable();
 
 window.addEventListener('message', (e) => {
-  switch (e.msg) {
+  switch (e.data.msg) {
     case 'RESTYLE_GET_INSALLED_THEMES':
       Themes.get().then(themes => window.postMessage({
         msg: 'RESTYLE_THEMES',
@@ -19,11 +19,11 @@ window.addEventListener('message', (e) => {
       break;
 
     case 'RESTYLE_INSTALL_THEME':
-      Themes.add(e.theme);
+      Themes.add(e.data.theme);
       break;
 
     case 'RESTYLE_UNINSTALL_THEME':
-      Themes.delete(e.id);
+      Themes.delete(e.data.id);
       break;
     default:
   }
