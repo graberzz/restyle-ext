@@ -14,6 +14,7 @@ module.exports = {
     background: path.resolve(__dirname, 'src/background/background.js'),
     popup: path.resolve(__dirname, 'src/popup/popup.js'),
     options: path.resolve(__dirname, 'src/options/options.js'),
+    iframe: path.resolve(__dirname, 'src/content/iframe.js'),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -95,6 +96,11 @@ module.exports = {
       chunks: ['popup'],
       filename: 'popup.html',
       template: path.resolve(__dirname, 'src/popup/popup.html'),
+    }),
+    new HtmlWebpackPlugin({
+      chunks: ['iframe'],
+      filename: 'iframe.html',
+      template: path.resolve(__dirname, 'src/content/iframe.html'),
     }),
     new CopyWebpackPlugin([
       {
