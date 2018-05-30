@@ -53,7 +53,7 @@ const styles = theme => ({
     top: 0,
     left: 'auto',
     right: 0,
-    zIndex: 1500,
+    zIndex: 9998,
   },
   editorLeft: {
     left: 0,
@@ -149,6 +149,7 @@ const styles = theme => ({
   },
   tooltip: {
     fontSize: 24,
+    zIndex: 99999,
   },
 });
 
@@ -512,7 +513,7 @@ class Editor extends React.Component {
       <React.Fragment>
         <Checkbox label="Visible"
           disabled={disabled}
-          checked={styles.visibility === 'visible'}
+          checked={styles.visibility ? styles.visibility === 'visible' : true}
           onChange={() => this.onValueChange('visibility')({ target: { value: styles.visibility === 'visible' ? 'hidden' : 'visible' } })} />
         <UnitInput value={getValue(styles.width)}
           disabled={disabled}

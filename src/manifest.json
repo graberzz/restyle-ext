@@ -6,7 +6,7 @@
   },
   "browser_action": {
     "default_popup": "popup.html",
-    "default_icon": "icons/ReSTYLE_38.png"
+    "default_icon": "icons/ReSTYLE_256.png"
   },
   "content_scripts": [
         {
