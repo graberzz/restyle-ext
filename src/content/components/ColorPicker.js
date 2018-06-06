@@ -24,7 +24,7 @@ const ColorPicker = ({
 }) => (
   <div className={classes.container}>
     <label className={classes.label}>{label}</label>
-    <LibColorPicker {...rest}
+    <LibColorPicker {...rest} style={{ zIndex: 9999 }}
       onChange={({ color }) => onChange({ target: { value: color } }) }/>
   </div>
 );

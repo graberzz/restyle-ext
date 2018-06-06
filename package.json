@@ -1,7 +1,7 @@
 {
-  "name": "extension-webpack-boilerplate",
+  "name": "restyle-extenstion",
   "version": "1.0.0",
-  "description": "Browser Extension Webpack boilerplate",
+  "description": "ReSTYLE Browser Extension",
   "scripts": {
     "start": "webpack --watch",
     "test": "jest --coverage"

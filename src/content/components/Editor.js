@@ -53,7 +53,7 @@ const styles = theme => ({
     top: 0,
     left: 'auto',
     right: 0,
-    zIndex: 9998,
+    zIndex: 1500,
   },
   editorLeft: {
     left: 0,
@@ -362,8 +362,6 @@ class Editor extends React.Component {
     const selectorStyles = REtheme.styles[selector] ? REtheme.styles[selector] : {};
     let addUnit = true;
 
-    console.log(e);
-
     if (selector === null) return;
     if (e.target.value.trim() === '') {
       this.setState({
@@ -615,6 +613,12 @@ class Editor extends React.Component {
           label="Width"
           onChange={this.onValueChange('border-width')}
           onUnitChange={this.onUnitChange('border-width')} />
+        <UnitInput value={getValue(styles['border-radius'])}
+          disabled={disabled}
+          unit={getUnit(styles['border-radius'])}
+          label="Radius"
+          onChange={this.onValueChange('border-radius')}
+          onUnitChange={this.onUnitChange('border-radius')} />
         <ColorPicker label="Color"
           disabled={disabled}
           color={styles['border-color']}
@@ -682,6 +686,7 @@ class Editor extends React.Component {
       <Paper className={`${classes.editor}  ${stick !== 'right' ? classes.editorLeft : ''}`}>
         <div className={classes.top}>
           <Tooltip open={tooltipOpen}
+            style={{ zIndex: 9999 }}
             className={classes.tooltip}
             onClose={this.onTooltipClose}
             onOpen={this.onTooltipOpen}
